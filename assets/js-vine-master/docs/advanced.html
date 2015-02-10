@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;
+       charset=utf-8" />
+<title>JavaScript Visual Novel Engine: Advanced Topics</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+
+<body>
+<h1>JavaScript Visual Novel Engine: Advanced Topics</h1>
+
+<ol>
+<li><a href="#textblocks">Text Blocks</a>
+    <ol class="letter">
+    <a href="#posWidth">Position and Width</a>
+    <a href="#initWithText">Displaying without Changes</a>
+    </ol>
+</li>
+<li><a href="#showHide">Showing, Hiding, and Removing</a></li>
+<li><a href="#variables">Variables</a></li>
+<li><a href="#textinput">Text Input</a></li>
+<li><a href="#ifStatement">The <code>ifStatement</code></a></li>
+<li><a href="#subroutines">Subroutines</a></li>
+<li><a href="#audio">Audio</a></li>
+<li><a href="#background">Backgrounds</a></li>
+<li><a href="#imagemaps">Image Maps</a></li>
+<li><a href="#avatars">Dialog Avatars</a></li>
+<li><a href="#jscall">Calling JavaScript from your Novel</a></li>
+</ol>
+
+<h2><a id="textblocks">Text Blocks</a></h2>
+<p>
+Sometimes you need a text to appear in the tableau. You use a
+<code>TextBlock</code> character to do this. To initialize a
+<code>TextBlock</code>, you give the block a name and optionally
+parameters. Your parameters can be the following:
+</p>
+<table>
+    <thead>
+        <tr><th>Property</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><code>color</code></td>
+        <td>text color for this block, specified as in CSS</td></tr>
+    <tr><td><code>backgroundColor</code></td>
+        <td>background color for this block, specified as in CSS</td></tr>
+    <tr><td><code>position</code></td>
+        <td>where to display this text block. The <code>xAnchor</code>
+        and <code>yAnchor</code> are ignored.</td></tr>
+    <tr><td><code>align</code></td>
+        <td>text alignment, specified as in CSS</td></tr>
+    <tr><td><code>border</code></td>
+        <td>a border specification as in CSS</td></tr>
+    <tr><td><code>font</code></td>
+        <td>the font to use to display the text</td></tr>
+    <tr><td><code>width</code></td>
+        <td>decimal percent of width of the window; range from 0 to 1.0</td></tr>
+    <tr><td><code>visibility</code></td>
+        <td>"visible" or "hidden", as in CSS</td></tr>
+    <tr><td><code>text</code></td>
+        <td>an HTML string to display inside the text area</td></tr>
+    </tbody>
+</table>
+<p>
+The following code creates a <code>TextBlock</code> that will display
+red text on a yellow background in 24 point Helvetica font, centered, in
+an area 60% the width of the novel with an upper right corner at
+position (50&nbsp;,70).
+</p>
+<div class="inset bordered">
+<pre>var sampleText; // goes outside of prepareNovel()
+  /* inside the prepareNovel() function, do this: */
+  sampleText = new TextBlock("sample",
+    {
+      color: "red", backgroundColor: "#ff0",
+      font: "24pt Helvetica", align: "center",
+      width: 0.6,
+      position: new Position(50, 70)
+    }
+  );</pre>
+</div>
+
+<p>
+At the moment, this text block has no text in it. To make it appear
+on screen with text, just mention it in your script with the text
+you want it to contain.
+</p>
+
+<div class="inset bordered">
+<pre>script = [
+  label, "start",
+  scene, "empty.png",
+  sampleText, "Here I am!"
+];</pre>
+</div>
+
+<p>
+You can change the text block&rsquo;s attributes or text and attributes
+simultaneously:
+</p>
+
+<pre>
+  narrator, "Click to change colors.",
+  sampleText, {color: "white", backgroundColor: "#800"},
+  narrator, "Click to change the text and border",
+  sampleText, {text: "New text", border: "5px double white"}
+</pre>
+<h2><a id="poswidth">Position and Width</a></h2>
+<p>
+When you set the position of a text block, the <i>x</i> and
+<i>y</i> positions, if less than or equal to 1, indicate a proportion
+of the novel&rsquo;s width or height. If greater than 1, they indicate
+a pixel position. The xAnchor and yAnchor parameters (which are useful
+when centering an image) are not used for text blocks.
+</p>
+<p>
+Ordinarily, a text block takes up the entire width of the tableau.
+If you want a block with a width of, say, 40% of the screen width,
+you set <code>width:&nbsp;.40</code> If you want that block centered,
+horizontally, then its <i>x</i> position must be .30
+(30%&nbsp;+&nbsp;40%&nbsp;+&nbsp;30%&nbsp;=&nbsp;100%). In general,
+for a text block of width <i>w</i>, you center it by setting the
+<i>x</i> position to ((1&nbsp;-&nbsp;<i>w</i>)&nbsp;/&nbsp;2).
+</p>
+
+<h2><a id="initWithText">Displaying Without Changes</a></h2>
+<p>
+What if you included text when you initialized your 
+<code>TextBlock</code>, as in the following code?
+</p>
+
+<div class="inset bordered">
+<pre>var otherText; // outside prepareNovel()
+/* inside prepareNovel */
+otherText = new TextBlock("other",
+  {
+    text: "Yet more text.",
+    position: new Position(0.25, 0.5),
+    width: 0.5
+  }
+);</pre>
+</div>
+
+<p>
+Or what if you had changed a scene (which clears the tableau), and
+wanted to re-display some text?
+How can you display the text area without changing any of its properties?
+Just use <code>null</code> as the parameter in your script, and the
+text area will appear, exactly as you initialized it.
+</p>
+
+<div class="inset bordered">
+<pre>  /* previous part of script... */
+  narrator, "See some more text.",
+  otherText, null,
+  narrator, "Scene switches...",
+  scene, null, // clear tableau
+  narrator, "And now, the colorful text again",
+  sampleText, null,
+  narrator, "The end"</pre>
+</div>
+<p>
+You may see <a href="textExample/textExample.html">the full
+example here</a>.
+</p>
+
+<h2><a id="showHide">Showing, Hiding, and Removing</a></h2>
+<p>
+While it is possible to hide and display a character this way:
+</p>
+
+<div class="inset bordered">
+<pre>protagonist, {visibility: "hidden"},
+// later on...
+protagonist, {visibility: "visible"}</pre>
+</div>
+
+<p>
+It is easier to use the show and hide commands:
+</p>
+<div class="inset bordered">
+<pre>hide, protagonist,
+// later on...
+show, protagonist</pre>
+</div>
+
+<p> When you use <code>show</code>, the character will be added to the tableau
+(if not there already) and will become visible.
+</p>
+
+<p>
+The <code>hide</code> command makes a character invisible, but does
+not remove the character from the tableau. If you really want to remove
+a character, use <code>remove</code> instead of <code>hide</code>.
+</p>
+
+<p>If you have characters that overlap on the tableau, then
+<code>hide</code> followed by <code>show</code> will not do the same thing
+as <code>remove</code> followed by <code>show</code>. 
+<a href="hideShowRemoveExample/hideShowRemoveExample.html">This example
+novel shows the difference</a>.
+</p>
+
+<h2><a id="variables">Variables</a></h2>
+<p>
+Up to this point, the text on every page is the same, independent
+of your menu choices. Take a look at
+<a href="varExample/varExample.html">this simple novel</a>. You
+might think that it has a structure like this (click it to see
+it at full size)
+</p>
+
+<div class="center">
+<a href="images/varExample_flowchart.png"><img
+    src="images/varExample_flowchart.png"
+    alt="flowchart showing three separate branches"
+    width="283" height="225"/></a>
+</div>
+
+<p>
+And indeed, you could have a separate <code>jump</code> to each
+branch. However, if you look at the text, you will see that all
+the branches are the same, except for places
+where you can &ldquo;fill-in-the-blanks&rdquo;:
+</p>
+
+<div class="inset bordered">
+<p>Well, if you like <span class="fillin">{{some color name}}</span>...</p>
+<p>Perhaps you would like to purchase this lovely
+<span class="fillin">{{name of a jewel}}</span></p>
+</div>
+
+<p>
+And, if the pictures are cleverly named the same as the name of the jewels,
+you can display a picture with a name of
+<samp><span class="fillin">{{name of a jewel}}</span>.jpg</samp>
+</p>
+
+<p>
+This is how variables in the visual novel engine work. Here is the
+code for the menu that lets you choose your color:
+</p>
+
+<div class="inset bordered">
+<pre><span class="line"> 1</span>&nbsp;menu, [
+<span class="line"> 2</span>&nbsp;  "What&amp;rsquo;s your favorite color?",
+<span class="line"> 3</span>&nbsp;  "Red", [ setVars, {color: 'red', jewel: 'ruby'} ],
+<span class="line"> 4</span>&nbsp;  "Green", [ setVars, { color: 'green', jewel: 'emerald'} ],
+<span class="line"> 5</span>&nbsp;  "Blue", [ setVars, "novel.userVar.color='blue'",
+<span class="line"> 6</span>&nbsp;      setVars, "novel.userVar.jewel='sapphire'" ]
+<span class="line"> 7</span>&nbsp;],</pre>
+</div>
+
+<p>
+Lines 3 and 4 show the method you will usually use to set variables, by
+giving the variable name and its value. Variable names must follow 
+JavaScript rules: they must begin with a letter or underscore, followed by
+letters, digits, or underscores.
+</p>
+
+<p>
+<span class="warning">Important:</span>
+What&rsquo;s <em>really</em> happening behind the scenes is that your
+&ldquo;variables&rdquo; become part of a special object named
+<code>novel.userVar</code>.  Lines 5 and 6 show the &ldquo;hard way&rdquo;
+to set variables&mdash;by directly changing the <code>novel.userVar</code>
+object. This is important to know so that you can use the variables
+later on.  Here&rsquo;s the rest of the script: 
+</p>
+
+<div class="inset bordered">
+<pre><span class="line"> 8</span>&nbsp;label,"salesPitch",
+<span class="line"> 9</span>&nbsp;salesman, "Well, if you like {{novel.userVar.color}}...",
+<span class="line">10</span>&nbsp;jewelPhoto, {image: "{{novel.userVar.jewel}}.jpg",
+<span class="line">11</span>&nbsp;  visibility: "visible"},
+<span class="line">12</span>&nbsp;salesman, "Perhaps you would like to purchase this lovely {{novel.userVar.jewel}}!",
+<span class="line">13</span>&nbsp;jump, "ask"</pre>
+</div>
+
+<dl>
+<dt>Line 8</dt>
+    <dd>Because the menu items don&rsquo;t end with a <code>jump</code>,
+    you <em>must</em> put a label afterwards; otherwise the novel engine
+    will skip too far ahead. (This is not an easy thing to fix.)</dd>
+<dt>Lines 9 and 11</dt>
+    <dd>When you want to reference a variable, you enclose it in a
+    set of double braces <code>{{&nbsp;}}</code>, and you <em>must</em>
+    use the <code>novel.userVar</code> notation. The double braces
+    <dfn>interpolate</dfn> the variable; that is, they 
+    &ldquo;fill in the blank.&rdquo;</dd>
+<dt>Line 10</dt>
+    <dd>Interpolation isn&rsquo;t just for dialog. You can use it
+    for file names and menu items. (<i>Ideally, interpolation will
+    work anywhere you can put a quoted string, but I don&rsquo;t 
+    know if I have implemented it everywhere. If you find an instance
+    where it doesn&rsquo;t work, let me know.</i>)</dd>
+</dl>
+
+<p>You can <a href="varExample/varExample.js">see the entire
+JavaScript here</a>.</p>
+
+<h3>Really Advanced Topic: Using Plain JavaScript Variables</h3>
+<p>
+Do you <em>really</em> have to use <code>novel.userVar</code>? No,
+you do not. You could create global variables in your JavaScript file:
+</p>
+
+<div class="inset bordered">
+<pre>/* my own variables (instead of using novel.userVar) */
+var myColor;
+var myJewel;</pre>
+</div>
+
+<p>
+And then do this in your script array. Notice that you can put
+multiple JavaScript statements separated by
+semicolons into a single <code>setVars</code>;
+that&rsquo;s because it <em>is</em> JavaScript.
+</p>
+
+<div class="inset bordered">
+<pre>menu, [
+    "What&amp;rsquo;s your favorite color?",
+    "Red", [ setVars, "myColor='red'; myJewel='ruby'" ],
+    "Green", [ setVars,"myColor='green'; myJewel='emerald'" ],
+    "Blue", [ setVars, "myColor='blue'; myJewel='sapphire'" ]
+],
+label,"salesPitch",
+salesman, "Well, if you like {{myColor}}...",
+jewelPhoto, {image: "{{myJewel}}.jpg", visibility: "visible"},
+salesman, "Perhaps you would like to purchase this lovely {{myJewel}}!",</pre>
+</div>
+
+<p>
+You are free to do this if you wish; you just have to be careful that
+your variable names don&rsquo;t conflict with anything variables that
+have been declared in the <samp>js-vine.js</samp> file. You can
+<a href="varExample/varExample2.html">see the script in action here</a> and
+<a href="varExample/varExample2.js">see the JavaScript here</a>
+</p>
+
+<h2><a id="textinput">Text Input</a></h2>
+<p>
+If you want to get the reader&rsquo;s input to use in your script,
+you create an <code>Input</code> character, as follows:
+</p>
+
+<div class="inset bordered">
+<pre>// global variable
+var inputArea;
+
+// in prepareNovel()
+inputArea = new Input('yourName',
+{
+    position: new Position(0.2, 0.5),
+    width: 0.5,
+    text: "Your name here"
+});</pre>
+</div>
+
+<p>The <code>Input</code> object has the same parameters as a
+<code>TextBlock</code>, with one small difference: the 
+<code>text:</code> property gives the default value for the input
+field, and it is plain text rather than HTML.</p>
+
+<p>The name you give the object (in this example, <code>yourName</code>)
+is the name of the <code>novel.userVar</code> property that gets filled in
+when the reader changes the input field.</p>
+
+<p>
+Here&rsquo;s an example of the <code>Input</code> in action. Because
+the input area&rsquo;s name is <code>yourName</code>, the script
+accesses it via <code>novel.userVar.yourName</code>.
+</p>
+
+<div class="inset bordered">
+<pre>script = [  
+    label, "start",
+    scene, "wheat.png",
+
+    inputArea, "",
+    narrator, "Welcome, {{novel.userVar.yourName}}!",
+    narrator, "The end."
+];</pre>
+</div>
+
+<p>
+<span class="warning">Note:</span> unlike a <code>TextBlock</code>,
+an <code>Input</code> field is removed from the tableau as soon as the
+reader has entered a value. You may
+<a href="textInputExample/textInputExample.html">see the code in action
+here</a>.
+</p>
+
+<h2><a id="ifStatement">The <code>ifStatement</code></a></h2>
+<p>
+Sometimes you will want some part of the novel to appear only if a certain
+condition has been fulfilled. (For example, you may want some text to appear
+only if the reader is female.) In other cases, you may want different text
+to appear depending upon some condition; some extra text for female readers
+and other text for male readers.  The <code>ifStatement</code> lets you
+do these things.
+</p>
+
+<h3>If-then</h3>
+<p>
+The simplest form of an <code>ifStatement</code> is an &ldquo;if-then&rdquo;
+statement, as in &ldquo;If it&rsquo;s raining, then take an umbrella.&rdquo;
+You can <a href="ifExample/ifExample.html">see it in action in this
+example novel</a>. You are first asked if you prefer cats or dogs. Your
+choice jumps you to a different part of the novel, and the two branches
+rejoin. During the last part of the novel, extra text appears only if you
+said you prefer cats. Here&rsquo;s the menu, which sets a variable named
+<code>animal</code> and then jumps to the appropriate part of the novel.
+</p>
+
+<div class="inset bordered">
+<pre>menu, [
+    "Which do you prefer?",
+    "Cats", [
+        setVars, { animal: "cat" },
+        jump, "catPart"
+    ],
+    "Dogs", [
+        setVars, { animal: "Dog" },
+        jump, "dogPart"
+    ]
+],</pre>
+</div>
+
+<p>
+Both branches eventually jump to <samp>"part2"</samp>, which contains
+the if statement.
+</p>
+
+<div class="inset bordered">
+<pre><span class="line"> 1</span>&nbsp;ifStatement, "novel.userVar.animal == 'cat'",
+<span class="line"> 2</span>&nbsp;  david, {image: "smiling1.png"},
+<span class="line"> 3</span>&nbsp;  david, "Especially one that purrs!",
+<span class="line"> 4</span>&nbsp;  david, {image: "simple1.png"},
+<span class="line"> 5</span>&nbsp;endIf, "",
+<span class="line"> 6</span>&nbsp;david, "And remember: please spay or neuter your pet."</pre>
+</div>
+
+<p>
+The <code>ifStatement</code> must contain a <code>condition</code> (line 1),
+which is a JavaScript expression that asks a yes-or-no question.
+In this case, the question is, &ldquo;is <code>novel.userVar.animal</code>
+exactly equal to the string <samp>'cat'</samp>?&rdquo;
+If the answer is yes, the statements in the <code>thenPart</code> (lines
+2-4) are carried out. If the answer is no, the novel simply proceeds
+after the <code>endIf</code>.
+</p>
+
+<p><span class="warning">Important:</span> That&rsquo;s a capital letter
+<code>I</code> in <code>endIf</code>.  You have to put an <code>""</code>
+after the <code>endIf</code> so that every entry in the script has two
+parts.
+
+<p>
+As in JavaScript, you must use two equal signs in a row (<code>==</code>)
+to test for equality. To test to see if items are not equal, use
+<code>!=</code>.  Less than is <code>&lt;</code>;  greater than is
+<code>&gt;</code>. Less than or equal is<code>&lt;=</code>, 
+and greater than or equal is <code>&gt;=</code>.
+</p>
+
+<h3>If-then-else</h3>
+<p>
+The other type of <code>ifStatement</code> involves an <dfn>else</dfn>
+part; something to do if the <code>condition</code> is not true. For example,
+&ldquo;If I finish work before 6 p.m., then I will cook dinner;
+otherwise (else) I will get some take-out food.&rdquo;
+</p>
+
+<p>
+<a href="ifExample/ifExample2.html">Here is a slight modification of
+the first example</a>. In this novel, if you choose dogs instead of
+cats, you also get a special message in the last part of the novel,
+as specified in the <code>elsePart</code> on line 5.
+</p>
+
+<div class="inset bordered">
+<pre><span class="line"> 1</span>&nbsp;ifStatement, "novel.userVar.animal == 'cat'",
+<span class="line"> 2</span>&nbsp;  david, {image: "smiling1.png"},
+<span class="line"> 3</span>&nbsp;  david, "Especially one that purrs!",
+<span class="line"> 4</span>&nbsp;  david, {image: "simple1.png"},
+<span class="line"> 5</span>&nbsp;elsePart, "", 
+<span class="line"> 6</span>&nbsp;  david, "Your dog will be a loyal companion for life.",
+<span class="line"> 7</span>&nbsp;endIf, "", 
+</pre>
+</div>
+
+<div class="warning bordered">
+<p>
+<span class="warning">Warning:</span>
+Be careful about putting a <code>jump</code> inside of an
+<code>ifStatement</code>. If a <code>jump</code> leads
+to a destination that is outside
+of the <code>ifStatement</code>, the novel engine will not
+be aware that it has left the <code>ifStatement</code>, and strange things
+may occur. If a <code>jump</code> from outside an
+<code>ifStatement</code> goes to a destination that is inside
+an <code>ifStatement</code>, the novel engine will be very confused
+when it finds an <code>endIf</code> without ever having started the
+<code>ifStatement</code>.
+</p>
+</div>
+
+<h2><a id="subroutines">Subroutines</a></h2>
+<p>
+If there is a series of statements that you will do many times during
+a script, you can put them in a <dfn>subroutine</dfn>, which is analogous
+to a JavaScript function.
+Think of it as a &ldquo;mini-script&rdquo; that you can call
+upon whenever you need it. 
+<a href="subExample/subExample.html">Take a look at this sample
+visual novel</a>. Every time a character speaks, his picture becomes
+completely opaque and the non-speaking character&rsquo;s picture becomes
+transparent. Each speaker&rsquo;s code looks like this:
+</p>
+
+<div class="inset bordered">
+<pre>// Make Mr. Gold the primary speaker
+gold, { alpha: 1.0 },
+green, { alpha: 0.3 },
+
+// Make Mr. Green the primary speaker
+gold, { alpha: 0.3 },
+green, { alpha: 1.0 },</pre>
+</div>
+
+<p>
+Now, you could copy and paste this code into the script every time
+one of the speakers changes, but that&rsquo;s prone to error, and if
+you ever decide to change the transparent alpha value, you have to change
+every occurrence (another error-prone process).
+</p>
+
+<p>
+The solution is to make each of these bits of a code into a
+subroutine:
+</p>
+
+<div class="inset bordered">
+<pre>sub, "showGold",
+    gold, { alpha: 1.0 },
+    green, { alpha: 0.3 },
+endSub, "",
+    
+    sub, "showGreen",
+    gold, { alpha: 0.3 },
+    green, { alpha: 1.0 },
+endSub, "",</pre>
+</div>
+
+<p>
+Now the script makes calls to the subroutines:
+</p>
+
+<div class="inset bordered">
+<pre>call, "showGold",
+gold, "Hi. I am Mr. Gold.",
+call, "showGreen",
+green, "And I am Mr. Green.",</pre>
+</div>
+
+<h3>Where to Place Subroutines</h3>
+<p>
+<span class="warning"><big>Important!</big></span> Always place your
+subroutines before the <code>label,&nbsp;"start",</code> line. Never
+put them in the middle of your script, and don&rsquo;t put them at the end
+of the script, either.
+</p>
+
+<p>
+A subtle technical point, which you may skip if you don&rsquo;t care:
+You may put a subroutine at the end of the script, as long as there is no way
+for the script to encounter it normally, as in this sample code:
+</p>
+
+<div class="inset bordered">
+<pre>narrator, "and that is the end of our story!",
+narrator, "Click to see the story again.",
+jump, "start",
+
+// the engine will never get to this line
+sub, "setScene",
+   scene, "empty.png",
+   narrator, { alpha: 1.0 },
+endSub, "",</pre>
+</div>
+
+<h2><a id="audio">Audio</a></h2>
+<p>
+You can add sound to your novels with the <code>audio</code> command.
+It has these properties:
+</p>
+
+<table>
+    <thead>
+        <tr><th>Property</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+    <tr><td><code>src</code></td>
+        <td>the name of the audio file you wish to play. If you
+        specify a <code>format</code>, do not put an extension
+        on the filename.</td></tr>
+    <tr><td><code>format</code></td>
+        <td>which file formats you provide, as an array of strings.</td></tr>
+    <tr><td><code>loop</code></td>
+        <td>a boolean that tells whether the sound should loop or not.
+        Sounds do <em>not</em> loop automatically. You must set this
+        when you start a sound or while it is playing.</td></tr>
+    <tr><td><code>action</code></td>
+        <td>one of:
+            <code>"play"</code>, <code>"pause"</code>,
+            <code>"rewind"</code>, or <code>"stop"</code>
+        </td></tr>
+    </tbody>
+</table>
+
+<p><span class="warning">Important:</span> If you <code>"stop"</code> the
+audio, you must give the <code>src</code> when you start playing the
+sound again.</p>
+
+<p>Here is the relevant code from <a href="audioExample/audioExample.html">the
+audio example</a> that shows how to manipulate audio.</p>
+
+<div class="inset bordered">
+<pre>menu, [
+    "Choose an option (loop is {{novel.audioLoop}})",
+    "Start audio", [audio, {src: "scale", format: ["ogg","wav"], action: "play"}],
+    "Stop audio", [audio, {action: "stop"}],
+    "Pause audio", [audio, {action: "pause"}],
+    "Resume audio", [audio, {action: "play"}],
+    "Rewind audio", [audio, {action: "rewind"}],
+    "Set loop true", [audio, {loop: true}],
+    "Set loop false", [audio, {loop: false}]
+],</pre>
+</div>
+
+<p>
+The preceding example will first test to see if the browser
+can play file <samp>scale.ogg</samp>. If it cannot, then the engine will test
+to see if the browser can play file <samp>scale.wav</samp>. If you had only
+provided one file, say, the Ogg Vorbis format, you would simply have put
+<code>src: "scale.ogg"</code> and omitted the <code>format</code> property.
+</p>
+
+<h2><a id="background">Backgrounds</a></h2>
+<p>
+When changing scenes, you can specify a new background image. You
+can also specify an <dfn>effect</dfn> for the transition to the new
+background. Consider the following example of four scenes (we have
+left out the text within each scene).  The first command makes
+<samp>office.jpg</samp> the background. The next scene will simply replace
+<samp>office.jpg</samp> with <samp>highway.jpg</samp> (Note: you could have
+written the second command as <code>scene,&nbsp;"highway.jpg"</code>. The
+next scene will fade out <samp>highway.jpg</samp> and then fade in
+<samp>house.jpg</samp>.  The last scene fades out <samp>house.jpg</samp>
+at the same time that <samp>kitchen.jpg</samp> fades in.
+</p>
+
+<div class="inset bordered"><pre>scene, "office.jpg",
+scene, {image: "highway.jpg"},
+scene, {image: "house.jpg", effect: "fade"},
+scene, {image: "kitchen.jpg", effect: "dissolve"}</pre>
+</div>
+
+<p>
+The <code>scene</code> command clears the tableau and dialog areas. If
+you want to change a background without clearing those areas, use the
+<code>background</code> command instead. It also allows you to use
+an <code>effect</code>.
+</p>
+
+<p>
+With either the <code>background</code> or <code>scene</code> command, you
+can specify an alpha value (0=transparent, 1=opaque). This can be useful if
+you want to emphasize a diagram on a &ldquo;busy&rdquo; background.
+Consider the following sequence:
+</p>
+
+<div class="inset bordered">
+<pre>background, {image: "house.jpg", alpha: 0.5},
+background, {image: "kitchen.jpg", alpha: 0.5, effect: "dissolve"},
+background, {alpha: 1.0} // kitchen image becomes opaque</pre>
+</div>
+
+<p>You can <a href="backgroundExample/backgroundExample.html">see an
+example of <code>scene</code> and <code>background</code> here</a>.
+</p>
+
+<h2><a id="imagemaps">Image Maps</a></h2>
+<p>
+You can create an image map using the <code>&lt;map&gt;</code> element in
+your HTML and then use it from within your novel&rsquo;s script.
+Consider this section of code from
+<a href="imageMapExample/imageMapExample.html">an image map example</a>:
+</p>
+
+<div class="inset bordered"><pre>&lt;map name="euroMap" id="euroMap"&gt;
+	&lt;area shape="rect" coords="87,83,135,142"
+		href="#" alt="Germany" onclick="return novel_mapJump('germany');"/&gt;
+	&lt;area shape="rect" coords="50,115,108,170"
+		href="#"  alt="France" onclick="return novel_mapJump('france');"/&gt;
+	&lt;area shape="rect" coords="20,155,78,207"
+		href="#" alt="Spain" onclick="return novel_mapJump('spain');"/&gt;
+	&lt;area shape="rect" coords="114,6,148,90"
+		href="#" alt="Sweden" onclick="return novel_mapJump('sweden');"/&gt;
+&lt;/map&gt;</pre>
+</div>
+
+<p>
+In your novel, you attach the image map to a character. The relevant code
+is here:
+</p>
+
+<div class="inset bordered"><pre>var europe;
+
+function prepareNovel()
+{
+    europe= new Character("",
+        { position: new Position(0.5, 0.2, 0.5, 0.5) }
+    );
+    script = [
+    label, "start",
+    //...
+    europe, {image: "empty_map2.png"},
+    //...
+    imagemap, { mapId: "euroMap", character: europe },
+}</pre></div>
+
+<p>
+As soon as the script engine encounters the <code>imagemap</code>
+command, it will attach the <code>&lt;map&gt;</code> with the 
+<code>mapId</code> that you specify to the image currently displayed
+by the <code>character</code> that you name. The novel then pauses and
+waits for user interaction.
+</p>
+
+<p><span class="warning">Important: </span> 
+In order to jump to a label in the script as the result of a click on
+the mapped image, you <emphasis>must</emphasis> use the
+<code>novel_mapjump()</code> function rather than <code>jump()</code>. The
+<code>novel_mapjump()</code> function also clears the imagemap connection.
+</p>
+
+<p>
+Because you have the full capabilities of an image map, you may use
+the <code>onmouseover</code> and <code>onmouseout</code> attributes in
+your HTML, as shown in <a href="imageMapExample/imageMapExample2.html"/>this
+example</a>.
+</p>
+
+<h3>Modal and Non-modal Image Maps</h3>
+<p>
+In the examples, the novel will only accept clicks on the image map; if
+you click outside the image map or in the dialog area, the novel will not
+proceed. This is called a <dfn>modal</dfn> image map, and it is usually what
+you want.
+</p>
+
+<p>
+If you would like a non-modal image map that allows the novel to detect clicks
+both inside and outside the image map, add the
+<code>screenActive:&nbsp;true</code> property inside the braces. You can
+see <a href="imageMapExample/imageMapExample3.html">an example of a
+non-modal image map here</a>. Try clicking outside the shapes when the novel
+asks you to select one.
+</p>
+
+<h2><a id="avatars">Dialog Avatars</a></h2>
+<p>
+When you have two characters on screen at the same time, it can be
+confusing as to who&rsquo;s actually speaking. You can make things
+easier by displaying a smaller version of the character in the dialog area.
+I am calling this a &ldquo;dialog avatar.&rdquo; You create a separate
+image for the avatar image. Here is an example, presuming that a character
+named Francine has already been created.
+</p>
+
+<div class="inset bordered"><pre>francine, {image: "francine.jpg", avatar: "francine_avatar.jpg"},
+francine, "My avatar and I both appear in the scene.,
+
+francine, {image: ""},
+francine, "Now only my avatar shows up. I could have re-specified the avatar, but I don't have to."
+
+francine, {image: "francine.jpg", avatar: ""},
+francine, "Now my image shows up, but not my avatar.</pre></div>
+
+<p>
+Avatars are also useful when you have a complicated background and
+you don&rsquo;t want the full-sized characters obscuring it.
+</p>
+
+<p>
+In order to make the dialog text wrap around the avatar, you must add
+this to your HTML file&#8217;s stylesheet:
+</p>
+
+<div class="inset bordered"><pre>.avatar {float: left;}</pre></div>
+
+<p>
+You can
+<a href="avatarExample/avatarExample.html">see
+avatars at work in this example</a>.
+</p>
+
+<h2><a id="jscall">Calling JavaScript from your Novel</a></h2>
+<p>
+<span class="warning">For the technically advanced readers only!</span>
+Sometimes you will need to call a JavaScript function to accomplish some
+goal. You can put a <code>jsCall</code> into your script. It is followed
+by an object that has these properties: <code>fcn</code>, which is the
+name of the JavaScript function you want to call, and
+<code>params</code>, which is an array of parameters to be passed to the
+function. If there are no parameters, use an empty array
+(<code>[&nbsp;]</code>). <a href="jsCallExample/jsCallExample.html">This
+example</a> calls JavaScript to add two numbers. Here is the relevant
+script, and the function it calls:
+</p>
+
+<div class="inset bordered">
+<pre>
+// this goes inside function prepareNovel();
+script = [
+    label, "start",
+    scene, "empty.png",
+    narrator, "Click the mouse to add 2 and 5.",
+    jsCall,  { fcn: addNumbers, params: [2, 5] },
+    narrator, "The result is {{novel.userVar.sum}}."
+];
+
+// and this function is elsewhere in your JavaScript file
+function addNumbers(x, y)
+{
+    novel.userVar.sum = x + y;
+}</pre>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;
+       charset=utf-8" />
+<title>JavaScript Visual Novel Engine: Text Input</title>
+<style type="text/css">
+body {
+    text-align: center;
+}
+#novelDiv {
+    width: 800px;
+    height: 450px;
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    text-align: center;
+}
+
+#dialogDiv {
+    font-family: "Deja Vu Sans", Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 790px;
+    height: 141px;
+    border: 1px solid black;
+    border-top: none;
+    background-color: #3d372c;
+    color: white;
+    top: 450px;
+    left: 0;
+    padding: 5px;
+    text-align: left;
+}   
+
+.menuItem {
+    width: 75%;
+    margin: 0.5em auto;
+    padding: 0.5em 3em;
+    background-color: #0050a0;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    font-family: "Deja Vu Sans", Helvetica, Arial, sans-serif;
+    font-size: 18px;
+}
+
+div.menuItem:hover {
+    background-color: #00a0ff;
+}
+</style>
+
+<script type="text/javascript" src="../../js-vine.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+imgPath = "images/";
+var preload = [
+];
+
+var preloadObj = new Array(preload.length);
+for (var i = 0; i < preload.length; i++)
+{
+    preloadObj[i] = new Image();
+    preloadObj[i].src = imgPath + preload[i];
+}
+
+var narrator;
+var inputArea;
+
+function prepareNovel()
+{
+    novel.imagePath = "images/";
+    narrator = new Character('');
+    inputArea = new Input('yourName',
+        {
+        position: new Position(0.2, 0.5),
+        width: 0.5,
+        text: "Your name here"
+        });
+    
+    script = [  
+        label, "start",
+        scene, "wheat.png",
+    
+        inputArea, "",
+        narrator, "Welcome, {{novel.userVar.yourName}}!",
+        narrator, "The end."
+    ];
+}
+// ]]>
+</script>
+</head>
+<body onload="initNovel(800, 450);">
+<div id="debug"></div>
+<div id="novelDiv">
+    <div style="position: absolute; left:0; top: 0; z-index:-1">
+        <img id="background0" src="images/wheat.png"/>
+    </div>
+    <div style="position: absolute; left:0; top: 0; z-index:-1">
+        <img id="background1" src="images/wheat.png"/>
+    </div>
+</div>
+<div id="dialogDiv"></div>
+
+<div style="text-align:center; margin-top: 0.5em;"><input type="button"
+    value="Restart" onclick="initNovel(800, 450)"/></div>
+</body>
+</html>
