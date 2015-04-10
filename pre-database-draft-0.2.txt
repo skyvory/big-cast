@@ -1,0 +1,140 @@
+MANAGEMENT
+
+user
+user_id
+username
+password
+created_date
+updated_date
+FK_permission_id
+
+permission
+permission_id
+permission_name
+>admin, member
+
+project
+project_id
+title (vn title)
+created_date
+updated_date
+FK_user_id
+FK_projectstatus_id
+
+projectstatus
+projectstatus_id
+name
+>on progress, finished, published
+
+resource
+resource_id
+name
+filename
+FK_resourcetype_id
+FK_project_id
+
+spritedetail (1 to 1 relationship with resource)
+<unused>spritedetail_id
+<unused>FK_resource_id (type: sprite)
+character_name
+figure_name
+expression_name
+
+resourcetype
+resourcetype_id
+name
+>sprite, background, bgm, sfx, voice, video
+
+line
+line_id
+order
+FK_linetype_id
+description (for branching marking and easy search later)
+FK_project_id
+
+linetype
+linetype_id
+name
+>text, choice, video, ending(back to title)
+
+text
+FK_line_id
+<bad practice>text_id
+speaker
+content (text)
+FK_voice_id (resource)
+FK_background_id (resource)
+FK_backgroundeffect_id
+FK_bgm_id
+FK_sfx_id
+FK_nextline_id
+
+choice
+choice_id
+content (text)
+FK_background_id (resource)
+FK_backgroundeffect_id
+FK_bgm_id
+FK_sfx_id
+FK_line_id
+FK_nextline_id
+
+sprite
+sprite_id
+FK_sprite_id (resource)
+position_x
+position_y
+position_z (1-10)
+FK_effect_id
+FK_line_id
+
+video
+video_id
+FK_video_id (resource)
+FK_line_id
+FK_nextline_id
+
+effect
+effect_id
+name
+>fade in, fade out, crossfade, slide up, slide down, move in from left, move out from left, move in from right, move out from right, move in from above, move out to above, move in from below, move out to below
+
+
+GAMEPLAY
+
+setting
+setting_id
+FK_splashscreen_id (resource)
+FK_titlebackground_id (resource)
+FK_titlebgm_id (resource)
+FK_configurationbackground_id (resource)
+FK_configurationbgm_id (resource)
+FK_project_id
+
+savedata
+savedata_id
+save_date
+FK_line_id
+FK_user_id
+FK_savedatatype_id
+FK_project_id
+
+savedatatype
+savedatatype_id
+name
+>normal, quick
+
+configuration
+configuration_id
+FK_fonttype_id
+textspeed (delay per character)
+bgmvolume (i1-10)
+voicevolume (1-10)
+sfxvolume (1-10)
+FK_user_id
+FK_project_id
+
+fonttype
+fonttype_id
+name
+>arial, helvetica, times new roman, etc

@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 /*
 | -------------------------------------------------------------------------
 | URI ROUTING
@@ -23,7 +25,7 @@
 | RESERVED ROUTES
 | -------------------------------------------------------------------------
 |
-| There area two reserved routes:
+| There are three reserved routes:
 |
 |	$route['default_controller'] = 'welcome';
 |
@@ -33,14 +35,30 @@
 |
 |	$route['404_override'] = 'errors/page_missing';
 |
-| This route will tell the Router what URI segments to use if those provided
-| in the URL cannot be matched to a valid route.
+| This route will tell the Router which controller/method to use if those
+| provided in the URL cannot be matched to a valid route.
 |
+|	$route['translate_uri_dashes'] = FALSE;
+|
+| This is not exactly a route, but allows you to automatically route
+| controller and method names that contain dashes. '-' isn't a valid
+| class or method name character, so it requires translation.
+| When you set this option to TRUE, it will replace ALL dashes in the
+| controller and method URI segments.
+|
+| Examples:	my-controller/index	-> my_controller/index
+|		my-controller/my-method	-> my_controller/my_method
 */
-
-$route['default_controller'] = "welcome";
+$route['default_controller'] = 'login';
 $route['404_override'] = '';
+$route['translate_uri_dashes'] = FALSE;
 
-
-/* End of file routes.php */
-/* Location: ./application/config/routes.php */
+/*
+$route['home/(:any)/(:any)'] = 'home/$2';
+$route['home'] = 'home/overview';
+$route['admin'] = 'admin/datata01';
+$route['admin/openta01'] = 'admin/datata01';
+$route['datata01'] = 'admin/datata01';
+$route['default_controller'] = "login";
+$route['404_override'] = 'notice';
+*/

@@ -1,0 +1,13 @@
+﻿
+
+sv
+sv
+salt
+$2a$07$1cd6dfb5886fac276ff0d3d13605cc1f893415b865aa76db614af7750d2ba768e3276193ffa9cc6c2ff251da76083e2d4cf6c0febe31949d8cabc125eb9b9f30$
+hash
+$2a$07$1cd6dfb5886fac276ff0dugHlw49Ykidio2cqtgI6BBszPaemYgRm
+
+
+#############
+Cast-WebBasedVisualNovelAuthoringTool-changelog
+#############
