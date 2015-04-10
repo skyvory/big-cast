@@ -7,7 +7,13 @@ $2a$07$1cd6dfb5886fac276ff0d3d13605cc1f893415b865aa76db614af7750d2ba768e3276193f
 hash
 $2a$07$1cd6dfb5886fac276ff0dugHlw49Ykidio2cqtgI6BBszPaemYgRm
 
-
+0.1
+- behind the prebuilding update
+- update skeleton using Code Igniter 3.0
+0.0
+- initial prototype 
+- folder structuring using Code Igniter as base framework
+log
 #############
 Cast-WebBasedVisualNovelAuthoringTool-changelog
 #############
