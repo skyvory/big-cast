@@ -20,19 +20,18 @@
 		<meta name="msapplication-wide310x150logo" content="widetile.png" />
 		<meta name="msapplication-square310x310logo" content="largetile.png" />
 
-		<link rel="stylesheet" href="<?= base_url() ?>assets/add-min.css">
+		<script type="text/javascript">
+		var config = {
+			base: "<?php echo base_url(); ?>"
+		};
+		</script>
 
-		<script type="text/javascript" src="<?= base_url() ?>assets/js/jquery/jquery.min.js"></script>
-		<script type="text/javascript" src="<?= base_url() ?>assets/js/jquery/jquery.widget.min.js"></script>
-		<script type="text/javascript" src="<?= base_url() ?>assets/js/jquery/jquery.mousewheel.js"></script>
-		
-		<style type="text/css">
-		body
-		{
-			background-image: url('<?= base_url() ?>images/bg5.jpg');
-		}
-		</style>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/restyle.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
 
+		<script type="text/javascript" src="<?= base_url() ?>assets/rescript.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 
 	</head>
-	<body class="metro">
+	<body>

@@ -4,18 +4,36 @@ Class Common extends CI_Model {
 		$this->load->database();
 	}
 	function createUser($username, $passwordhash, $salt){
-		$user = $username;
-		$pass = $passwordhash;
-		$data = array('username' => $username, 'password' => $passwordhash, 'salt' => $salt);
-		$this->db->insert('user', $data);
+		$now = date("Y-m-d H:i:s");
+		$data = array('username' => $username, 'password' => $passwordhash, 'salt' => $salt, 'created_date' => $now, 'fk_permission_id' => "2");
+		$exec = $this->db->insert('user', $data);
+		if($exec){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
-	function isUserExist($username){
-		$this->db->select('user_id');
+	function getUser($username){
+		$this->db->select('*');
 		$this->db->from('user');
 		$this->db->where('username', $username);
 		$result = $this->db->get()->row_array();
-		return $result['user_id'];
+		return $result;
 	}
+	function isUserExist($username){
+		$this->db->select('username');
+		$this->db->from('user');
+		$this->db->where('username', $username);
+		$result = $this->db->get();
+		if($result->num_rows() > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 
 
 

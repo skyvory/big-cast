@@ -1,11 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-session_start();
 class Home extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
-		$this->load->model('user','',TRUE);
 		$this->load->library('session');
+		$this->load->model('render','',TRUE);
+		/*
 		if($this->session->userdata('logged_in')) {
 			$sess = $this->session->userdata('logged_in');
 			if($sess['serv']=='peter')
@@ -13,15 +13,18 @@ class Home extends CI_Controller {
 		} else {
 			redirect('login', 'refresh');
 		}
+		*/
 	}
 
 	function index() {
-		$sess = $this->session->userdata('logged_in');
-		$iduser = $this->user->getiduser($sess['user']);
-		$data = $this->user->getdatata01latestbyuser($iduser);
-		$this->load->view('head', $title);
-		$this->load->view('home_view', $sess);
-		$this->load->view('home_endview');
+		$this->load->helper('form');
+		$this->load->helper('url');
+		
+		$data['sess'] = $this->session->userdata('logged_in');
+		$head['title'] = "Home";
+		var_dump($data);
+		$this->load->view('head_home', $head);
+		$this->load->view('home_view', $data);
 		$this->load->view('foot');
 	}
 	

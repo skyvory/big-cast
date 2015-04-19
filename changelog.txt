@@ -1,12 +1,13 @@
 ﻿
-
-sv
-sv
-salt
-$2a$07$1cd6dfb5886fac276ff0d3d13605cc1f893415b865aa76db614af7750d2ba768e3276193ffa9cc6c2ff251da76083e2d4cf6c0febe31949d8cabc125eb9b9f30$
-hash
-$2a$07$1cd6dfb5886fac276ff0dugHlw49Ykidio2cqtgI6BBszPaemYgRm
-
+0.2
+- add login page capability
+- add register page capability
+- add mock game_view to test canvas and audio capability
+- update database table naming (v0.1)
+- update database model, fix some tables, drop some unnecessary tables (v0.2)
+- update database, insert some basic records
+- configure mock user, username: sv, password: sv
+- use bower to retrieve dependency package
 0.1
 - behind the prebuilding update
 - update skeleton using Code Igniter 3.0

@@ -6,27 +6,27 @@ class Login extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('common','',true);
-
+/*
 		if($this->session->logged_in) {
 			$sess = $this->session->logged_in;
 			if($sess['perm']==1)
 				redirect('admin', 'refresh');
 			else if($sess['perm']==2)
 				redirect('home', 'refresh');
-		}
+		}*/
 	}
 	public function index() {
 		$this->load->helper('form');
-		$this->load->library('form_validation');
 		$this->load->helper('url');
+		$this->load->library('form_validation');
 
-		$this->form_validation->set_rules('username', 'Username', 'required');
-		$this->form_validation->set_rules('password', 'Password', 'required');
+		$this->form_validation->set_rules('username', 'Username', 'required|trim');
+		$this->form_validation->set_rules('password', 'Password', 'required|trim');
 
-		$data['title'] = "Login";
+		$head['title'] = "Login";
 
 		if($this->form_validation->run() == false){
-			$this->load->view('head', $data);
+			$this->load->view('head', $head);
 			$this->load->view('login_view');
 			$this->load->view('foot');
 		}
@@ -35,76 +35,125 @@ class Login extends CI_Controller {
 			$password = $this->input->post('password');
 			$auth = $this->verifyUser($username, $password);
 			if($auth){
-				$sess_array = array();
-				$sess_array = array('id' => $auth['user_id'], 'user' => $auth['username'], 'perm' => $auth['FK_permission_id']);
-				$this->session->set_userdata('logged_in', $sess_array);
-				redirect('home', 'refresh');
+				if($auth['status'] == "ok"){
+					$sess_array = array();
+					$sess_array = array('id' => $auth['user_id'], 'user' => $auth['username'], 'perm' => $auth['fk_permission_id']);
+					$this->session->set_userdata('logged_in', $sess_array);
+					redirect('home', 'refresh');
+				}
+				else if($auth['status'] == "useronly"){
+					$data['notification'] = "Wrong password!";
+					$this->load->view('head', $head);
+					$this->load->view('login_view', $data);
+					$this->load->view('foot');
+				}
+				else if($auth['status'] == "nouser"){
+					$data['notification'] = "User doesn't exist. Please register!";
+					$this->load->view('head', $head);
+					$this->load->view('login_view', $data);
+					$this->load->view('foot');
+				}
 			}
 			else{
-				$data['notification'] = "Username or Password is not valid!";
-				$this->load->view('head', $data);
+				$data['notification'] = "Access error!";
+				$this->load->view('head', $head);
 				$this->load->view('login_view', $data);
 				$this->load->view('foot');
 			}
-
 		}
-		//$this->load->view('head', $data);
-		//$this->load->view('login_view');
-		//$this->load->view('foot');
 	}
-	public function GenerateSalt($username){
+
+	public function register(){
+		$this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[4]|max_length[16]|alpha_numeric|trim');
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
+
+		$head['titles'] = "Register";
+
+		if($this->form_validation->run() == false){
+			$this->load->view('head', $head);
+			$this->load->view('register_view');
+			$this->load->view('foot');
+		}
+		else{
+			$username = $this->input->post('username');
+			$password = $this->input->post('password');
+			$passwordrepeat = $this->input->post('passwordrepeat');
+
+			if($password != $passwordrepeat){
+				$data['notification'] = "Password doesn't match. Please re-type your password!";
+				$this->load->view('login', $head);
+				$this->load->view('register');
+				$this->load->view('foot');
+			}
+			else{
+				$reg = $this->registerUser($username, $password);
+				if($reg){
+					$data['notification'] = "Successfully registered. You can now log in.";
+					$this->load->view('login', $head);
+					$this->load->view('login');
+					$this->load->view('foot');
+				}
+			}
+		}
+	}
+
+	public function checkUsername(){
+		$username = $this->input->post('username');
+		$match = $this->common->isUserExist($username);
+		if($match){
+			//return true;
+			echo "1";
+		}
+		else{
+			echo "0";
+			//return false;
+		}
+	}
+
+	private function generateSalt($username){
 		$prehash = '6f4097b653b5a46bf3e704c292f56c51d0debd834cbb87ce3c9e4d15b79c0f4bc6f99c8b294db3c8aae5aa7bdf1a0435f2ff5aceca5377f8e9c0350e53778206';
 		$presalt = $prehash.$username;
-		$rawsalt = hash('whirlpool', $presalt);
-		$salt = '$2a$07$' . $rawsalt . '$';//use whirlpool hash for salt
+		$rawsalt = hash('whirlpool', $presalt);//use whirlpool hash for salt
+		$salt = '$2a$07$' . $rawsalt . '$';//prefix for blowfish hash
 		return $salt;
 	}
-	public function verifyUser($username, $password){
+
+	private function verifyUser($username, $password){
 		$user = $this->common->getUser($username);
 		if($user){
-			//if(crypt($password, $user['salt']) == $user[])
-			echo $user['salt'];
+			if(crypt($password, $user['salt']) == $user['password']){
+				$user['status'] = "ok";
+				return $user;
+			}
+			else {
+				$error['status'] = "useronly";
+				return $error;
+			}
 		}
-		else echo "error";
+		else{
+			$error['status'] = "nouser";
+			return $error;
+		}
 	}
 
-	public function register($username, $password){
-		$salt = $this->GenerateSalt($username);
+	private function registerUser($username, $password){
+		$salt = $this->generateSalt($username);
 		if(CRYPT_BLOWFISH == 1){
 			$passwordhash = crypt($password, $salt);
 		}
 		
-		$this->common->createUser($username, $passwordhash, $salt);
+		$pass = $this->common->createUser($username, $passwordhash, $salt);
 	}
 
 
-	public function verifylogin() {
-		$username = $this->input->post('username');
-		$password = $this->input->post('password');
-		$server = $this->input->post('server');
+	
 
-		$filter = $this->user->authfilter($username, $server);
-		if(!$filter) {
-			$data['redirectnotification'] = 'Failed to log in. You are not authorized.';
-			$this->load->view('notification_view', $data);
-			$this->output->set_header('refresh:3;url=login');
-		}
-		else {
-			$this->load->library('form_validation');
-			$this->form_validation->set_rules('server', 'Server', 'required');
-			$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|callback_check_database');
 
-			if($this->form_validation->run() == false) {
-				$loginnotification = 'Username atau password tidak valid.';
-				$this->session->set_flashdata('loginnotification', $loginnotification);
-				redirect('login', 'refresh');
-			}
-			else {
-				redirect('home', 'refresh');
-			}
-		}
-	}
+
 
 	function check_database($password) {
 		$username = $this->input->post('username');
