@@ -14,7 +14,7 @@
 	<div class="col-md-5">
 
 
-					<?php if(isset($notification)) echo($notification); ?>
+		<?php if(isset($notification)) echo($notification); ?>
 		<div id="loginfront" class="panel panel-primary">
 			<div class="panel-heading">Log In</div>
 			<div class="panel-body">

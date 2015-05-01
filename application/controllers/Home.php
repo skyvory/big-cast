@@ -4,10 +4,10 @@ class Home extends CI_Controller {
 	function __construct() {
 		parent::__construct();
 		$this->load->library('session');
-		$this->load->model('render','',TRUE);
+		$this->load->model('common','',TRUE);
 		/*
-		if($this->session->userdata('logged_in')) {
-			$sess = $this->session->userdata('logged_in');
+		if($this->session->userdata('user_auth')) {
+			$sess = $this->session->userdata('user_auth');
 			if($sess['serv']=='peter')
 				redirect('admin', 'refresh');
 		} else {
@@ -17,19 +17,32 @@ class Home extends CI_Controller {
 	}
 
 	function index() {
-		$this->load->helper('form');
+		//$this->load->helper('form');
 		$this->load->helper('url');
 		
-		$data['sess'] = $this->session->userdata('logged_in');
+		$data['sess'] = $this->session->userdata('user_auth');
 		$head['title'] = "Home";
-		var_dump($data);
-		$this->load->view('head_home', $head);
-		$this->load->view('home_view', $data);
+
+		$this->load->vars($data);
+		
+		$this->load->view('home_head', $head);
+		$this->load->view('menu_view');
+		$this->load->view('home_view');
 		$this->load->view('foot');
 	}
+
 	
+
+
+
+
+
+
+
+
+
 	function overview() {
-		$sess = $this->session->userdata('logged_in');
+		$sess = $this->session->userdata('user_auth');
 		$iduser = $this->user->getiduser($sess['user']);
 		$data['ta01'] = $this->user->getdatata01latestbyuser($iduser);
 		foreach ($data['ta01'] as $key => $value) {
@@ -54,7 +67,7 @@ class Home extends CI_Controller {
 	function formta01() {
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
-		$sess = $this->session->userdata('logged_in');
+		$sess = $this->session->userdata('user_auth');
 		$data['prof'] = $this->user->getmahasiswa($sess['user']);
 		$data['mkul'] = $this->user->getmatakuliah();
 		$config['upload_path'] = './docfile/';
@@ -164,7 +177,7 @@ class Home extends CI_Controller {
 
 	function formmkta() {
 		$this->load->helper(array('form', 'url'));
-		$sess = $this->session->userdata('logged_in');
+		$sess = $this->session->userdata('user_auth');
 		$iduser = $this->user->getiduser($sess['user']);
 		$list1mk = array('TE4203','TE4204', 'TE4223', 'TE4224', 'TE4219', 'TE4226');
 		$list2mk = array('DU4161', 'DU4167', 'DU4171', 'DU4122', 'DU4168', 'DU4163');
@@ -243,7 +256,7 @@ class Home extends CI_Controller {
 		$data['mktalist3'] = $arrayresult3;
 		$data['mktalist4'] = $arrayresult4;
 		$data['mktalist5'] = $arrayresult5;
-		$data['sess'] = $this->session->userdata('logged_in');
+		$data['sess'] = $this->session->userdata('user_auth');
 		$head['title'] = "Form Mata Kuliah TA";
 		$this->load->view('head', $head);
 		$this->load->view('home_view', $sess);
@@ -278,7 +291,7 @@ class Home extends CI_Controller {
 		$nk = $this->input->post('mkta_nk');
 		$nilai = $this->input->post('mkta_nilai');
 		$keterangansetara = $this->input->post('mkta_keterangansetara');
-		$sess = $this->session->userdata('logged_in');
+		$sess = $this->session->userdata('user_auth');
 		$iduser = $this->user->getiduser($sess['user']);
 		foreach($id as $key => $value) {
 			if($sks[$key]=='')
@@ -316,7 +329,7 @@ class Home extends CI_Controller {
 	function mahasiswa() {
 		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');
-		$sess = $this->session->userdata('logged_in');
+		$sess = $this->session->userdata('user_auth');
 		$data['prof'] = $this->user->getmahasiswa($sess['user']);
 		$data['bida'] = $this->user->getbidangstudi();
 		$this->form_validation->set_rules('nama', 'Nama', 'required');
@@ -347,7 +360,7 @@ class Home extends CI_Controller {
 	}
 
 	function logout() {
-		$this->session->unset_userdata('logged_in');
+		$this->session->unset_userdata('user_auth');
 		session_destroy();
 		redirect('login', 'refresh');
 	}

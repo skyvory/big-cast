@@ -1,16 +1,35 @@
 ﻿
+0.3
+- change jquery to use version 1
+- add jquery-file-upload package and library implementation
+- add firephp library
+- add home page, project page
+- add menu UI
+- update database 0.4: add more entity on project table, mock data on project table
+- fix register capability
+- add logout capability
+- add resource page based on project
+- change user session from "logged_in" to "user_auth"
+- change php.ini upload_max_filesize from 2M to 200M
+- change php.ini post_max_size from 8M to 800M
+- remove todolog.txt file
+- update database 0.5: change "filename" to "file_name" on resource table
+- add prototype upload functionality to resource page
+
 0.2
 - add login page capability
 - add register page capability
 - add mock game_view to test canvas and audio capability
-- update database table naming (v0.1)
-- update database model, fix some tables, drop some unnecessary tables (v0.2)
-- update database, insert some basic records
+- update database 0.1: change table naming
+- update database 0.2 : update model, fix some tables, drop some unnecessary tables
+- update database 0.3: insert some basic records
 - configure mock user, username: sv, password: sv
 - use bower to retrieve dependency package
+
 0.1
 - behind the prebuilding update
 - update skeleton using Code Igniter 3.0
+
 0.0
 - initial prototype 
 - folder structuring using Code Igniter as base framework
@@ -18,3 +37,44 @@ log
 #############
 Cast-WebBasedVisualNovelAuthoringTool-changelog
 #############
+
+1 sprite
+2 bg
+3 bgm
+4 sfx
+5 voice
+6 vid
+
+
+Naming convention:
+php
+variable: snakecase
+function: camelcase
+length: unrestricted
+module: get, CRUD prefix
+controller: Add, Change, Remove, and other active verb prefix
+
+html
+id: lowercase without separator, without abbreviation
+
+js
+variable: lowercase snakecase with abbreviation, min length 3
+function: camelcase
+
+css:
+separator: -
+
+To Do:
+- keep login cookie
+- username slug
+- profile detail and dp
+- chunk upload
+- check active project validity with owner
+- easing progress upload with css and js
+- commit functionality, delete previous result when post-processing failed
+- escape all user input on submitted data
+- disable submit button on empty input
+- finish alert on submit response success or fail
+- sortable resource without refresh
+- change sess to user
+- redesign salt and hash implementation, see http://security.stackexchange.com/questions/20541/insecure-versions-of-crypt-hashes

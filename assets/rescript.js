@@ -33,29 +33,9 @@ $("#login").click(function(){
 });
 */
 
-function callnewsdefault(){
-	var request = $.ajax({url: "post.php",type: "GET", data: {setdefault: "true", set: "1"},dataType: "html"});
-	request.done(function(msg) { 
-		//$.(".news-default").hide();
-		$(".news-default").html(msg);
-	});
-	request.fail(function(jqXHR, textStatus) {
-	});
-}
 
-function callgroupingbynrp(){
-	var nrp = $("#nrp2group").val();
-	var request = $.ajax({url: "postgrouping.php",type: "GET", data: {nrp: nrp},dataType: "html"});
-	request.done(function(msg) { 
-		//$.(".news-default").hide();
-		$("#groupingcontent").html(msg);
-	});
-	request.fail(function(jqXHR, textStatus) {
-	});
-}
-
-$("#nrp2group").keyup(function(event){
-    if(event.keyCode == 13){
-        $("#nrp2groupsubmit").click();
-    }
-});
+// $("#nrp2group").keyup(function(event){
+//     if(event.keyCode == 13){
+//         $("#nrp2groupsubmit").click();
+//     }
+// });

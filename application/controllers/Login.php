@@ -7,8 +7,8 @@ class Login extends CI_Controller {
 		$this->load->library('session');
 		$this->load->model('common','',true);
 /*
-		if($this->session->logged_in) {
-			$sess = $this->session->logged_in;
+		if($this->session->user_auth) {
+			$sess = $this->session->user_auth;
 			if($sess['perm']==1)
 				redirect('admin', 'refresh');
 			else if($sess['perm']==2)
@@ -38,8 +38,8 @@ class Login extends CI_Controller {
 				if($auth['status'] == "ok"){
 					$sess_array = array();
 					$sess_array = array('id' => $auth['user_id'], 'user' => $auth['username'], 'perm' => $auth['fk_permission_id']);
-					$this->session->set_userdata('logged_in', $sess_array);
-					redirect('home', 'refresh');
+					$this->session->set_userdata('user_auth', $sess_array);
+					redirect('project', 'location');
 				}
 				else if($auth['status'] == "useronly"){
 					$data['notification'] = "Wrong password!";
@@ -71,7 +71,7 @@ class Login extends CI_Controller {
 		$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[4]|max_length[16]|alpha_numeric|trim');
 		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
 
-		$head['titles'] = "Register";
+		$head['title'] = "Register";
 
 		if($this->form_validation->run() == false){
 			$this->load->view('head', $head);
@@ -81,20 +81,20 @@ class Login extends CI_Controller {
 		else{
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
-			$passwordrepeat = $this->input->post('passwordrepeat');
+			$password_repeat = $this->input->post('password_repeat');
 
-			if($password != $passwordrepeat){
+			if($password != $password_repeat){
 				$data['notification'] = "Password doesn't match. Please re-type your password!";
-				$this->load->view('login', $head);
-				$this->load->view('register');
+				$this->load->view('head', $head);
+				$this->load->view('register_view', $data);
 				$this->load->view('foot');
 			}
 			else{
 				$reg = $this->registerUser($username, $password);
 				if($reg){
 					$data['notification'] = "Successfully registered. You can now log in.";
-					$this->load->view('login', $head);
-					$this->load->view('login');
+					$this->load->view('head', $head);
+					$this->load->view('login_view', $data);
 					$this->load->view('foot');
 				}
 			}
@@ -117,8 +117,10 @@ class Login extends CI_Controller {
 	private function generateSalt($username){
 		$prehash = '6f4097b653b5a46bf3e704c292f56c51d0debd834cbb87ce3c9e4d15b79c0f4bc6f99c8b294db3c8aae5aa7bdf1a0435f2ff5aceca5377f8e9c0350e53778206';
 		$presalt = $prehash.$username;
-		$rawsalt = hash('whirlpool', $presalt);//use whirlpool hash for salt
-		$salt = '$2a$07$' . $rawsalt . '$';//prefix for blowfish hash
+		//use whirlpool hash for salt
+		$rawsalt = hash('whirlpool', $presalt);
+		//prefix for blowfish hash
+		$salt = '$2a$07$' . $rawsalt . '$';
 		return $salt;
 	}
 
@@ -143,55 +145,41 @@ class Login extends CI_Controller {
 	private function registerUser($username, $password){
 		$salt = $this->generateSalt($username);
 		if(CRYPT_BLOWFISH == 1){
-			$passwordhash = crypt($password, $salt);
+			$password_hash = crypt($password, $salt);
 		}
-		
-		$pass = $this->common->createUser($username, $passwordhash, $salt);
+		$pass = $this->common->createUser($username, $password_hash, $salt);
+		//pass would hold user_id if success
+		if($pass != NULL) {
+			$path_to_resource = './resources/';
+			$new_directory = $path_to_resource . $pass;
+			if(!is_dir($new_directory)){
+				$make = mkdir($new_directory, 777);
+			}
+		}
+		return $pass;
 	}
 
-
-	
-
-
-
-
-	function check_database($password) {
-		$username = $this->input->post('username');
-		$server = $this->input->post('server');
-		$imap = $this->user->login($username, $password, $server);
-		if($imap) {
-			$result = $this->user->authexistence($imap['username'],$imap['server']);
-			if(!$result) {
-				$reg = $this->user->registeruser($imap['username'],$imap['server']);
-				if(!$reg) {
-					$this->load->view('login_view');
-				}
-			}
-			$result2 = $this->user->authselect($imap['username'],$imap['server']);
-			if($result2) {
-				$sess_array = array();
-				if($imap['server'] == 'peter') {
-					$sess_array = array(
-						'user' => $imap['username'],
-						'serv' => 'peter'
-					);
-					$this->session->set_userdata('logged_in', $sess_array);
-				}
-				else if($imap['server'] == 'john') {
-					$sess_array = array(
-						'user' => $imap['username'],
-						'serv' => 'john',
-						'name' => $result2['nama_mhs']
-					);
-					$this->session->set_userdata('logged_in', $sess_array);
-				}
-				return true;
+	public function logout() {
+		$this->load->helper('url');
+		$user_session = $this->session->userdata();
+		foreach ($user_session as $key => $value) {
+			if($key == 'user_auth') {
+				$this->session->unset_userdata($key);
 			}
 		}
-		else {
-			return false;
-			$this->form_validation->set_message('check_database', 'Username atau password tidak valid');
-		}
+		$this->session->sess_destroy();
+		redirect('login', 'refresh');
+	}
+
+	// for function testing
+	public function alpha() {
+		$path_to_resource = './resources/';
+		$new_directory = $path_to_resource . '2';
+		$make = mkdir($new_directory, 777);
+		if($make)
+			echo "okay";
+		else
+			echo "no";
 	}
 
 }

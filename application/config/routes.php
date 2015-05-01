@@ -54,6 +54,8 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['register'] = 'login/register';
+$route['resource'] = 'reseource';
+$route['resource/do_upload'] = 'resource/do_upload';
 /*
 $route['home/(:any)/(:any)'] = 'home/$2';
 $route['home'] = 'home/overview';
@@ -63,3 +65,7 @@ $route['datata01'] = 'admin/datata01';
 $route['default_controller'] = "login";
 $route['404_override'] = 'notice';
 */
+
+
+$route['upload'] = 'upload';
+$route['upload/do_upload'] = 'upload/do_upload';

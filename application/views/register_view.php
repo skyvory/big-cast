@@ -22,15 +22,15 @@
 				<?php echo form_open('register'); ?>
 					<div class="form-group">
 					<label for="username">Username</label>
-					<input type="text" id="username" name="username" class="form-control"><span id="usernamematch"></span>
+					<input type="text" id="username" name="username" class="form-control" value="<?php echo set_value('username'); ?>"><span id="usernamematch"></span>
 					</div>
 					<div class="form-group">
 					<label for="password">Password</label>
-					<input type="password" id="password" name="password" class="form-control">
+					<input type="password" id="password" name="password" class="form-control" value="<?php echo set_value('password'); ?>">
 					</div>
 					<div class="form-group">
 					<label for="passwordrepeat">Re-type password</label>
-					<input type="password" id="passwordrepeat" name="passwordrepeat" class="form-control"/>
+					<input type="password" id="passwordrepeat" name="password_repeat" class="form-control" value="<?php echo set_value('passwordrepeat'); ?>"/>
 					<span id="passwordmatch"></span>
 					</div>
 					<input type="submit" id="register" value="Register" class="btn btn-primary"/>
@@ -49,37 +49,52 @@
 
 
 <script type="text/javascript">
-$("#username").focusout(function(){
-	var usr = $("#username").val();
-	if(usr.length > 3){
+$("#username").focusout(function() {
+	var usr = $('#username').val();
+	if(usr.length > 3) {
 		var req = $.ajax({
 			url: config.base+"index.php/login/checkUsername",
 			type: "POST",
 			data: {username: usr},
 			dataType: "html",
-			beforeSend: function(){$("#usernamematch").html("checking...");}
+			beforeSend: function(){$('#usernamematch').html("checking...");}
 		});
-		req.done(function(msg){
-			if(msg == 1){
-				$("#usernamematch").html("User is already exist!");
+		req.done(function(msg) {
+			if(msg == 1) {
+				$('#usernamematch').html("User is already exist!");
 			}
-			else{
-				$("#usernamematch").html("Username is available!")
+			else {
+				$('#usernamematch').html("Username is available!")
 			}
 		});
-		req.fail(function(jqXHR, textStatus){
+		req.fail(function(jqXHR, textStatus, errorThrown) {
+			if (jqXHR.status === 0) {
+				console.log('Not connected.\n Verify Network.');
+			} else if (jqXHR.status == 404) {
+				console.log('Requested page not found. [404]');
+			} else if (jqXHR.status == 500) {
+				console.log('Internal Server Error [500].');
+			} else if (exception === 'parsererror') {
+				console.log('Requested JSON parse failed.');
+			} else if (exception === 'timeout') {
+				console.log('Time out error.');
+			} else if (exception === 'abort') {
+				console.log('Ajax request aborted.');
+			} else {
+				console.log('Uncaught Error.\n' + jqXHR.responseText);
+			}
 		});
 	}
 });
-$("#passwordrepeat").focusout(function(){
-	var pwd = $("#password").val();
-	var pwdr = $("#passwordrepeat").val();
-	if(pwdr.length >=3){
-		if(pwd == pwdr){
-			$("#passwordmatch").html("Passwords match!");
+$('#passwordrepeat').focusout(function() {
+	var pwd = $('#password').val();
+	var pwdr = $('#passwordrepeat').val();
+	if(pwdr.length >=3) {
+		if(pwd == pwdr) {
+			$('#passwordmatch').html("Passwords match!");
 		}
 		else{
-			$("#passwordmatch").html("Passwords don't match!");
+			$('#passwordmatch').html("Passwords don't match!");
 		}
 	}
 });
