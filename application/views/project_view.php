@@ -59,8 +59,9 @@
 		height: 150px;
 	}
 	.newproject-notification {
-		position: absolute;
+		position: fixed;
 		z-index: 3;
+		top: 15%;
 		right: 5%;
 	}
 </style>

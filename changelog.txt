@@ -1,4 +1,15 @@
-﻿
+﻿0.4
+- simplified function on resource call based on type
+- background resource upload capability
+- sprite resource upload capability
+- resource property update capability
+- resource record delete capability
+- tweak application/config/mimes.php to support video/ogg file type
+- bgm resource management capability
+- sfx resource management capability
+- voice resource management capability
+- video resource management capability
+
 0.3
 - change jquery to use version 1
 - add jquery-file-upload package and library implementation
@@ -14,7 +25,7 @@
 - change php.ini post_max_size from 8M to 800M
 - remove todolog.txt file
 - update database 0.5: change "filename" to "file_name" on resource table
-- add prototype upload functionality to resource page
+- add prototype upload capability to resource page
 
 0.2
 - add login page capability
@@ -71,10 +82,15 @@ To Do:
 - chunk upload
 - check active project validity with owner
 - easing progress upload with css and js
-- commit functionality, delete previous result when post-processing failed
+- commit capability, delete previous result when post-processing failed
 - escape all user input on submitted data
 - disable submit button on empty input
 - finish alert on submit response success or fail
 - sortable resource without refresh
 - change sess to user
 - redesign salt and hash implementation, see http://security.stackexchange.com/questions/20541/insecure-versions-of-crypt-hashes
+- use php pathinfo to extract filename and extension
+- return ajax call in json instead of html and construct it on frontend instead of server (need more vaying info data)
+- check for undefined variable from jquery find, if undefined throw error (resource property change)
+- check if update/delete allowed for active user
+- navigation for sprite resource per character

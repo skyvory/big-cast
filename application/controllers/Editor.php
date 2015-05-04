@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Resource extends CI_Controller {
+class Editor extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -16,29 +16,19 @@ class Resource extends CI_Controller {
 		*/
 	}
 	function index() {
-		$this->load->helper('form');
-		$this->load->helper('url');
-		
-		$data['sess'] = $this->session->userdata('user_auth');
-		$head['title'] = "Resource";
-
-		$this->load->vars($data);
-		$this->load->view('resource_head', $head);
-		$this->load->view('menu_view');
-		$this->load->view('resource_view');
-		$this->load->view('foot');
+		//no direct access
 	}
 	function manage($project_id = FALSE) {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
 		$data['sess'] = $this->session->userdata('user_auth');
-		$head['title'] = "Resource";
+		$head['title'] = "Editor";
 
 		$this->load->vars($data);
-		$this->load->view('resource_head', $head);
+		$this->load->view('editor_head', $head);
 		$this->load->view('menu_view');
-		$this->load->view('resource_view');
+		$this->load->view('editor_view');
 		$this->load->view('foot');
 	}
 	public function do_upload() {
