@@ -28,7 +28,7 @@
 						</span>
 						<table class="table">
 							<tbody class="line-list">
-<!-- line form template (new)
+<!-- line form template new
 <tr>
 	<td>
 		<form class="form-horizontal text-line-form">
@@ -62,6 +62,7 @@
 										<input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/>
 											<input type="hidden" name="sfx_resource_id" value="" />
 										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" />
+											<input type="hidden" name="jumpto_line_id" value="" />
 										<input type="text" name="label" class="form-control input-xs" placeholder="label" value="" />
 									</div>
 								</div>
@@ -86,7 +87,7 @@
  -->
 
 
-<!-- line form template (filled)
+<!-- line form template filled
 <tr>
 	<td>
 		<form class="form-horizontal text-line-form">
@@ -120,6 +121,7 @@
 										<input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/>
 											<input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" />
 										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" />
+											<input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" />
 										<input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" />
 									</div>
 								</div>
@@ -171,7 +173,7 @@
 					</tr>
 					</thead>
 					<tbody class="sprite-list">
-<!-- sprite form template
+<!-- sprite form template fill
 <tr>
 	<td>
 		<form class="form-inline sprite-form">
@@ -182,10 +184,12 @@
 				<div class="col-md-9">
 					<div class="form-group">
 						<input type="text" name="sprite" class="form-control input-xs sprite-input" placeholder="sprite" value="'+value.sprite_id+'" />
+							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
 						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
 						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" />
+							<input type="hidden" name="effect_id" value="" />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
 					</div>
 				</div>
