@@ -11,16 +11,24 @@
 		};
 		</script>
 
-		<link rel="stylesheet" href="<?= base_url() ?>assets/restyle.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
-
-		<!--script type="text/javascript" src="<?= base_url() ?>assets/rescript.js"></script-->
+		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/editor_style.css"/>
+		<!-- test -->
+		<!-- <link rel="stylesheet" href="<?= base_url() ?>assets/jquery-ui/themes/smoothness/jquery-ui.css"/> -->
 
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
+		<!-- sortable capability -->
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/core.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/widget.js"></script>
-		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/mousejs"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/mouse.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/sortable.js"></script>
+		<!-- autocomplete capability -->
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/position.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/menu.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/autocomplete.js"></script>
+		<!-- custom -->
+		<script type="text/javascript" src="<?= base_url() ?>assets/editor_script.js" async></script>
 	</head>
 	<body>

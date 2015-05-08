@@ -128,6 +128,7 @@ class Resource extends CI_Controller {
 			else{
 				$data = $this->upload->data();
 				//config for image resize
+				$config['image_library'] = 'ImageMagick';
 				$config['source_image'] = $data['full_path'];
 				$config['new_image'] =  FCPATH . $path_to_project . 'background/thumbs/';
 				$config['maintain_ratio'] = TRUE;

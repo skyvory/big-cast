@@ -49,12 +49,10 @@ log
 Cast-WebBasedVisualNovelAuthoringTool-changelog
 #############
 
-1 sprite
-2 bg
-3 bgm
-4 sfx
-5 voice
-6 vid
+Known Issue:
+- need change php.ini for bigger file upload
+- authentication access per controller
+- bmp image resize
 
 
 Naming convention:
@@ -94,3 +92,6 @@ To Do:
 - check for undefined variable from jquery find, if undefined throw error (resource property change)
 - check if update/delete allowed for active user
 - navigation for sprite resource per character
+- last update project capability on editor change
+- use html sessionstorage for better performance
+- custom autocomplete list with thumb image
