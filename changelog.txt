@@ -98,3 +98,4 @@ To Do:
 - last update project capability on editor change
 - use html sessionstorage for better performance
 - custom autocomplete list with thumb image
+- feature: optimized layout based on creator type: scenario writer, editor per media

@@ -343,5 +343,23 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
+	function createLine($project_id, $sequence, $line_type) {
+		$this->db->trans_begin();
+		$this->db->set('sequence', 'sequence+1', FALSE);
+		$this->db->where('sequence >=', $sequence);
+		$this->db->update('line');
+
+		$data = array('fk_project_id' => $project_id, 'sequence' => $sequence, 'fk_linetype_id' => $line_type);
+		$exec = $this->db->insert('line', $data);
+		$insert_id = $this->db->insert_id();
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return $insert_id;
+		}
+	}
 }
 ?>

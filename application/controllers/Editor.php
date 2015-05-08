@@ -191,6 +191,17 @@ class Editor extends CI_Controller {
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($pass), JSON_PRETTY_PRINT);
 	}
+	public function newLine() {
+		$line_type = $this->input->post('linetype');
+		$sequence = $this->input->post('sequence');
+		$proj = $this->session->userdata('active_project');
+		$this->fb->log($sequence);
+		$pass = $this->common->createLine($proj['id'], $sequence, $line_type);
+		if($pass != null) {
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($pass), JSON_PRETTY_PRINT);
+		}
+	}
 
 }
 
