@@ -1,4 +1,7 @@
-﻿0.4
+﻿0.5
+- update database 0.6: update line table for necessary entities, change "description" to "label" on line table
+
+0.4
 - simplified function on resource call based on type
 - background resource upload capability
 - sprite resource upload capability
