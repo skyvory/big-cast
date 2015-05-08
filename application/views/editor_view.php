@@ -34,7 +34,7 @@
 		<form class="form-horizontal text-line-form">
 			<div class="row">
 				<div class="col-md-1">
-					<span class="line-sequence">'+value.sequence+'</span>
+					<span class="line-sequence">'+tail+'</span>
 					<br /> <br />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
 				</div>
@@ -42,12 +42,12 @@
 					<div class="form-group">
 						<div class="form-inline">
 							<input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" />
-							<input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background_name+'" />
+							<input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" />
 								<input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" />
-							<input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm_name+'" />
+							<input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" />
 								<input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" />
-							<input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+last.voice_name+'" />
-								<input type="hidden" name="voice_resource_id" value="'+last.voice_resource_id+'" />
+							<input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" />
+								<input type="hidden" name="voice_resource_id" value="" />
 						</div>
 					</div>
 					<div class="form-group" style="margin-top: -10px; margin-bottom: 5px;">
@@ -79,7 +79,7 @@
 				</div>
 			
 			</div>
-			<input type="hidden" name="sequence" value="'+(tail++)+'" />
+			<input type="hidden" name="sequence" value="'+tail+'" />
 			<input type="hidden" name="line_id" value="new" />
 		</form>
 	</td>

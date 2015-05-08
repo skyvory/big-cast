@@ -7,8 +7,10 @@ var tail = 0;
 // active_line_obj.push(newarray);
 
 var last = {
-	speaker: "protagging",
+	speaker: "",
+	background_resource_id: "",
 	background: "",
+	bgm_resource_id: "",
 	bgm: "",
 	sprite: []
 };
@@ -90,7 +92,30 @@ $(function() {
 //initialize array
 $('#addtextbutton').click(function() {
 	tail++;
-	var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background_name+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm_name+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+last.voice_name+'" /> <input type="hidden" name="voice_resource_id" value="'+last.voice_resource_id+'" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+(tail++)+'" /> <input type="hidden" name="line_id" value="new" /> </form> </td> </tr>';
+	active_line_obj.push({
+		background_file_name: "",
+		background_name: last.background,
+		background_resource_id: last.background_resource_id,
+		bgm_file_name: "",
+		bgm_name: last.bgm,
+		bgm_resource_id: last.bgm_resource_id,
+		content: "",
+		fk_effect_id: "",
+		fk_linetype_id: "1",
+		jumpto_line_id: "",
+		label: "",
+		line_id: "new",
+		sequence: tail,
+		sfx_file_name: "",
+		sfx_name: "",
+		sfx_resource_id: "",
+		speaker: last.speaker,
+		sprite: {},
+		voice_file_name: "",
+		voice_name: "",
+		voice_resource_id: ""
+	});
+	var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="new" /> </form> </td> </tr>';
 	$(block).appendTo('.line-list');
 });
 
@@ -150,7 +175,6 @@ function sortLineObjectBySequence() {
 $('#savebutton').click( function() {
 	sortLineObjectBySequence();
 	console.log(active_line_obj);
-	console.log(last.speaker);
 });
 
 $('.line-list').on('change', 'input[type=text], textarea', function() {
@@ -195,6 +219,7 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			// update last background object
 			var input_sequence = $(selectform).find('input[name=sequence]').val();
 			if(input_sequence == tail) {
+				last.background_resource_id = input_id;
 				last.background = input_value;
 			}
 			break;
@@ -222,6 +247,7 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			// update last bgm object
 			var input_sequence = $(selectform).find('input[name=sequence]').val();
 			if(input_sequence == tail) {
+				last.bgm_resource_id = input_id;
 				last.bgm = input_value;
 			}
 			break;
