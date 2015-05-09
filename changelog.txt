@@ -1,4 +1,15 @@
-﻿0.5
+﻿
+- editor initial interface
+- add line sortability
+- add line add capability
+- add line delete capability
+- custom autocomplete interface
+- update interface with fixed control area
+- editor script use strict mode
+- add autocomplete capability on sprite area
+- change loadLineData to exclude sprite with empty/null value for json encode
+- change disploay-sprite-on-line-hover behavior according to active_line_obj
+0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table
 
 0.4

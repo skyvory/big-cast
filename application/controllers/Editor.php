@@ -59,7 +59,7 @@ class Editor extends CI_Controller {
 		$sprite = array();
 		// reconstruct query result into nested array, combine duplicate line holding different sprite value
 		foreach ($pass as $key => $value) {
-			if($value['sequence'] == $head) {
+			if($value['sequence'] == $head && $value['sprite_id'] != FALSE) {
 				$line[$i-1]['sprite'][] = array(
 					// utf-8 encode for proper null value on json
 					'sprite_id' => utf8_encode($value['sprite_id']),
@@ -98,19 +98,21 @@ class Editor extends CI_Controller {
 					'voice_name' => utf8_encode($value['voice_name']),
 					'voice_file_name' => utf8_encode($value['voice_file_name'])
 				);
-				$line[$i]['sprite'][] = array(
-					'sprite_id' => utf8_encode($value['sprite_id']),
-					'fk_resource_id' => utf8_encode($value['fk_resource_id']),
-					'position_x' => utf8_encode($value['position_x']),
-					'position_y' => utf8_encode($value['position_y']),
-					'position_z' => utf8_encode($value['position_z']),
-					'sprite_resource_id' => utf8_encode($value['sprite_resource_id']),
-					'sprite_name' => utf8_encode($value['sprite_name']),
-					'sprite_file_name' => utf8_encode($value['sprite_file_name']),
-					'sprite_character_name' => utf8_encode($value['sprite_character_name']),
-					'sprite_figure_name' => utf8_encode($value['sprite_figure_name']),
-					'sprite_expression_name' => utf8_encode($value['sprite_expression_name'])
-				);
+				if($value['sprite_id'] != FALSE) {
+					$line[$i]['sprite'][] = array(
+						'sprite_id' => utf8_encode($value['sprite_id']),
+						'fk_resource_id' => utf8_encode($value['fk_resource_id']),
+						'position_x' => utf8_encode($value['position_x']),
+						'position_y' => utf8_encode($value['position_y']),
+						'position_z' => utf8_encode($value['position_z']),
+						'sprite_resource_id' => utf8_encode($value['sprite_resource_id']),
+						'sprite_name' => utf8_encode($value['sprite_name']),
+						'sprite_file_name' => utf8_encode($value['sprite_file_name']),
+						'sprite_character_name' => utf8_encode($value['sprite_character_name']),
+						'sprite_figure_name' => utf8_encode($value['sprite_figure_name']),
+						'sprite_expression_name' => utf8_encode($value['sprite_expression_name'])
+					);
+				}
 				$head = $value['sequence'];
 				$i++;
 			}
