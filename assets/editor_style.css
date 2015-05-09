@@ -190,7 +190,22 @@ table td {
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	keep position
+	position: fixed;
 }
 * html .ui-autocomplete {
 	height: 200px;
+}
+
+/*ul.ui-autocomplete.ui-menu{width:100px}*/
+
+.ui-menu .ui-menu-divider {
+	margin: 5px 0;
+	height: 0;
+	font-size: 0;
+	line-height: 0;
+	border-width: 1px 0 0 0;
+}
+.ui-menu-item {
+	border-bottom: 1px solid #FF0000;
 }

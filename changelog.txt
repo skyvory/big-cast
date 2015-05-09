@@ -99,3 +99,5 @@ To Do:
 - use html sessionstorage for better performance
 - custom autocomplete list with thumb image
 - feature: optimized layout based on creator type: scenario writer, editor per media
+- change autoinput active verify on blur, not on change for better functionality
+- input restriction on html end

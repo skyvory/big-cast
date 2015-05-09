@@ -1,3 +1,4 @@
+'use strict';
 $(document).ready( callLineData() );
 
 var active_line_obj = [];
@@ -147,19 +148,23 @@ $('.line-list').on('click', '.line-collapse-button', function(e) {
 //show sprite management area on text line hover
 $('.line-list').on('mouseenter', '.text-line-form', function() {
 	//unnecessary! var selectform = $(this.form);
+	// add select class on pointed line
+	$(this).parent('td').addClass("select-line");
 	// change selected td background color
 	$(this).parent('td').css("background", "rgba(150, 148, 148, 0.3)");
+	// remove select class on other line
+	$(this).parent('td').parent('tr').siblings('tr').find('td').removeClass("select-line");
 	// remove other line selection
 	$(this).parent('td').parent('tr').siblings('tr').find('td').css("background", "");
 	var seq = $(this).find('input[name=sequence]').val();
-	sprite_obj = getLineBySequence(seq);
+	var sprite_obj = getLineBySequence(seq);
 	// clear sprite list area
 	$('.sprite-list').html("");
 	var count = 0;
 	// append sprite data to sprite area
 	$.each(sprite_obj[0].sprite, function (index, value) {
 		count++;
-		block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input" placeholder="sprite" value="'+value.sprite_id+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> </form> </td> </tr>';
+		var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> </form> </td> </tr>';
 		// append nothing if line has no sprite
 		if(value.sprite_id != "") {
 			$(block).appendTo('.sprite-list');
@@ -190,7 +195,7 @@ function sortLineObjectBySequence() {
 	});
 }
 
-$('#savebutton').click( function() {
+$('#savebutton').click(function() {
 	sortLineObjectBySequence();
 	console.log(active_line_obj);
 	console.log(head);
@@ -325,6 +330,64 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			break;
 	}
 });
+
+$('.sprite-list').on('change', 'input[type=text]', function() {
+	var selectform = $(this.form);
+	var input_name = $(this).attr('name');
+	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+	var form_id = $(selectform).find('input[name=sprite_id]').val();
+	// index on active_line_obj of which id used to change its array value
+	var index_to_write = getObjectIndex(active_line_obj, 'line_id', line_form_id);
+	var sprite_index_to_write = getObjectIndex(active_line_obj[index_to_write].sprite, 'sprite_id', form_id);
+	switch(input_name) {
+
+		case "sprite":
+			var input_id = $(selectform).find('input[name=sprite_resource_id]').val();
+			var input_value = $(this).val();
+			var verify = 0;
+			console.log(input_id);
+			console.log(input_value);
+			$.each(sprite_list, function(index, value) {
+				if(input_id == value.resource_id && input_value == value.name) {
+					verify++;
+				}
+			});
+			if(verify == 1) {
+				active_line_obj[index_to_write].sprite[sprite_index_to_write].sprite_name = input_value;
+				$(this).css("color", "");
+				console.log("OK");
+			}
+			else {
+				active_line_obj[index_to_write].sprite[sprite_index_to_write].sprite_name = "";
+				$(this).css("color", "rgba(255, 90, 90, 1)");
+				callErrorNotification("sprite resource doesn't exist!");
+			}
+			break;
+
+		case "position_x":
+			var input_value = $(this).val();
+			active_line_obj[index_to_write].sprite[sprite_index_to_write].position_x = input_value;
+			break;
+
+		case "position_y":
+			var input_value = $(this).val();
+			active_line_obj[index_to_write].sprite[sprite_index_to_write].position_y = input_value;
+			break;
+
+		case "position_z":
+			var input_value = $(this).val();
+			active_line_obj[index_to_write].sprite[sprite_index_to_write].position_z = input_value;
+			break;
+
+		case "effect":
+			break;
+	}
+});
+
+$('.sprite-command-area').on('click', '#addspritebutton', function() {
+	var block = '';
+	console.log(active_line_obj[2].sprite.length);
+})
 
 function callErrorNotification(message) {
 	var block = '<div class="alert alert-danger error-notification">'+message+'</div>';
@@ -719,19 +782,22 @@ $('.line-list').on('keydown', 'input[name=jumpto]', function() {
 // autocomplete sprite input
 $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 	$(this).autocomplete({
-		source: sprite_name_list,
+		source: sprite_list,
 		minLength: 1,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
-			$(this.form).find('input[name=sprite]').val(ui.item.label);
+			$(this.form).find('input[name=sprite]').val(ui.item.name);
 			// change id on hidden input
-			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.value);
+			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.resource_id);
 			// for disabling change value on input
 			return false;
 		},
 		// autosuggest capability
 		open: function(event, ui) {
+			$('.ui-menu').css("width", "300px");
+			$('.ui-menu').css("position", "fixed");
+			// $('.ui-menu').width(300);
 			var top = $(this).data('uiAutocomplete').menu.element[0].children[0], 
 			input = $(this),
 			original = input.val(),
@@ -747,15 +813,21 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 		select: function(event, ui) {
 			// get this input element
 			var input = $(this);
-			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.value);
-			$(this.form).find('input[name=sprite]').val(ui.item.label);
+			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.resource_id);
+			$(this.form).find('input[name=sprite]').val(ui.item.name);
 			return false;
 		},
-		autoFocus: true
-	});
+		autoFocus: true,
+		
+	})
+	.autocomplete('instance')._renderItem = function(ul, item) {
+		return $('<li>')
+			.append("<a>" + item.character_name + "<br>" + item.figure_name + " - " + item.expression_name + "</a>")
+			.appendTo(ul);
+	};
 });
 
-// autocomplete sprite transition input
+// autocomplete transition input
 $('.sprite-list').on('keydown', 'input[name=effect]', function() {
 	$(this).autocomplete({
 		source: effect_name_list,

@@ -173,6 +173,37 @@
 					</tr>
 					</thead>
 					<tbody class="sprite-list">
+
+<!-- sprite form template new
+<tr>
+	<td>
+		<form class="form-inline sprite-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="sprite-index">'+count+'</span>
+				</div>
+				<div class="col-md-9">
+					<div class="form-group">
+						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" />
+							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
+						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
+						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
+						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
+						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" />
+							<input type="hidden" name="effect_id" value="" />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+				</div>
+			</div>
+			<input type="hidden" name="sprite_id" value="'+value.sprite_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
 <!-- sprite form template fill
 <tr>
 	<td>
@@ -183,7 +214,7 @@
 				</div>
 				<div class="col-md-9">
 					<div class="form-group">
-						<input type="text" name="sprite" class="form-control input-xs sprite-input" placeholder="sprite" value="'+value.sprite_id+'" />
+						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" />
 							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
