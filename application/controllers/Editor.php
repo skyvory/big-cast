@@ -96,7 +96,8 @@ class Editor extends CI_Controller {
 					'sfx_file_name' => utf8_encode($value['sfx_file_name']),
 					'voice_resource_id' => utf8_encode($value['voice_resource_id']),
 					'voice_name' => utf8_encode($value['voice_name']),
-					'voice_file_name' => utf8_encode($value['voice_file_name'])
+					'voice_file_name' => utf8_encode($value['voice_file_name']),
+					'sprite' => ''
 				);
 				if($value['sprite_id'] != FALSE) {
 					$line[$i]['sprite'][] = array(
