@@ -5,8 +5,8 @@
 
 	<div class="row">
 		<div class="col-md-7">
-			<div class="row">
-				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;">
+			<div class="row" style="position:fixed; z-index: 10;">
+				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px; " >
 					<div class="line-command-area">
 						<span class="pull-left">Add line at the end of this section &nbsp;</span><br />
 						<div class="btn-toolbar" role="toolbar">
@@ -22,7 +22,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 line-area">
+				<div class="col-md-12 line-area" style="margin-top: 80px;">
 						<span class="request-loading request-loading-resourcelist">
 							<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..." style="display:none" />
 						</span>
@@ -153,14 +153,14 @@
 		</div>
 		<div class="col-md-5">
 			<div class="row">
-				<div class="col-md-11 col-md-offset-1 preview-area">
+				<div class="col-md-11 col-md-offset-1 preview-area" style="position: fixed; width: 30%; margin-left: 6%;">
 					<div class="line-preview">
 						<center><canvas id="preview" style="border:2px solid black;"></canvas></center>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-11 col-md-offset-1 sprite-area">
+				<div class="col-md-11 col-md-offset-1 sprite-area"  style="position: fixed; width: 30%; margin-top: 220px; margin-left:6%;">
 					<table class="table">
 					<thead>
 					<tr>
