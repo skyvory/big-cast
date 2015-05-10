@@ -5,16 +5,28 @@
 
 	<div class="row">
 		<div class="col-md-7">
-			<div class="row" style="position:fixed; z-index: 10;">
+			<div class="row draggable" style="position:fixed; z-index: 10;">
 				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px; " >
 					<div class="line-command-area">
-						<span class="pull-left">Add line at the end of this section &nbsp;</span><br />
+						<span class="pull-left">Add line</span><br />
 						<div class="btn-toolbar" role="toolbar">
 							<div class="btn-group btn-group-sm" role="group">
 								<button type="button" id="addlinetextbutton" class="btn btn-default">text</button>
 								<button type="button" id="addchoicebutton"  class="btn btn-default">choice</button>
 								<button type="button" id="addvideobutton"  class="btn btn-default">video</button>
 								<button type="button" id="addendbutton"  class="btn btn-default">end</button>
+							</div>
+							<div class="btn-group btn-group-sm" role="group">
+								<div class="radio">
+									<label>
+										<input type="radio" name="line_insert_position" value="after" checked />
+											<span title="you can select line by pointing you mouse on that line" />after selected line</span>
+									</label>
+									<label>
+										<input type="radio" name="line_insert_position" value="end"  />
+											<span>at end of this section</span>
+									</label>
+								</div>
 							</div>
 							<button type="button" id="savebutton" class="btn btn-default pull-right">Save</button>
 						</div>
@@ -80,7 +92,7 @@
 			
 			</div>
 			<input type="hidden" name="sequence" value="'+tail+'" />
-			<input type="hidden" name="line_id" value="'+ln_id+'" />
+			<input type="hidden" name="line_id" value="'+new_line_id+'" />
 		</form>
 	</td>
 </tr>
@@ -159,6 +171,7 @@
 					</div>
 				</div>
 			</div>
+			<button id="test">test</button>
 			<div class="row">
 				<div class="col-md-11 col-md-offset-1 sprite-area"  style="position: fixed; width: 30%; margin-top: 220px; margin-left:6%;">
 					<table class="table">

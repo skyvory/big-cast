@@ -28,6 +28,8 @@
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/position.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/menu.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/autocomplete.js"></script>
+		<!-- draggable capability -->
+		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/draggable.js"></script>
 		<!-- custom -->
 		<script type="text/javascript" src="<?= base_url() ?>assets/editor_script.js" async></script>
 	</head>

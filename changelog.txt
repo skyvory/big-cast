@@ -13,6 +13,8 @@
 - add sprite add capability
 - fix autocomplete fixed position on scroll
 - add sprite property change capability
+- fix unfoxused button after click
+- add text line add in the middle capability
 
 0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table
