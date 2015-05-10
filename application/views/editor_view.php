@@ -11,7 +11,7 @@
 						<span class="pull-left">Add line at the end of this section &nbsp;</span><br />
 						<div class="btn-toolbar" role="toolbar">
 							<div class="btn-group btn-group-sm" role="group">
-								<button type="button" id="addtextbutton" class="btn btn-default">text</button>
+								<button type="button" id="addlinetextbutton" class="btn btn-default">text</button>
 								<button type="button" id="addchoicebutton"  class="btn btn-default">choice</button>
 								<button type="button" id="addvideobutton"  class="btn btn-default">video</button>
 								<button type="button" id="addendbutton"  class="btn btn-default">end</button>
@@ -80,7 +80,7 @@
 			
 			</div>
 			<input type="hidden" name="sequence" value="'+tail+'" />
-			<input type="hidden" name="line_id" value="new" />
+			<input type="hidden" name="line_id" value="'+ln_id+'" />
 		</form>
 	</td>
 </tr>
@@ -180,15 +180,15 @@
 		<form class="form-inline sprite-form">
 			<div class="row">
 				<div class="col-md-1">
-					<span class="sprite-index">'+count+'</span>
+					<span class="sprite-index">'+(count-1)+'</span>
 				</div>
 				<div class="col-md-9">
 					<div class="form-group">
-						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" />
-							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
-						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
-						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
-						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
+						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" />
+							<input type="hidden" name="sprite_resource_id" value="" />
+						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" />
+						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" />
+						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" />
 						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" />
 							<input type="hidden" name="effect_id" value="" />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
@@ -198,7 +198,8 @@
 					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
 				</div>
 			</div>
-			<input type="hidden" name="sprite_id" value="'+value.sprite_id+'" />
+			<input type="hidden" name="sprite_id" value="new" />
+			<input type="hidden" name="sprite_temp_index" value="'+count+'" />
 		</form>
 	</td>
 </tr>
@@ -214,7 +215,7 @@
 				</div>
 				<div class="col-md-9">
 					<div class="form-group">
-						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" />
+						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_name+'" />
 							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />

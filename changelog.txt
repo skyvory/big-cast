@@ -7,8 +7,11 @@
 - update interface with fixed control area
 - editor script use strict mode
 - add autocomplete capability on sprite area
-- change loadLineData to exclude sprite with empty/null value for json encode
+- change loadLineData to generate sprite with empty array value for json encode
 - change disploay-sprite-on-line-hover behavior according to active_line_obj
+- new line use new generated id instead "new" on view end
+- add sprite add capability
+
 0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table
 
@@ -112,3 +115,4 @@ To Do:
 - feature: optimized layout based on creator type: scenario writer, editor per media
 - change autoinput active verify on blur, not on change for better functionality
 - input restriction on html end
+- offline create new line using temp index line sprite

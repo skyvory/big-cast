@@ -33,6 +33,8 @@ function callLineData() {
 				active_line_obj = obj;
 				head = obj[0]['sequence'];
 				$.each(obj, function(index, value) {
+					console.log(this);
+					console.log("tail "+tail);
 					if(this.sequence < head) {
 						head = this.sequence;
 					}
@@ -91,8 +93,8 @@ $(function() {
 });
 
 //initialize array
-$('#addtextbutton').click(function() {
-	temp_tail = parseInt(tail)+1;
+$('#addlinetextbutton').click(function() {
+	var temp_tail = parseInt(tail)+1;
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/newLine',
 		type: "POST",
@@ -107,6 +109,7 @@ $('#addtextbutton').click(function() {
 	});
 	req.done(function(msg) {
 		if(msg) {
+			var ln_id = msg;
 			tail++;
 			active_line_obj.push({
 				background_file_name: "",
@@ -120,18 +123,18 @@ $('#addtextbutton').click(function() {
 				fk_linetype_id: "1",
 				jumpto_line_id: "",
 				label: "",
-				line_id: msg,
+				line_id: msg.toString(),
 				sequence: tail.toString(),
 				sfx_file_name: "",
 				sfx_name: "",
 				sfx_resource_id: "",
 				speaker: last.speaker,
-				sprite: {},
+				sprite: [],
 				voice_file_name: "",
 				voice_name: "",
 				voice_resource_id: ""
 			});
-			var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="new" /> </form> </td> </tr>';
+			var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+ln_id+'" /> </form> </td> </tr>';
 			$(block).appendTo('.line-list');
 		}
 	});
@@ -165,7 +168,7 @@ $('.line-list').on('mouseenter', '.text-line-form', function() {
 		// append sprite data to sprite area
 		$.each(select_line_obj[0].sprite, function (index, value) {
 			count++;
-			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_id+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> </form> </td> </tr>';
+			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_name+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> </form> </td> </tr>';
 			// append nothing if line has no sprite
 			if(value.sprite_id != "") {
 				$(block).appendTo('.sprite-list');
@@ -341,14 +344,16 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 	// index on active_line_obj of which id used to change its array value
 	var index_to_write = getObjectIndex(active_line_obj, 'line_id', line_form_id);
 	var sprite_index_to_write = getObjectIndex(active_line_obj[index_to_write].sprite, 'sprite_id', form_id);
+	if(form_id == "new") {
+		form_id = $(selectform).find('input[name=sprite_temp_index]').val();
+		sprite_index_to_write = form_id;
+	}
 	switch(input_name) {
 
 		case "sprite":
 			var input_id = $(selectform).find('input[name=sprite_resource_id]').val();
 			var input_value = $(this).val();
 			var verify = 0;
-			console.log(input_id);
-			console.log(input_value);
 			$.each(sprite_list, function(index, value) {
 				if(input_id == value.resource_id && input_value == value.name) {
 					verify++;
@@ -386,10 +391,76 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 	}
 });
 
+// $('.sprite-command-area').on('click', '#addspritebutton', function() {
+// 	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+// 	if(!line_form_id){
+// 		callErrorNotification("select line first");
+// 	}
+// 	else {
+// 		// index on active_line_obj of which id used to change its array value
+// 		var req = $.ajax({
+// 			url: config.base + 'index.php/editor/newSprite',
+// 			type: "POST",
+// 			data: {
+// 				lineid: line_form_id
+// 			},
+// 			dataType: "json",
+// 			beforeSend: function() {
+// 				//...
+// 			}
+// 		});
+// 		req.done(function(msg) {
+// 			var spr_id = msg;
+// 			var index_to_write = getObjectIndex(active_line_obj, 'line_id', line_form_id);
+// 			var count = active_line_obj[index_to_write].sprite.length;	
+// 			console.log(index_to_write);
+// 			active_line_obj[index_to_write]['sprite'].push({
+// 				sprite_id: spr_id.toString(),
+// 				fk_resource_id: "",
+// 				position_x: "0",
+// 				position_y: "0",
+// 				position_z: "0",
+// 				sprite_resource_id: "",
+// 				sprite_name: "",
+// 				sprite_file_name: "",
+// 				sprite_character_name: "",
+// 				sprite_figure_name: "",
+// 				sprite_expression_name: ""
+// 			});
+// 			count++;
+// 			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" /> <input type="hidden" name="sprite_resource_id" value="" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+spr_id+'" /> </form> </td> </tr>';
+// 			$(block).appendTo('.sprite-list');
+// 		});
+// 	}
+// });
+
 $('.sprite-command-area').on('click', '#addspritebutton', function() {
-	var block = '';
-	console.log(active_line_obj[2].sprite.length);
-})
+	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+	if(!line_form_id){
+		callErrorNotification("select line first");
+	}
+	else {
+		var index_to_write = getObjectIndex(active_line_obj, 'line_id', line_form_id);
+		var count = active_line_obj[index_to_write].sprite.length;	
+		active_line_obj[index_to_write]['sprite'].push({
+			sprite_temp_index: count.toString(),
+			sprite_id: "new",
+			fk_resource_id: "",
+			position_x: "0",
+			position_y: "0",
+			position_z: "0",
+			sprite_resource_id: "",
+			sprite_name: "",
+			sprite_file_name: "",
+			sprite_character_name: "",
+			sprite_figure_name: "",
+			sprite_expression_name: ""
+		});
+		var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+(count+1)+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" /> <input type="hidden" name="sprite_resource_id" value="" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="new" /> <input type="hidden" name="sprite_temp_index" value="'+count+'"/></form> </td> </tr>';
+		count++;
+		$(block).appendTo('.sprite-list');
+	}
+});
 
 function callErrorNotification(message) {
 	var block = '<div class="alert alert-danger error-notification">'+message+'</div>';
@@ -799,6 +870,7 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 		open: function(event, ui) {
 			$('.ui-menu').css("width", "300px");
 			$('.ui-menu').css("position", "fixed");
+			$('.ui-autocomplete').css("position", "absolute");
 			// $('.ui-menu').width(300);
 			var top = $(this).data('uiAutocomplete').menu.element[0].children[0], 
 			input = $(this),

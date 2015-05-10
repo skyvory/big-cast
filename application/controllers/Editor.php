@@ -48,7 +48,7 @@ class Editor extends CI_Controller {
 		$proj = $this->session->userdata('active_project');
 		$limit = $this->input->post('limit');
 		$offset = $this->input->post('offset');
-		$limit = 9;
+		$limit = 999;
 		$offset = 0;
 		$pass = $this->common->getLine($sess['id'], $proj['id'], $limit, $offset);
 		// $pass = array(array('inside' => 'none', array('moreinsider' => 'really bad')), array('id' => '1'));

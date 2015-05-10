@@ -230,8 +230,6 @@ Class Common extends CI_Model {
 		$this->db->join('project', 'project.project_id = line.fk_project_id');
 		$this->db->where('project.fk_user_id', $user_id);
 		$this->db->where('line.fk_project_id', $project_id);
-		$this->db->order_by('sequence', 'ASC');
-		$this->db->limit($limit, $offset);
 		// join background resource
 		$this->db->join('lineres as bgres', 'bgres.fk_line_id = line.line_id', 'left');
 		$this->db->select('bg.resource_id as background_resource_id, bg.name as background_name, bg.file_name as background_file_name, bg.fk_resourcetype_id as background_resourcetype');
@@ -254,6 +252,8 @@ Class Common extends CI_Model {
 		// join sprite resource
 		$this->db->select('spriteres.resource_id as sprite_resource_id, spriteres.name as sprite_name, spriteres.file_name as sprite_file_name, spriteres.character_name as sprite_character_name, spriteres.figure_name as sprite_figure_name, spriteres.expression_name as sprite_expression_name');
 		$this->db->join('resource as spriteres', 'spriteres.resource_id = sprite.fk_resource_id AND spriteres.fk_resourcetype_id = 1', 'left');
+		$this->db->order_by('sequence', 'ASC');
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -359,6 +359,17 @@ Class Common extends CI_Model {
 		else {
 			$this->db->trans_commit();
 			return $insert_id;
+		}
+	}
+	function createSprite($line_id) {
+		$this->db->set('fk_line_id', $line_id);
+		$exec = $this->db->insert('sprite');
+		$insert_id = $this->db->insert_id();
+		if($exec) {
+			return $insert_id;
+		}
+		else {
+			return FALSE;
 		}
 	}
 }
