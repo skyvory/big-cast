@@ -97,7 +97,7 @@ class Editor extends CI_Controller {
 					'voice_resource_id' => utf8_encode($value['voice_resource_id']),
 					'voice_name' => utf8_encode($value['voice_name']),
 					'voice_file_name' => utf8_encode($value['voice_file_name']),
-					'sprite' => ''
+					'sprite' => array()
 				);
 				if($value['sprite_id'] != FALSE) {
 					$line[$i]['sprite'][] = array(
@@ -200,6 +200,16 @@ class Editor extends CI_Controller {
 		$proj = $this->session->userdata('active_project');
 		$this->fb->log($sequence);
 		$pass = $this->common->createLine($proj['id'], $sequence, $line_type);
+		if($pass != null) {
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($pass), JSON_PRETTY_PRINT);
+		}
+	}
+	public function newSprite() {
+		$sess = $this->session->userdata('user_auth');
+		$proj = $this->session->userdata('active_project');
+		$line_id = $this->input->post('lineid');
+		$pass = $this->common->createSprite($line_id);
 		if($pass != null) {
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($pass), JSON_PRETTY_PRINT);
