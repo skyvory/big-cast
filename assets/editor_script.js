@@ -869,8 +869,8 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 		// autosuggest capability
 		open: function(event, ui) {
 			$('.ui-menu').css("width", "300px");
-			$('.ui-menu').css("position", "fixed");
-			$('.ui-autocomplete').css("position", "absolute");
+			// $('.ui-menu').css("position", "fixed");
+			// $('.ui-autocomplete').css("position", "absolute");
 			// $('.ui-menu').width(300);
 			var top = $(this).data('uiAutocomplete').menu.element[0].children[0], 
 			input = $(this),

@@ -185,12 +185,11 @@ table td {
 	top: 15%;
 	right: 5%;
 }
-/*autocomplete scrollable*/
+/*autocomplete scrollable, keep position on scroll*/
 .ui-autocomplete {
 	max-height: 200px;
 	overflow-x: hidden;
 	overflow-y: auto;
-	keep position
 	position: fixed;
 }
 * html .ui-autocomplete {
