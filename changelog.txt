@@ -11,6 +11,8 @@
 - change disploay-sprite-on-line-hover behavior according to active_line_obj
 - new line use new generated id instead "new" on view end
 - add sprite add capability
+- fix autocomplete fixed position on scroll
+- add sprite property change capability
 
 0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table

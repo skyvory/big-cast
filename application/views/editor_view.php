@@ -230,6 +230,7 @@
 				</div>
 			</div>
 			<input type="hidden" name="sprite_id" value="'+value.sprite_id+'" />
+			<input type="hidden" name="sprite_temp_index" value="'+(count-1)+'" />
 		</form>
 	</td>
 </tr>
