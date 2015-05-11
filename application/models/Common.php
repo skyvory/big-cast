@@ -68,8 +68,8 @@ Class Common extends CI_Model {
 		return $result;
 	}
 	// RESOURCE FUNCTION
-	function createBackgroundResource($name, $file_name, $type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $type_id, 'fk_project_id' => $project_id);
+	function createBackgroundResource($name, $file_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource', $data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -98,8 +98,8 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
-	function createSpriteResource($name, $file_name, $character_name, $figure_name, $type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'character_name' => $character_name, 'figure_name' => $figure_name, 'fk_resourcetype_id' => $type_id, 'fk_project_id' => $project_id);
+	function createSpriteResource($name, $file_name, $character_name, $figure_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'character_name' => $character_name, 'figure_name' => $figure_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource', $data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -139,8 +139,8 @@ Class Common extends CI_Model {
 		$result = $query->row_array();
 		return $result;
 	}
-	function createAudioResource($name, $file_name, $type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $type_id, 'fk_project_id' => $project_id);
+	function createAudioResource($name, $file_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource', $data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -150,13 +150,13 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function getAudioResource($user_id, $project_id, $type_id) {
+	function getAudioResource($user_id, $project_id, $resource_type_id) {
 		$this->db->select('resource_id, name, file_name, fk_resourcetype_id, fk_project_id');
 		$this->db->from('resource');
 		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_user_id', $user_id);
-		$this->db->where('fk_resourcetype_id', $type_id);
+		$this->db->where('fk_resourcetype_id', $resource_type_id);
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -167,8 +167,8 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
-	function createVoiceResource($name, $file_name, $character_name, $type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'character_name' => $character_name, 'fk_resourcetype_id' => $type_id, 'fk_project_id' => $project_id);
+	function createVoiceResource($name, $file_name, $character_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'character_name' => $character_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource',$data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -178,12 +178,12 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function getVoiceResource($user_id, $project_id, $type_id) {
+	function getVoiceResource($user_id, $project_id, $resource_type_id) {
 		$this->db->select('resource_id, name, file_name, character_name, fk_resourcetype_id, fk_project_id');
 		$this->db->from('resource');
 		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_resourcetype_id', $type_id);
+		$this->db->where('fk_resourcetype_id', $resource_type_id);
 		$this->db->where('fk_user_id', $user_id);
 		$query = $this->db->get();
 		$result = $query->result_array();
@@ -195,8 +195,8 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
-	function createVideoResource($name, $file_name, $type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $type_id, 'fk_project_id' => $project_id);
+	function createVideoResource($name, $file_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource', $data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -206,12 +206,12 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function getVideoResource($user_id, $project_id, $type_id) {
+	function getVideoResource($user_id, $project_id, $resource_type_id) {
 		$this->db->select('resource_id, name, file_name, fk_resourcetype_id, fk_project_id');
 		$this->db->from('resource');
 		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_resourcetype_id', $type_id);
+		$this->db->where('fk_resourcetype_id', $resource_type_id);
 		$this->db->where('fk_user_id', $user_id);
 		$query = $this->db->get();
 		$result = $query->result_array();
@@ -224,7 +224,7 @@ Class Common extends CI_Model {
 		return $exec;
 	}
 	// EDITOR FUNCTION
-	function getLine($user_id, $project_id, $limit, $offset) {
+/*	function getLine($user_id, $project_id, $limit, $offset) {
 		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
 		$this->db->from('line');
 		$this->db->join('project', 'project.project_id = line.fk_project_id');
@@ -256,8 +256,70 @@ Class Common extends CI_Model {
 		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 		$result = $query->result_array();
+		$this->fb->log($result);
 		return $result;
 	}
+*/
+	function getLine($project_id) {
+		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
+		$this->db->from('line');
+		$this->db->where('line.fk_project_id', $project_id);
+		$this->db->order_by('sequence', 'ASC');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getBackground($line_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->join('lineres', 'fk_resource_id = resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', 2);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function getBgm($line_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->join('lineres', 'fk_resource_id = resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', 3);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function getSfx($line_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->join('lineres', 'fk_resource_id = resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', 4);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function getVoice($line_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->join('lineres', 'fk_resource_id = resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', 5);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function getSprite($line_id) {
+		$this->db->select('sprite_id, fk_resource_id, position_x, position_y, position_z');
+		$this->db->select('name, file_name, character_name, figure_name, expression_name');
+		$this->db->from('sprite');
+		$this->db->join('resource', 'resource_id = fk_resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	// AUTOCOMPLETE LIST
 	function getResourceCharacter($user_id, $project_id) {
 		$this->db->select('character_name');
 		$this->db->distinct();
@@ -276,7 +338,7 @@ Class Common extends CI_Model {
 		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_resourcetype_id', 1);
+		$this->db->where('fk_resourcetype_id', 2);
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -400,8 +462,10 @@ Class Common extends CI_Model {
 			$insert_id = $this->db->insert_id();
 			if($exec) {
 				$sprite_create_status[] = array(
-					'sprite_temp_index' => $value['sprite_temp_index'],
-					'sprite_id' => $insert_id,
+					// in case using sequence as reference, possible of update misplaced if sequence changed during save request
+					'fk_line_id' => utf8_encode($value['fk_line_id']),
+					'sprite_temp_index' => utf8_encode($value['sprite_temp_index']),
+					'sprite_id' => utf8_encode($insert_id),
 					'status' => "success"
 				);
 			}
@@ -436,6 +500,45 @@ Class Common extends CI_Model {
 			$this->db->trans_commit();
 			return TRUE;
 		}
+	}
+	function deleteSprite($sprite_id) {
+		$this->db->where_in('sprite_id', $sprite_id);
+		$exec = $this->db->delete('sprite');
+		return $exec;
+	}
+	function deleteLine($line_id) {
+		$this->db->where_in('line_id', $line_id);
+		$exec = $this->db->delete('line');
+		return $exec;
+	}
+	function getLineres($line_id, $resource_type_id) {
+		$this->db->select('fk_resource_id');
+		$this->db->from('lineres');
+		$this->db->join('resource', 'resource_id = fk_resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', $resource_type_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		$this->fb->log($result);
+		if($query->num_rows() > 0) {
+			return $result;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	function updateLineres($line_id, $resource_id, $old_resource_id) {
+		$this->db->set('fk_resource_id', $resource_id);
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resource_id', $old_resource_id);
+		$exec = $this->db->update('lineres');
+		return $exec;
+	}
+	function createLineres($line_id, $resource_id) {
+		$this->db->set('fk_line_id', $line_id);
+		$this->db->set('fk_resource_id', $resource_id);
+		$exec = $this->db->insert('lineres');
+		return $exec;
 	}
 }
 ?>

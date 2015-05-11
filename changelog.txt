@@ -21,6 +21,10 @@
 - create new sprite on database
 - update line on database
 - update sprite on database
+- add property "delete" on line json encode
+- change application/config/config.php using utf8_unicde_ci instead utf8_general_ci
+- change text line resource capability
+- overhauled getLine function to implement non-broken query and populate object per line call
 
 0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table

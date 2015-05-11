@@ -2,6 +2,7 @@
 $(document).ready( callLineData() );
 
 var line_obj = [];
+var delete_obj = [];
 var head = 0;
 var tail = 0;
 // newarray = {id: 1, type: "rand"};
@@ -386,12 +387,15 @@ function saveLine() {
 		// });
 		i++;
 	});
+var delete_json = JSON.stringify(delete_obj);
 	var simple_line_json = JSON.stringify(simple_line_obj);
 	var simple_sprite_json = JSON.stringify(simple_sprite_obj);
+	// send update data to server
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/saveLineData',
 		type: "POST",
 		data: {
+			deletedata: delete_json,
 			linedata: simple_line_json,
 			spritedata: simple_sprite_json
 		},
@@ -400,7 +404,18 @@ function saveLine() {
 	req.done(function(msg) {
 		if(msg) {
 			console.log(msg);
-// >>>PROCESS SPRITE DATA OBJECT
+			var sprite_update_obj = msg;
+			$.each(sprite_update_obj, function(index, value) {
+				var line_index_to_write = getObjectIndex(line_obj, 'line_id', value.fk_line_id);
+				var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', value.sprite_temp_index);
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_id = value.sprite_id;
+				var line_form_id = $('.select-line').find('input[name=line_id]').val();
+				// if newly created sprite is listed on active sprite area, its id will be updated so no duplicate creation when changing sprite property value after save
+				if(line_form_id == value.fk_line_id) {
+					var select_form = $('.sprite-list tr td form').has('input[name=sprite_temp_index][value='+value.sprite_temp_index+']');
+					$(select_form).find('input[name=sprite_id]').val(value.sprite_id);
+				}
+			});
 			callSuccessNotification("work saved!");
 		}
 		else {
@@ -420,12 +435,6 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 		case "speaker":
 			var input_value = $(this).val();
 			line_obj[index_to_write].speaker = input_value;
-
-			// update last speaker object
-			var input_sequence = $(select_form).find('input[name=sequence]').val();
-			if(input_sequence == tail) {
-				last.speaker = input_value;
-			}
 			break;
 
 		case "background":
@@ -437,6 +446,7 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 					verify++;
 				}
 			});
+			console.log(input_id);
 			if(verify == 1) {
 				line_obj[index_to_write].background_resource_id = input_id;
 				$(this).css("color", "");
@@ -446,13 +456,6 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 				line_obj[index_to_write].background_resource_id = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("background resource doesn't exist!");
-			}
-
-			// update last background object
-			var input_sequence = $(select_form).find('input[name=sequence]').val();
-			if(input_sequence == tail) {
-				last.background_resource_id = input_id;
-				last.background = input_value;
 			}
 			break;
 
@@ -474,13 +477,6 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 				line_obj[index_to_write].bgm_resource_id = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("bgm resource doesn't exist!");
-			}
-
-			// update last bgm object
-			var input_sequence = $(select_form).find('input[name=sequence]').val();
-			if(input_sequence == tail) {
-				last.bgm_resource_id = input_id;
-				last.bgm = input_value;
 			}
 			break;
 
@@ -505,6 +501,27 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			}
 			else {
 				line_obj[index_to_write].sfx_resource_id = "";
+				$(this).css("color", "rgba(255, 90, 90, 1)");
+				callErrorNotification("sfx resource doesn't exist!");
+			}
+			break;
+
+		case "voice":
+			var input_id = $(select_form).find('input[name=voice_resource_id]').val();
+			var input_value = $(this).val();
+			var verify = 0;
+			$.each(voice_list, function(index, value) {
+				if(input_id == value.resource_id && input_value == value.name) {
+					verify++;
+				}
+			});
+			if(verify == 1) {
+				line_obj[index_to_write].voice_resource_id = input_id;
+				$(this).css("color", "");
+				console.log("OK");
+			}
+			else {
+				line_obj[index_to_write].voice_resource_id = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("sfx resource doesn't exist!");
 			}
@@ -640,6 +657,7 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 // 	}
 // });
 
+// sprite add capability
 $('.sprite-command-area').on('click', '#addspritebutton', function() {
 	var line_form_id = $('.select-line').find('input[name=line_id]').val();
 	if(!line_form_id){
@@ -790,7 +808,7 @@ function callVoiceAutocompleteData() {
 				value: value.resource_id
 			});
 		});
-		sfx_list = msg;
+		voice_list = msg;
 	});
 }
 function callLabelAutocompleteData() {
@@ -1170,6 +1188,11 @@ $('.line-list').on('click', '.line-delete-button', function(e) {
 	var index_to_write = getObjectIndex(line_obj, 'line_id', form_id);
 	// delete line data on active line object
 	// delete line_obj[index_to_write];
+	// assign delete_obj with value from line_obj about to be deleted
+	delete_obj.push({
+		object: "line",
+		id: line_obj[index_to_write].line_id
+	});
 	line_obj.splice(index_to_write, 1);
 	// remove element from page
 	$(select_form).closest('tr').remove();
@@ -1184,7 +1207,6 @@ $('.line-list').on('click', '.line-delete-button', function(e) {
 	$('.line-list').children('tr').each(function() {
 		// get line id of current iteration
 		var form_id = $(this).find('[name=line_id]').val();
-		console.log(form_id);
 		// get index of line object with found id
 		var index = getObjectIndex(line_obj, 'line_id', form_id);
 		// change sequence value pointed object with current count iteration 
@@ -1194,12 +1216,7 @@ $('.line-list').on('click', '.line-delete-button', function(e) {
 		// change hidden value of sequence
 		$(this).find('[name=sequence]').val(count);
 		count++;
-		if(count == tail){
-			console.log("OK");
-		}
-		console.log(line_obj[i]);
-		i++;
-	})
+	});
 
 });
 
@@ -1215,11 +1232,16 @@ $('.sprite-list').on('click', '.sprite-delete-button', function(e) {
 		form_id = $(select_form).find('input[name=sprite_temp_index]').val();
 		index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', form_id);
 	}
+	// add sprite object to delete_obj if newly created one
+	if(line_obj[line_index_to_write].sprite[index_to_write].sprite_id != "new") {
+		delete_obj.push({
+			object: "sprite",
+			id: line_obj[line_index_to_write].sprite[index_to_write].sprite_id
+		});
+	}
 	line_obj[line_index_to_write].sprite.splice(index_to_write, 1);
 	// remove element from page
 	$(select_form).closest('tr').remove();
-	// >>>add delete parameter for delete instead of splice, for temp index just delete
-	// >>>as well with line
 });
 
 // sprite clear all capability

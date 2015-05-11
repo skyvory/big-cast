@@ -50,6 +50,119 @@ class Editor extends CI_Controller {
 		$offset = $this->input->post('offset');
 		$limit = 999;
 		$offset = 0;
+
+		$pass_line = $this->common->getLine($proj['id']);
+		$line = array();
+		$sprite = array();
+		$i = 0;
+		foreach ($pass_line as $key => $value) {
+			$pass_background = $this->common->getBackground($value['line_id']);
+			if($pass_background) {
+				$background = array(
+					'background_resource_id' => $pass_background['resource_id'],
+					'background_name' => $pass_background['name'],
+					'background_file_name' => $pass_background['file_name']
+				);
+			}
+			else {
+				$background = array(
+					'background_resource_id' => null,
+					'background_name' => null,
+					'background_file_name' => null
+				);
+			}
+			$pass_bgm = $this->common->getBgm($value['line_id']);
+			if($pass_bgm) {
+				$bgm = array(
+					'bgm_resource_id' => $pass_bgm['resource_id'],
+					'bgm_name' => $pass_bgm['name'],
+					'bgm_file_name' => $pass_bgm['file_name']
+				);
+			}
+			else {
+				$bgm = array(
+					'bgm_resource_id' => null,
+					'bgm_name' => null,
+					'bgm_file_name' => null
+				);
+			}
+			$pass_sfx = $this->common->getSfx($value['line_id']);
+			if($pass_sfx) {
+				$sfx = array(
+					'sfx_resource_id' => $pass_sfx['resource_id'],
+					'sfx_name' => $pass_sfx['name'],
+					'sfx_file_name' => $pass_sfx['file_name']
+				);
+			}
+			else {
+				$sfx = array(
+					'sfx_resource_id' => null,
+					'sfx_name' => null,
+					'sfx_file_name' => null
+				);
+			}
+			$pass_voice = $this->common->getVoice($value['line_id']);
+			if($pass_voice) {
+				$voice = array(
+					'voice_resource_id' => $pass_voice['resource_id'],
+					'voice_name' => $pass_voice['name'],
+					'voice_file_name' => $pass_voice['file_name']
+				);
+			}
+			else {
+				$voice = array(
+					'voice_resource_id' => null,
+					'voice_name' => null,
+					'voice_file_name' => null
+				);
+			}
+			$line[$i] = array(
+				'line_id' => utf8_encode($value['line_id']),
+				'sequence' => utf8_encode($value['sequence']),
+				'label' => utf8_encode($value['label']),
+				'speaker' => utf8_encode($value['speaker']),
+				'content' => utf8_encode($value['content']),
+				'fk_effect_id' => utf8_encode($value['fk_effect_id']),
+				'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
+				'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
+				'background_resource_id' => utf8_encode($background['background_resource_id']),
+				'background_name' => utf8_encode($background['background_name']),
+				'background_file_name' => utf8_encode($background['background_file_name']),
+				'bgm_resource_id' => utf8_encode($bgm['bgm_resource_id']),
+				'bgm_name' => utf8_encode($bgm['bgm_name']),
+				'bgm_file_name' => utf8_encode($bgm['bgm_file_name']),
+				'sfx_resource_id' => utf8_encode($sfx['sfx_resource_id']),
+				'sfx_name' => utf8_encode($sfx['sfx_name']),
+				'sfx_file_name' => utf8_encode($sfx['sfx_file_name']),
+				'voice_resource_id' => utf8_encode($voice['voice_resource_id']),
+				'voice_name' => utf8_encode($voice['voice_name']),
+				'voice_file_name' => utf8_encode($voice['voice_file_name']),
+				'sprite' => array()
+			);
+			$pass_sprite = $this->common->getSprite($value['line_id']);
+			if($pass_sprite) {
+				foreach ($pass_sprite as $key => $value) {
+					$line[$i]['sprite'][] = array(
+						'sprite_id' => utf8_encode($value['sprite_id']),
+						'position_x' => utf8_encode($value['position_x']),
+						'position_y' => utf8_encode($value['position_y']),
+						'position_z' => utf8_encode($value['position_z']),
+						'sprite_resource_id' => utf8_encode($value['fk_resource_id']),
+						'sprite_name' => utf8_encode($value['name']),
+						'sprite_file_name' => utf8_encode($value['file_name']),
+						'sprite_character_name' => utf8_encode($value['character_name']),
+						'sprite_figure_name' => utf8_encode($value['figure_name']),
+						'sprite_expression_name' => utf8_encode($value['expression_name'])
+					);
+				}
+			}
+
+			$i++;
+		}
+		$this->fb->log($line);
+
+
+/*		BROKEN
 		$pass = $this->common->getLine($sess['id'], $proj['id'], $limit, $offset);
 		// $pass = array(array('inside' => 'none', array('moreinsider' => 'really bad')), array('id' => '1'));
 		$head = $pass[0]['sequence'];
@@ -119,6 +232,7 @@ class Editor extends CI_Controller {
 				$i++;
 			}
 		}
+*/
 		// var_dump($line);
 		// echo json_encode($line, JSON_PRETTY_PRINT);
 		// alpha! $info = array('last_active_sequence' => 0, 'name' => "new line", 'type' => "text");
@@ -218,12 +332,23 @@ class Editor extends CI_Controller {
 	// 	}
 	// }
 	public function saveLineData() {
-		$sess = $this->session->userdata('user_auth');
-		$proj = $this->session->userdata('active_project');
+		$delete_json = $this->input->post('deletedata');
 		$line_json = $this->input->post('linedata');
 		$sprite_json = $this->input->post('spritedata');
+		$delete = json_decode($delete_json, TRUE);
 		$line = json_decode($line_json, TRUE);
 		$sprite = json_decode($sprite_json, TRUE);
+		$sprite_to_delete = array();
+		$line_to_delete = array();
+		foreach ($delete as $key => $value) {
+			if($value['object'] == "sprite") {
+				$sprite_to_delete[] = $value['id'];
+			}
+			else if($value['object'] == "line") {
+				$line_to_delete[] = $value['id'];
+			}
+		}
+		$lineres = array();
 		// validating and assign default value
 		foreach ($line as $key => $value) {
 			// change var type
@@ -246,6 +371,35 @@ class Editor extends CI_Controller {
 			}
 			if(empty($value['jumpto_line_id'])) {
 				$line[$key]['jumpto_line_id'] = null;
+			}
+			// if resource assigned, append to lineres for db insert
+			if(!empty($value['background_resource_id'])) {
+				$lineres[] = array(
+					'line_id' => $value['line_id'],
+					'resource_id' => $value['background_resource_id'],
+					'resource_type_id' => 2
+				);
+			}
+			if(!empty($value['bgm_resource_id'])) {
+				$lineres[] = array(
+					'line_id' => $value['line_id'],
+					'resource_id' => $value['bgm_resource_id'],
+					'resource_type_id' => 3
+				);
+			}
+			if(!empty($value['sfx_resource_id'])) {
+				$lineres[] = array(
+					'line_id' => $value['line_id'],
+					'resource_id' => $value['sfx_resource_id'],
+					'resource_type_id' => 4
+				);
+			}
+			if(!empty($value['voice_resource_id'])) {
+				$lineres[] = array(
+					'line_id' => $value['line_id'],
+					'resource_id' => $value['voice_resource_id'],
+					'resource_type_id' => 5
+				);
 			}
 		}
 		$sprite_to_update = array();
@@ -286,14 +440,85 @@ class Editor extends CI_Controller {
 		}
 		// check for data existence and write to database
 		$status = TRUE;
-		$sprite_create_status = array();
-		if(count($line) > 0) {
-			$pass_line = $this->common->updateTextLine($line);
-			if(!$pass_line) {
+		// sprite delete
+		if(count($sprite_to_delete) > 0 && $status == TRUE) {
+			$pass_sprite_delete = $this->common->deleteSprite($sprite_to_delete);
+			if(!$pass_sprite_delete) {
 				$status = FALSE;
 			}
 		}
-		if(count($sprite_to_create) > 0) {
+		// line delete
+		if(count($line_to_delete) > 0 && $status == TRUE) {
+			$pass_line_delete = $this->common->deleteLine($line_to_delete);
+			if(!$pass_line_delete) {
+				$status = FALSE;
+			}
+		}
+		// line text update
+		if(count($line) > 0  && $status == TRUE) {
+			$pass_line_update = $this->common->updateTextLine($line);
+			if(!$pass_line_update) {
+				$status = FALSE;
+			}
+		}
+		// line resource update
+		if(count($lineres) > 0  && $status == TRUE) {
+			$this->fb->log($lineres);
+			foreach ($lineres as $key => $value) {
+				$lineres_resource = $this->common->getLineres($value['line_id'], $value['resource_type_id']);
+				if($lineres_resource) {
+					$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['resource_id'], $lineres_resource['fk_resource_id']);
+					// unnecessary!
+					// switch ($value['resource_type_id']) {
+					// 	case 2:
+					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['background_resource_id'], $lineres_resource);
+					// 		break;
+					// 	case 3:
+					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['bgm_resource_id'], $lineres_resource);
+					// 		break;
+					// 	case 4:
+					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['sfx_resource_id'], $lineres_resource);
+					// 		break;
+					// 	case 5:
+					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['voice_resource_id'], $lineres_resource);
+					// 		break;
+					// 	default:
+					// 		$pass_lineres_update = FALSE;
+					// 		break;
+					// }
+					if(!$pass_lineres_update) {
+						$status = FALSE;
+					}
+				}
+				else {
+					$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['resource_id']);
+					// unnecessary!
+					// switch ($value['resource_type_id']) {
+					// 	case 2:
+					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['background_resource_id']);
+					// 		break;
+					// 	case 3:
+					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['bgm_resource_id']);
+					// 		break;
+					// 	case 4:
+					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['sfx_resource_id']);
+					// 		break;
+					// 	case 5:
+					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['voice_resource_id']);
+					// 		break;
+					// 	default:
+					// 		$pass_lineres_create = FALSE;
+					// 		break;
+					// }
+					if(!$pass_lineres_create) {
+						$status = FALSE;
+					}
+				}
+			}
+		}
+		// sprite create
+		$sprite_create_status = array();
+		if(count($sprite_to_create) > 0  && $status == TRUE) {
 			$pass_sprite_create = $this->common->createSprite($sprite_to_create);
 			if(!$pass_sprite_create) {
 				$status = FALSE;
@@ -302,12 +527,14 @@ class Editor extends CI_Controller {
 				$sprite_create_status = $pass_sprite_create;
 			}
 		}
-		if(count($sprite_to_update) > 0) {
+		// sprite update
+		if(count($sprite_to_update) > 0  && $status == TRUE) {
 			$pass_sprite_update = $this->common->updateSprite($sprite_to_update);
 			if(!$pass_sprite_update) {
 				$status = FALSE;
 			}
 		}
+		// output
 		if($status == TRUE) {
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($sprite_create_status, JSON_PRETTY_PRINT));
