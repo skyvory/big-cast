@@ -361,15 +361,80 @@ Class Common extends CI_Model {
 			return $insert_id;
 		}
 	}
-	function createSprite($line_id) {
-		$this->db->set('fk_line_id', $line_id);
-		$exec = $this->db->insert('sprite');
-		$insert_id = $this->db->insert_id();
-		if($exec) {
-			return $insert_id;
+	function updateTextLine($line) {
+		$this->db->trans_begin();
+		foreach ($line as $key => $value) {
+			$data = array(
+				'sequence' => $value['sequence'],
+				'label' => $value['label'],
+				'speaker' => $value['speaker'],
+				'content' => $value['content'],
+				'fk_effect_id' => $value['fk_effect_id'],
+				'jumpto_line_id' => $value['jumpto_line_id'],
+				'fk_linetype_id' => 1
+			);
+			$this->db->where('line_id', $value['line_id']);
+			$exec = $this->db->update('line', $data);
+		}
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
 		}
 		else {
+			$this->db->trans_commit();
+			return TRUE;
+		}
+	}
+	function createSprite($sprite) {
+		$this->db->trans_begin();
+		$sprite_create_status = array();
+		foreach ($sprite as $key => $value) {
+			$data = array(
+				'fk_resource_id' => $value['fk_resource_id'],
+				'position_x' => $value['position_x'],
+				'position_y' => $value['position_y'],
+				'position_z' => $value['position_z'],
+				'fk_line_id' => $value['fk_line_id'],
+			);
+			$exec = $this->db->insert('sprite', $data);
+			$insert_id = $this->db->insert_id();
+			if($exec) {
+				$sprite_create_status[] = array(
+					'sprite_temp_index' => $value['sprite_temp_index'],
+					'sprite_id' => $insert_id,
+					'status' => "success"
+				);
+			}
+		}
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
 			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return $sprite_create_status;
+		}
+	}
+	function updateSprite($sprite) {
+		$this->db->trans_begin();
+		foreach ($sprite as $key => $value) {
+			$data = array(
+				'fk_resource_id' => $value['fk_resource_id'],
+				'position_x' => $value['position_x'],
+				'position_y' => $value['position_y'],
+				'position_z' => $value['position_z'],
+				'fk_line_id' => $value['fk_line_id'],
+			);
+			$this->db->where('sprite_id', $value['sprite_id']);
+			$exec = $this->db->update('sprite', $data);
+		}
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return TRUE;
 		}
 	}
 }

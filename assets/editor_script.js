@@ -17,7 +17,7 @@ var tail = 0;
 // };
 
 $('#test').click(function() {
-	console.log(getLastLineObjectBySequence(2));
+	console.log(line_obj);
 });
 
 function getLastLineObjectBySequence(seq) {
@@ -326,9 +326,88 @@ function sortLineObjectBySequence() {
 
 $('#savebutton').click(function() {
 	sortLineObjectBySequence();
-	console.log(line_obj);
-	console.log(head);
+	saveLine();
 });
+
+function saveLine() {
+	var simple_line_obj = [];
+	var simple_sprite_obj = [];
+	var i = 0;
+	// extract important value from line_obj
+	$.each(line_obj, function(index, value) {
+		simple_line_obj.push({
+			line_id: value.line_id,
+			sequence: value.sequence,
+			label: value.label,
+			speaker: value.speaker,
+			content: value.content,
+			fk_effect_id: value.fk_effect_id,
+			jumpto_line_id: value.jumpto_line_id,
+			fk_linetype_id: value.fk_linetype_id,
+			background_resource_id: value.background_resource_id,
+			bgm_resource_id: value.bgm_resource_id,
+			sfx_resource_id: value.sfx_resource_id,
+			voice_resource_id: value.voice_resource_id,
+			sprite: []
+		});
+		var i_line_id = value.line_id;
+		$.each(line_obj[i].sprite, function(index, value) {
+			if(value.sprite_id == "new") {
+				simple_sprite_obj.push({
+					sprite_temp_index: value.sprite_temp_index,
+					sprite_id: value.sprite_id,
+					fk_resource_id: value.sprite_resource_id,
+					position_x: value.position_x,
+					position_y: value.position_y,
+					position_z: value.position_z,
+					fk_line_id: i_line_id
+				})
+			}
+			else {
+				simple_sprite_obj.push({
+					sprite_id: value.sprite_id,
+					fk_resource_id: value.sprite_resource_id,
+					position_x: value.position_x,
+					position_y: value.position_y,
+					position_z: value.position_z,
+					fk_line_id: i_line_id
+				});
+			}
+		});
+
+		// $.each(line_obj[i].sprite, function(index, value) {
+		// 	simple_line_obj[i].sprite.push({
+		// 		sprite_id: value.sprite_id,
+		// 		fk_resource_id: value.fk_resource_id,
+		// 		position_x: value.position_x,
+		// 		position_y: value.position_y,
+		// 		position_z: value.position_z
+		// 	});
+		// });
+		i++;
+	});
+	var simple_line_json = JSON.stringify(simple_line_obj);
+	var simple_sprite_json = JSON.stringify(simple_sprite_obj);
+	var req = $.ajax({
+		url: config.base + 'index.php/editor/saveLineData',
+		type: "POST",
+		data: {
+			linedata: simple_line_json,
+			spritedata: simple_sprite_json
+		},
+		dataType: "json"
+	});
+	req.done(function(msg) {
+		if(msg) {
+			console.log(msg);
+// >>>PROCESS SPRITE DATA OBJECT
+			callSuccessNotification("work saved!");
+		}
+		else {
+			callErrorNotification("failed to save!");
+		}
+	})
+}
 
 $('.line-list').on('change', 'input[type=text], textarea', function() {
 	var select_form = $(this.form);
@@ -466,11 +545,12 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 	var line_form_id = $('.select-line').find('input[name=line_id]').val();
 	var form_id = $(select_form).find('input[name=sprite_id]').val();
 	// index on line_obj of which id used to change its array value
-	var index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
-	var sprite_index_to_write = getObjectIndex(line_obj[index_to_write].sprite, 'sprite_id', form_id);
+	var line_index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
+	var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_id', form_id);
 	if(form_id == "new") {
 		form_id = $(select_form).find('input[name=sprite_temp_index]').val();
-		sprite_index_to_write = form_id;
+		index_to_write = form_id;
+		index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', form_id);
 	}
 	switch(input_name) {
 
@@ -484,12 +564,13 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 				}
 			});
 			if(verify == 1) {
-				line_obj[index_to_write].sprite[sprite_index_to_write].sprite_name = input_value;
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id = input_id;
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_name = input_value;
 				$(this).css("color", "");
 				console.log("OK");
 			}
 			else {
-				line_obj[index_to_write].sprite[sprite_index_to_write].sprite_name = "";
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_name = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("sprite resource doesn't exist!");
 			}
@@ -497,17 +578,17 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 
 		case "position_x":
 			var input_value = $(this).val();
-			line_obj[index_to_write].sprite[sprite_index_to_write].position_x = input_value;
+			line_obj[line_index_to_write].sprite[index_to_write].position_x = input_value;
 			break;
 
 		case "position_y":
 			var input_value = $(this).val();
-			line_obj[index_to_write].sprite[sprite_index_to_write].position_y = input_value;
+			line_obj[line_index_to_write].sprite[index_to_write].position_y = input_value;
 			break;
 
 		case "position_z":
 			var input_value = $(this).val();
-			line_obj[index_to_write].sprite[sprite_index_to_write].position_z = input_value;
+			line_obj[line_index_to_write].sprite[index_to_write].position_z = input_value;
 			break;
 
 		case "effect":
@@ -515,6 +596,7 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 	}
 });
 
+//unnecessary!
 // $('.sprite-command-area').on('click', '#addspritebutton', function() {
 // 	var line_form_id = $('.select-line').find('input[name=line_id]').val();
 // 	if(!line_form_id){
@@ -566,23 +648,29 @@ $('.sprite-command-area').on('click', '#addspritebutton', function() {
 	else {
 		var index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
 		var count = line_obj[index_to_write].sprite.length;	
-		line_obj[index_to_write]['sprite'].push({
-			sprite_temp_index: count.toString(),
-			sprite_id: "new",
-			fk_resource_id: "",
-			position_x: "0",
-			position_y: "0",
-			position_z: "0",
-			sprite_resource_id: "",
-			sprite_name: "",
-			sprite_file_name: "",
-			sprite_character_name: "",
-			sprite_figure_name: "",
-			sprite_expression_name: ""
-		});
-		var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+(count+1)+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" /> <input type="hidden" name="sprite_resource_id" value="" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="new" /> <input type="hidden" name="sprite_temp_index" value="'+count+'"/></form> </td> </tr>';
-		count++;
-		$(block).appendTo('.sprite-list');
+		var sprite_count_limit = 2;
+		if(count >= sprite_count_limit) {
+			callErrorNotification("can't add more sprite!");
+		}
+		else {
+			line_obj[index_to_write]['sprite'].push({
+				sprite_temp_index: count.toString(),
+				sprite_id: "new",
+				fk_resource_id: "",
+				position_x: "0",
+				position_y: "0",
+				position_z: "0",
+				sprite_resource_id: "",
+				sprite_name: "",
+				sprite_file_name: "",
+				sprite_character_name: "",
+				sprite_figure_name: "",
+				sprite_expression_name: ""
+			});
+			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+(count+1)+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" /> <input type="hidden" name="sprite_resource_id" value="" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="new" /> <input type="hidden" name="sprite_temp_index" value="'+count+'"/></form> </td> </tr>';
+			count++;
+			$(block).appendTo('.sprite-list');
+		}
 	}
 });
 
@@ -591,6 +679,16 @@ function callErrorNotification(message) {
 	$('#notification').append(block).hide().fadeIn();
 	window.setTimeout(function() {
 		$('.error-notification').fadeTo(500, 0, function() {
+			$(this).remove();
+		});
+	}, 5000);
+}
+
+function callSuccessNotification(message) {
+	var block = '<div class="alert alert-success success-notification">'+message+'</div>';
+	$('#notification').append(block).hide().fadeIn();
+	window.setTimeout(function() {
+		$('.success-notification').fadeTo(500, 0, function() {
 			$(this).remove();
 		});
 	}, 5000);
@@ -1103,6 +1201,35 @@ $('.line-list').on('click', '.line-delete-button', function(e) {
 		i++;
 	})
 
+});
+
+// sprite delete capability
+$('.sprite-list').on('click', '.sprite-delete-button', function(e) {
+	e.preventDefault();
+	var select_form = (this.form);
+	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+	var line_index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
+	var form_id = $(select_form).find('input[name=sprite_id]').val();
+	var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_id', form_id);
+	if(form_id == "new") {
+		form_id = $(select_form).find('input[name=sprite_temp_index]').val();
+		index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', form_id);
+	}
+	line_obj[line_index_to_write].sprite.splice(index_to_write, 1);
+	// remove element from page
+	$(select_form).closest('tr').remove();
+	// >>>add delete parameter for delete instead of splice, for temp index just delete
+	// >>>as well with line
+});
+
+// sprite clear all capability
+$('#clearspritebutton').click(function() {
+	var select_form = $('.sprite-list');
+	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+	var line_index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
+	var sprite_count = line_obj[line_index_to_write].sprite.length;
+	line_obj[line_index_to_write].sprite.splice(0, sprite_count);
+	$(select_form).children('tr').remove();
 });
 
 // unfocus button after click, bootstrap bug on some browser?

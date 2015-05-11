@@ -13,8 +13,14 @@
 - add sprite add capability
 - fix autocomplete fixed position on scroll
 - add sprite property change capability
-- fix unfoxused button after click
+- fix unfocused button after click
+- draggable line command area
 - add text line add in the middle capability
+- delete sprite capability
+- add limitation to number of sprites pre line
+- create new sprite on database
+- update line on database
+- update sprite on database
 
 0.5
 - update database 0.6: update line table for necessary entities, change "description" to "label" on line table
@@ -111,7 +117,7 @@ To Do:
 - use php pathinfo to extract filename and extension
 - return ajax call in json instead of html and construct it on frontend instead of server (need more vaying info data)
 - check for undefined variable from jquery find, if undefined throw error (resource property change)
-- check if update/delete allowed for active user
+- check if update/delete allowed for active user >> remove all double checking, mysql already prevent that with defined relationship
 - navigation for sprite resource per character
 - last update project capability on editor change
 - use html sessionstorage for better performance

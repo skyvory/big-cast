@@ -185,6 +185,12 @@ table td {
 	top: 15%;
 	right: 5%;
 }
+.success-notification {
+	position: fixed;
+	z-index: 3;
+	top: 15%;
+	right: 5%;
+}
 /*autocomplete scrollable, keep position on scroll*/
 .ui-autocomplete {
 	max-height: 200px;
