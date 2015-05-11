@@ -1,4 +1,4 @@
-﻿
+﻿0.6
 - editor initial interface
 - add line sortability
 - add line add capability
@@ -18,10 +18,9 @@
 - add text line add in the middle capability
 - delete sprite capability
 - add limitation to number of sprites pre line
-- create new sprite on database
-- update line on database
-- update sprite on database
-- add property "delete" on line json encode
+- add new sprite create on database capability
+- add line update on database capability
+- add sprite update on database capability
 - change application/config/config.php using utf8_unicde_ci instead utf8_general_ci
 - change text line resource capability
 - overhauled getLine function to implement non-broken query and populate object per line call

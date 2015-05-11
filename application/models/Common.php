@@ -315,7 +315,7 @@ Class Common extends CI_Model {
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
 		$this->db->where('fk_line_id', $line_id);
-		$query = $this->db->get();
+		$query = $this->db->get();d
 		$result = $query->result_array();
 		return $result;
 	}
