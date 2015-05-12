@@ -214,3 +214,8 @@ table td {
 .ui-menu-item {
 	border-bottom: 1px solid #FF0000;
 }
+
+/*custom ui to make sortable capability keep width when dragginh*/
+.ui-sortable-helper {
+	display: table;
+}

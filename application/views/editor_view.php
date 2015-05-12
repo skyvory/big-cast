@@ -319,6 +319,61 @@
 </tr>
  -->
 
+
+
+
+<!-- video line form new
+ <tr>
+	<td>
+		<form class="form-horizontal video-line-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="line-sequence">'+0+'</span>
+					<br /> <br />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+				</div>
+				<div class="col-md-2">
+					<span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span>
+				</div>
+				<div class="col-md-8">
+					<div class="form-group">
+						<div class="col-md-9">
+							<input type="text" name="video" class="form-control input-sm" placeholder="video" value="" />
+								<input type="hidden" name="video_resource_id" value="" />
+						</div>
+					</div>
+					<div class="collapse">
+						<div class="form-inline">
+							<div class="form-group">
+								<div class="col-md-3">
+									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" />
+										<input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3">
+									<input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+				</div>
+			
+			</div>
+			<input type="hidden" name="sequence" value="'+value.sequence+'" />
+			<input type="hidden" name="line_id" value="'+value.line_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
 							</tbody>
 						</table>
 						<div class="line-pagination-area">
