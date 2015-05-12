@@ -613,22 +613,20 @@ function saveLine() {
 			// update new created sprite in line_obj with insert id
 			$.each(update_obj, function(index, value) {
 				if(value.object == "sprite") {
-					var spr = value.value[0];
-					var line_index_to_write = getObjectIndex(line_obj, 'line_id', spr.fk_line_id);
-					var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', spr.sprite_temp_index);
-					line_obj[line_index_to_write].sprite[index_to_write].sprite_id = spr.sprite_id;
+					var line_index_to_write = getObjectIndex(line_obj, 'line_id', value.fk_line_id);
+					var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', value.sprite_temp_index);
+					line_obj[line_index_to_write].sprite[index_to_write].sprite_id = value.sprite_id;
 					var line_form_id = $('.select-line').find('input[name=line_id]').val();
 					// if newly created sprite is listed on active sprite area, its id will be updated so no duplicate creation when changing sprite property value after save
-					if(line_form_id == spr.fk_line_id) {
-						var select_form = $('.sprite-list tr td form').has('input[name=sprite_temp_index][value='+spr.sprite_temp_index+']');
+					if(line_form_id == value.fk_line_id) {
+						var select_form = $('.sprite-list tr td form').has('input[name=sprite_temp_index][value='+value.sprite_temp_index+']');
 						$(select_form).find('input[name=sprite_id]').val(value.sprite_id);
 					}
 				}
 				else if(value.object == "choice") {
-					var chc = value.value[0];
-					var line_index_to_write = getObjectIndex(line_obj, 'line_id', chc.fk_line_id);
-					var index_to_write = getObjectIndex(line_obj[line_index_to_write].choice, 'choice_temp_index', chc.choice_temp_index);
-					line_obj[line_index_to_write].choice[index_to_write].choice_id = chc.choice_id;
+					var line_index_to_write = getObjectIndex(line_obj, 'line_id', value.fk_line_id);
+					var index_to_write = getObjectIndex(line_obj[line_index_to_write].choice, 'choice_temp_index', value.choice_temp_index);
+					line_obj[line_index_to_write].choice[index_to_write].choice_id = value.choice_id;
 				}
 			});
 			callSuccessNotification("work saved!");
