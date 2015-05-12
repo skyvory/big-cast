@@ -56,110 +56,156 @@ class Editor extends CI_Controller {
 		$sprite = array();
 		$i = 0;
 		foreach ($pass_line as $key => $value) {
-			$pass_background = $this->common->getBackground($value['line_id']);
-			if($pass_background) {
-				$background = array(
-					'background_resource_id' => $pass_background['resource_id'],
-					'background_name' => $pass_background['name'],
-					'background_file_name' => $pass_background['file_name']
-				);
-			}
-			else {
-				$background = array(
-					'background_resource_id' => null,
-					'background_name' => null,
-					'background_file_name' => null
-				);
-			}
-			$pass_bgm = $this->common->getBgm($value['line_id']);
-			if($pass_bgm) {
-				$bgm = array(
-					'bgm_resource_id' => $pass_bgm['resource_id'],
-					'bgm_name' => $pass_bgm['name'],
-					'bgm_file_name' => $pass_bgm['file_name']
-				);
-			}
-			else {
-				$bgm = array(
-					'bgm_resource_id' => null,
-					'bgm_name' => null,
-					'bgm_file_name' => null
-				);
-			}
-			$pass_sfx = $this->common->getSfx($value['line_id']);
-			if($pass_sfx) {
-				$sfx = array(
-					'sfx_resource_id' => $pass_sfx['resource_id'],
-					'sfx_name' => $pass_sfx['name'],
-					'sfx_file_name' => $pass_sfx['file_name']
-				);
-			}
-			else {
-				$sfx = array(
-					'sfx_resource_id' => null,
-					'sfx_name' => null,
-					'sfx_file_name' => null
-				);
-			}
-			$pass_voice = $this->common->getVoice($value['line_id']);
-			if($pass_voice) {
-				$voice = array(
-					'voice_resource_id' => $pass_voice['resource_id'],
-					'voice_name' => $pass_voice['name'],
-					'voice_file_name' => $pass_voice['file_name']
-				);
-			}
-			else {
-				$voice = array(
-					'voice_resource_id' => null,
-					'voice_name' => null,
-					'voice_file_name' => null
-				);
-			}
-			$line[$i] = array(
-				'line_id' => utf8_encode($value['line_id']),
-				'sequence' => utf8_encode($value['sequence']),
-				'label' => utf8_encode($value['label']),
-				'speaker' => utf8_encode($value['speaker']),
-				'content' => utf8_encode($value['content']),
-				'fk_effect_id' => utf8_encode($value['fk_effect_id']),
-				'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
-				'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
-				'background_resource_id' => utf8_encode($background['background_resource_id']),
-				'background_name' => utf8_encode($background['background_name']),
-				'background_file_name' => utf8_encode($background['background_file_name']),
-				'bgm_resource_id' => utf8_encode($bgm['bgm_resource_id']),
-				'bgm_name' => utf8_encode($bgm['bgm_name']),
-				'bgm_file_name' => utf8_encode($bgm['bgm_file_name']),
-				'sfx_resource_id' => utf8_encode($sfx['sfx_resource_id']),
-				'sfx_name' => utf8_encode($sfx['sfx_name']),
-				'sfx_file_name' => utf8_encode($sfx['sfx_file_name']),
-				'voice_resource_id' => utf8_encode($voice['voice_resource_id']),
-				'voice_name' => utf8_encode($voice['voice_name']),
-				'voice_file_name' => utf8_encode($voice['voice_file_name']),
-				'sprite' => array()
-			);
-			$pass_sprite = $this->common->getSprite($value['line_id']);
-			if($pass_sprite) {
-				foreach ($pass_sprite as $key => $value) {
-					$line[$i]['sprite'][] = array(
-						'sprite_id' => utf8_encode($value['sprite_id']),
-						'position_x' => utf8_encode($value['position_x']),
-						'position_y' => utf8_encode($value['position_y']),
-						'position_z' => utf8_encode($value['position_z']),
-						'sprite_resource_id' => utf8_encode($value['fk_resource_id']),
-						'sprite_name' => utf8_encode($value['name']),
-						'sprite_file_name' => utf8_encode($value['file_name']),
-						'sprite_character_name' => utf8_encode($value['character_name']),
-						'sprite_figure_name' => utf8_encode($value['figure_name']),
-						'sprite_expression_name' => utf8_encode($value['expression_name'])
+			if($value['fk_linetype_id'] == 1) {
+				$pass_background = $this->common->getBackground($value['line_id']);
+				if($pass_background) {
+					$background = array(
+						'background_resource_id' => $pass_background['resource_id'],
+						'background_name' => $pass_background['name'],
+						'background_file_name' => $pass_background['file_name']
 					);
 				}
+				else {
+					$background = array(
+						'background_resource_id' => null,
+						'background_name' => null,
+						'background_file_name' => null
+					);
+				}
+				$pass_bgm = $this->common->getBgm($value['line_id']);
+				if($pass_bgm) {
+					$bgm = array(
+						'bgm_resource_id' => $pass_bgm['resource_id'],
+						'bgm_name' => $pass_bgm['name'],
+						'bgm_file_name' => $pass_bgm['file_name']
+					);
+				}
+				else {
+					$bgm = array(
+						'bgm_resource_id' => null,
+						'bgm_name' => null,
+						'bgm_file_name' => null
+					);
+				}
+				$pass_sfx = $this->common->getSfx($value['line_id']);
+				if($pass_sfx) {
+					$sfx = array(
+						'sfx_resource_id' => $pass_sfx['resource_id'],
+						'sfx_name' => $pass_sfx['name'],
+						'sfx_file_name' => $pass_sfx['file_name']
+					);
+				}
+				else {
+					$sfx = array(
+						'sfx_resource_id' => null,
+						'sfx_name' => null,
+						'sfx_file_name' => null
+					);
+				}
+				$pass_voice = $this->common->getVoice($value['line_id']);
+				if($pass_voice) {
+					$voice = array(
+						'voice_resource_id' => $pass_voice['resource_id'],
+						'voice_name' => $pass_voice['name'],
+						'voice_file_name' => $pass_voice['file_name']
+					);
+				}
+				else {
+					$voice = array(
+						'voice_resource_id' => null,
+						'voice_name' => null,
+						'voice_file_name' => null
+					);
+				}
+				$line[$i] = array(
+					'line_id' => utf8_encode($value['line_id']),
+					'sequence' => utf8_encode($value['sequence']),
+					'label' => utf8_encode($value['label']),
+					'speaker' => utf8_encode($value['speaker']),
+					'content' => utf8_encode($value['content']),
+					'fk_effect_id' => utf8_encode($value['fk_effect_id']),
+					'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
+					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
+					'background_resource_id' => utf8_encode($background['background_resource_id']),
+					'background_name' => utf8_encode($background['background_name']),
+					'background_file_name' => utf8_encode($background['background_file_name']),
+					'bgm_resource_id' => utf8_encode($bgm['bgm_resource_id']),
+					'bgm_name' => utf8_encode($bgm['bgm_name']),
+					'bgm_file_name' => utf8_encode($bgm['bgm_file_name']),
+					'sfx_resource_id' => utf8_encode($sfx['sfx_resource_id']),
+					'sfx_name' => utf8_encode($sfx['sfx_name']),
+					'sfx_file_name' => utf8_encode($sfx['sfx_file_name']),
+					'voice_resource_id' => utf8_encode($voice['voice_resource_id']),
+					'voice_name' => utf8_encode($voice['voice_name']),
+					'voice_file_name' => utf8_encode($voice['voice_file_name']),
+					'sprite' => array()
+				);
+				$pass_sprite = $this->common->getSprite($value['line_id']);
+				if($pass_sprite) {
+					foreach ($pass_sprite as $key => $value) {
+						$line[$i]['sprite'][] = array(
+							'sprite_id' => utf8_encode($value['sprite_id']),
+							'position_x' => utf8_encode($value['position_x']),
+							'position_y' => utf8_encode($value['position_y']),
+							'position_z' => utf8_encode($value['position_z']),
+							'sprite_resource_id' => utf8_encode($value['fk_resource_id']),
+							'sprite_name' => utf8_encode($value['name']),
+							'sprite_file_name' => utf8_encode($value['file_name']),
+							'sprite_character_name' => utf8_encode($value['character_name']),
+							'sprite_figure_name' => utf8_encode($value['figure_name']),
+							'sprite_expression_name' => utf8_encode($value['expression_name'])
+						);
+					}
+				}
+			}
+			else if($value['fk_linetype_id'] == 2) {
+				$line[$i] = array(
+					'line_id' => utf8_encode($value['line_id']),
+					'sequence' => utf8_encode($value['sequence']),
+					'label' => utf8_encode($value['label']),
+					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
+					'choice' => array()
+				);
+				$pass_choice = $this->common->getChoice($value['line_id']);
+				if($pass_choice) {
+					$j = 1;
+					foreach ($pass_choice as $key => $value) {
+						$line[$i]['choice'][] = array(
+							'choice_id' => utf8_encode($value['choice_id']),
+							'content' => utf8_encode($value['content']),
+							'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
+							'choice_temp_index' => utf8_encode($j)
+						);
+						$j++;
+					}
+					// make empty object placeholder if choice in db not enough
+					if(count($pass_choice) < 4) {
+						for ($j = count($pass_choice)+1; $j <=4 ; $j++) { 
+							$line[$i]['choice'][] = array(
+								'choice_id' => "new",
+								'content' => "",
+								'jumpto_line_id' => "",
+								'choice_temp_index' => utf8_encode($j)
+							);
+						}
+					}
+				}
+				else {
+					// create empty object for placeholder
+					for ($j = 1; $j <=4 ; $j++) { 
+						$line[$i]['choice'][] = array(
+							'choice_id' => "new",
+							'content' => "",
+							'jumpto_line_id' => "",
+							'choice_temp_index' => utf8_encode($j)
+						);
+					}
+				}
+				
 			}
 
 			$i++;
 		}
-		$this->fb->log($line);
 
 
 /*		BROKEN
@@ -313,10 +359,9 @@ class Editor extends CI_Controller {
 		$line_type = $this->input->post('linetype');
 		$sequence = $this->input->post('sequence');
 		$proj = $this->session->userdata('active_project');
-		$this->fb->log($sequence);
 		$pass = $this->common->createLine($proj['id'], $sequence, $line_type);
 		if($pass != null) {
-			$this->output->set_content_type('application/json');
+			$this->output->set_content_type('text/html');
 			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
 		}
 	}
@@ -335,9 +380,11 @@ class Editor extends CI_Controller {
 		$delete_json = $this->input->post('deletedata');
 		$line_json = $this->input->post('linedata');
 		$sprite_json = $this->input->post('spritedata');
+		$choice_json = $this->input->post('choicedata');
 		$delete = json_decode($delete_json, TRUE);
 		$line = json_decode($line_json, TRUE);
 		$sprite = json_decode($sprite_json, TRUE);
+		$choice = json_decode($choice_json, TRUE);
 		$sprite_to_delete = array();
 		$line_to_delete = array();
 		foreach ($delete as $key => $value) {
@@ -402,8 +449,8 @@ class Editor extends CI_Controller {
 				);
 			}
 		}
-		$sprite_to_update = array();
 		$sprite_to_create = array();
+		$sprite_to_update = array();
 		foreach ($sprite as $key => $value) {
 			// assign default value if not valid
 			if(!is_int($value['position_x'])) {
@@ -423,6 +470,7 @@ class Editor extends CI_Controller {
 						'position_y' => $value['position_y'],
 						'position_z' => $value['position_z'],
 						'fk_line_id' => $value['fk_line_id'],
+						// used to return assigned id back on view
 						'sprite_temp_index' => $value['sprite_temp_index']
 					);
 				}
@@ -436,6 +484,25 @@ class Editor extends CI_Controller {
 						'fk_line_id' => $value['fk_line_id']
 					);
 				}
+			}
+		}
+		$choice_to_create = array();
+		$choice_to_update = array();
+		foreach ($choice as $key => $value) {
+			if($value['choice_id'] == "new") {
+				$choice_to_create[] = array(
+					'content' => $value['content'],
+					'jumpto_line_id' => $value['jumpto_line_id'],
+					'fk_line_id' => $value['fk_line_id'],
+					'choice_temp_index' => $value['choice_temp_index']
+				);
+			}
+			else {
+				$choice_to_update[] = array(
+					'choice_id' => $value['choice_id'],
+					'content' => $value['content'],
+					'jumpto_line_id' => $value['jumpto_line_id']
+				);
 			}
 		}
 		// check for data existence and write to database
@@ -463,7 +530,6 @@ class Editor extends CI_Controller {
 		}
 		// line resource update
 		if(count($lineres) > 0  && $status == TRUE) {
-			$this->fb->log($lineres);
 			foreach ($lineres as $key => $value) {
 				$lineres_resource = $this->common->getLineres($value['line_id'], $value['resource_type_id']);
 				if($lineres_resource) {
@@ -516,15 +582,24 @@ class Editor extends CI_Controller {
 				}
 			}
 		}
+		// array for return data
+		$create_status = array();
 		// sprite create
-		$sprite_create_status = array();
 		if(count($sprite_to_create) > 0  && $status == TRUE) {
 			$pass_sprite_create = $this->common->createSprite($sprite_to_create);
 			if(!$pass_sprite_create) {
 				$status = FALSE;
 			}
 			else {
-				$sprite_create_status = $pass_sprite_create;
+				foreach ($pass_sprite_create as $key => $value) {
+					$create_status[] = array(
+						'object' => 'sprite',
+						'fk_line_id' => utf8_encode($value['fk_line_id']),
+						'sprite_temp_index' => utf8_encode($value['sprite_temp_index']),
+						'sprite_id' => utf8_encode($value['sprite_id'])
+					);
+				}
+				
 			}
 		}
 		// sprite update
@@ -534,10 +609,34 @@ class Editor extends CI_Controller {
 				$status = FALSE;
 			}
 		}
+		// choice create
+		if(count($choice_to_create) > 0 && $status == TRUE) {
+			$pass_choice_create = $this->common->createChoice($choice_to_create);
+			if(!$pass_choice_create) {
+				$status = FALSE;
+			}
+			else {
+				foreach ($pass_choice_create as $key => $value) {
+					$create_status[] = array(
+						'object' => 'choice',
+						'fk_line_id' => utf8_encode($value['fk_line_id']),
+						'choice_temp_index' => utf8_encode($value['choice_temp_index']),
+						'choice_id' => utf8_encode($value['choice_id'])
+					);
+				}
+			}
+		}
+		// choice update
+		if(count($choice_to_update) > 0 && $status == TRUE) {
+			$pass_choice_update = $this->common->updateChoice($choice_to_update);
+			if(!$pass_choice_update) {
+				$status = FALSE;
+			}
+		}
 		// output
 		if($status == TRUE) {
 			$this->output->set_content_type('application/json');
-			$this->output->set_output(json_encode($sprite_create_status, JSON_PRETTY_PRINT));
+			$this->output->set_output(json_encode($create_status, JSON_PRETTY_PRINT));
 		}
 	}
 

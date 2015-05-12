@@ -40,7 +40,10 @@ function callLineData() {
 	var req = $.ajax({
 		url: config.base + "index.php/editor/loadLineData",
 		type: "POST",
-		data: {id: 1},
+		data: {
+			limit: 999,
+			offset: 0
+		},
 		dataType: "html",
 		beforeSend: function() {
 			//placehoder
@@ -52,6 +55,7 @@ function callLineData() {
 			if(obj.length > 0) {
 				line_obj = obj;
 				head = obj[0]['sequence'];
+				var block = "";
 				$.each(obj, function(index, value) {
 					if(value.sequence < head) {
 						head = parseInt(value.sequence);
@@ -59,8 +63,23 @@ function callLineData() {
 					if(parseInt(value.sequence) > tail) {
 						tail = parseInt(value.sequence);
 					}
-					var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+value.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+value.background_name+'" /> <input type="hidden" name="background_resource_id" value="'+value.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+value.bgm_name+'" /> <input type="hidden" name="bgm_resource_id" value="'+value.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+value.voice_name+'" /> <input type="hidden" name="voice_resource_id" value="'+value.voice_resource_id+'" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content">'+value.content+'</textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/> <input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
-					$(block).appendTo('.line-list');
+					if(value.fk_linetype_id == "1") {
+						block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+value.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+value.background_name+'" /> <input type="hidden" name="background_resource_id" value="'+value.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+value.bgm_name+'" /> <input type="hidden" name="bgm_resource_id" value="'+value.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+value.voice_name+'" /> <input type="hidden" name="voice_resource_id" value="'+value.voice_resource_id+'" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content">'+value.content+'</textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/> <input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
+						$(block).appendTo('.line-list');
+					}
+					else if(value.fk_linetype_id == "2") {
+						block = ' <tr> <td> <form class="form-horizontal choice-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10">';
+						var i = 0;
+						$.each(value.choice, function(j_index, j_value) {
+							i++;
+							if(i == 3) {
+								block = block + '<div class="collapse">';
+							}
+							block = block + '<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">'+i+'</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value="'+j_value.content+'"/> <input type="hidden" name="choice_id" value="'+j_value.choice_id+'" /> <input type="hidden" name="choice_temp_index" value="'+j_value.choice_temp_index+'" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/> <input type="hidden" name="jumpto_line_id" value="'+j_value.jumpto_line_id+'" /> </div> </div>';
+						});
+						block = block + '<div class="col-md-4 col-md-offset-7"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
+						$(block).appendTo('.line-list');
+					}
 				});
 			}
 			else {
@@ -113,8 +132,8 @@ $(function() {
 	});
 });
 
-//initialize array
-$('#addlinetextbutton').click(function() {
+// new text line
+$('#addtextlinebutton').click(function() {
 	var select_form = $('.select-line');
 	// get value of which radio is selected for line insertion position
 	var insert_position = $('.line-command-area').find('input:radio[name=line_insert_position]:checked').val();
@@ -131,12 +150,7 @@ $('#addlinetextbutton').click(function() {
 		else {
 			// get object consist of value from selected line
 			var last = getLastLineObjectBySequence(form_sequence);
-			console.log(last);
-			
-			console.log(last);
-
 			var sequence_to_insert = form_sequence + 1;
-			console.log(typeof sequence_to_insert);
 			var req = $.ajax({
 				url: config.base + 'index.php/editor/newLine',
 				type: "POST",
@@ -144,7 +158,7 @@ $('#addlinetextbutton').click(function() {
 					linetype: 1,
 					sequence: sequence_to_insert
 				},
-				dataType: "json",
+				dataType: "html",
 				beforeSend: function() {
 					//placeholder
 				}
@@ -166,7 +180,7 @@ $('#addlinetextbutton').click(function() {
 						}
 					}
 
-					//insert new line to line_obj
+					//insert new text line to line_obj
 					var index_to_write = getObjectIndex(line_obj, 'sequence', form_sequence) + 1;
 					var new_line = {
 						line_id: new_line_id.toString(),
@@ -191,14 +205,14 @@ $('#addlinetextbutton').click(function() {
 						voice_file_name: "",
 						sprite: []
 					}
-					// insert new line data in middle of line_obj
+					// insert new text line data in middle of line_obj
 					line_obj.splice(index_to_write, 0, new_line);
 					console.log(line_obj);
 
 					tail++;
 					var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 
-					// append block of new line after selected line
+					// append block of new text line after selected line
 					var element_before_insert = $('.line-list tr').has('input[name=sequence][value='+form_sequence+']');
 					$(block).insertAfter( $(element_before_insert) );
 //					console.log(element_before_insert);
@@ -215,7 +229,7 @@ $('#addlinetextbutton').click(function() {
 			});
 		}
 	}
-	// add line at end section
+	// add text line at end section
 	else if(insert_position == "end") {
 		var last = getLastLineObjectBySequence(tail);
 		var temp_tail = tail+1;
@@ -226,7 +240,7 @@ $('#addlinetextbutton').click(function() {
 				linetype: 1,
 				sequence: temp_tail
 			},
-			dataType: "json",
+			dataType: "html",
 			beforeSend: function() {
 				//placeholder
 			}
@@ -266,6 +280,160 @@ $('#addlinetextbutton').click(function() {
 	
 });
 
+// new choice line
+$('#addchoicelinebutton').click(function() {
+	var select_form = $('.select-line');
+	// get value of which radio is selected for line insertion position
+	var insert_position = $('.line-command-area').find('input:radio[name=line_insert_position]:checked').val();
+	// add new line in the middle
+	if(insert_position == "after") {
+		// get sequence value of selected line
+		var form_sequence = $(select_form).find('input[name=sequence]').val();
+		form_sequence = parseInt(form_sequence);
+		// throw error if no line selected
+		if(!form_sequence) {
+			callErrorNotification("select line first!");
+		}
+		else {
+			// get object consist of value from selected line
+			var last = getLastLineObjectBySequence(form_sequence);
+			var sequence_to_insert = form_sequence + 1;
+			var req = $.ajax({
+				url: config.base + 'index.php/editor/newLine',
+				type: "POST",
+				data: {
+					linetype: 2,
+					sequence: sequence_to_insert
+				},
+				dataType: "html",
+				beforeSend: function() {
+					//placeholder
+				}
+			});
+			req.done(function(msg) {
+				if(msg) {
+					var new_line_id = msg;
+
+					//increment sequence after selected line by 1
+					if(tail > form_sequence) {
+						for(var i = tail; i > form_sequence; i--) {
+							var i_index = getObjectIndex(line_obj, 'sequence', i);
+							var i_sequence = parseInt(line_obj[i_index].sequence) + 1;
+							line_obj[i_index].sequence = i_sequence.toString();
+							console.log(i);
+						}
+					}
+
+					//insert new choice line to line_obj
+					var index_to_write = getObjectIndex(line_obj, 'sequence', form_sequence) + 1;
+					var new_line = {
+						line_id: new_line_id.toString(),
+						sequence: sequence_to_insert.toString(),
+						label: "",
+						fk_linetype_id: "2",
+						choice: [
+							{
+								choice_id: "new",
+								content: "",
+								jumpto_line_id: "",
+								choice_temp_index: "1"
+							}, {
+								choice_id: "new",
+								content: "",
+								jumpto_line_id: "",
+								choice_temp_index: "2"
+							}, {
+								choice_id: "new",
+								content: "",
+								jumpto_line_id: "",
+								choice_temp_index: "3"
+							}, {
+								choice_id: "new",
+								content: "",
+								jumpto_line_id: "",
+								choice_temp_index: "4"
+							}
+						]
+					}
+					// insert new choice line data in middle of line_obj
+					line_obj.splice(index_to_write, 0, new_line);
+
+					tail++;
+					var block = '<tr> <td> <form class="form-horizontal choice-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="1" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="2" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="collapse"> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="3" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="4" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="col-md-4 col-md-offset-7"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+
+					// append block of new choice line after selected line
+					var element_before_insert = $('.line-list tr').has('input[name=sequence][value='+form_sequence+']');
+					$(block).insertAfter( $(element_before_insert) );
+
+					// reorder sequence number and hidden input value on view end
+					var count = head;
+					$('.line-list').children('tr').each(function() {
+						var form_id = $(this).find('[name=line_id]').val();
+						$(this).find('.line-sequence').html(count);
+						$(this).find('input[name=sequence]').val(count);
+						count++;
+					});
+				}
+			});
+		}
+	}
+	// add line at end section
+	else if(insert_position == "end") {
+		var last = getLastLineObjectBySequence(tail);
+		var temp_tail = tail+1;
+		var req = $.ajax({
+			url: config.base + 'index.php/editor/newLine',
+			type: "POST",
+			data: {
+				linetype: 2,
+				sequence: temp_tail
+			},
+			dataType: "html",
+			beforeSend: function() {
+				//placeholder
+			}
+		});
+		req.done(function(msg) {
+			if(msg) {
+				var new_line_id = msg;
+				tail++;
+				line_obj.push({
+					line_id: new_line_id.toString(),
+					sequence: tail.toString(),
+					label: "",
+					fk_linetype_id: "2",
+					choice: [
+						{
+							choice_id: "new",
+							content: "",
+							jumpto_line_id: "",
+							choice_temp_index: "1"
+						}, {
+							choice_id: "new",
+							content: "",
+							jumpto_line_id: "",
+							choice_temp_index: "2"
+						}, {
+							choice_id: "new",
+							content: "",
+							jumpto_line_id: "",
+							choice_temp_index: "3"
+						}, {
+							choice_id: "new",
+							content: "",
+							jumpto_line_id: "",
+							choice_temp_index: "3"
+						}
+					]
+				});
+				var block = '<tr> <td> <form class="form-horizontal choice-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="1" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="2" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="collapse"> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="3" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group per-choice" style="margin: 0px 5px 5px 0px;"> <label class="col-md-1 control-label">1</label> <div class="col-md-8"> <input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/> <input type="hidden" name="choice_id" value="new" /> <input type="hidden" name="choice_temp_index" value="4" /> </div> <div class="col-md-3" style="margin-left:-25px;"> <input type="text" name="jumpto" class="form-control input-sm" placeholder="jump_to" value=""/> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="col-md-4 col-md-offset-7"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+				$(block).appendTo('.line-list');
+			}
+		});
+	}
+	
+});
+
 // for button to collapse more line details
 $('.line-list').on('click', '.line-collapse-button', function(e) {
 	e.preventDefault();
@@ -274,7 +442,7 @@ $('.line-list').on('click', '.line-collapse-button', function(e) {
 });
 
 //show sprite management area on text line hover
-$('.line-list').on('mouseenter', '.text-line-form', function() {
+$('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function() {
 	//unnecessary! var select_form = $(this.form);
 	// add select class on pointed line
 	$(this).parent('td').addClass("select-line");
@@ -299,6 +467,16 @@ $('.line-list').on('mouseenter', '.text-line-form', function() {
 				$(block).appendTo('.sprite-list');
 			}
 		});
+	}
+	// disable sprite area when non-text line selected
+	var form_id = $(this).find('input[name=line_id]').val();
+	var index_to_write = getObjectIndex(line_obj, 'line_id', form_id);
+	var form_line_type = line_obj[index_to_write].fk_linetype_id;
+	if(form_line_type != 1) {
+		$('.sprite-area').find('input, button').prop("disabled", true);
+	}
+	else {
+		$('.sprite-area').find('input, button').prop("disabled", false);
 	}
 });
 
@@ -333,48 +511,73 @@ $('#savebutton').click(function() {
 function saveLine() {
 	var simple_line_obj = [];
 	var simple_sprite_obj = [];
+	var simple_choice_obj = [];
 	var i = 0;
 	// extract important value from line_obj
 	$.each(line_obj, function(index, value) {
-		simple_line_obj.push({
-			line_id: value.line_id,
-			sequence: value.sequence,
-			label: value.label,
-			speaker: value.speaker,
-			content: value.content,
-			fk_effect_id: value.fk_effect_id,
-			jumpto_line_id: value.jumpto_line_id,
-			fk_linetype_id: value.fk_linetype_id,
-			background_resource_id: value.background_resource_id,
-			bgm_resource_id: value.bgm_resource_id,
-			sfx_resource_id: value.sfx_resource_id,
-			voice_resource_id: value.voice_resource_id,
-			sprite: []
-		});
-		var i_line_id = value.line_id;
-		$.each(line_obj[i].sprite, function(index, value) {
-			if(value.sprite_id == "new") {
-				simple_sprite_obj.push({
-					sprite_temp_index: value.sprite_temp_index,
-					sprite_id: value.sprite_id,
-					fk_resource_id: value.sprite_resource_id,
-					position_x: value.position_x,
-					position_y: value.position_y,
-					position_z: value.position_z,
-					fk_line_id: i_line_id
-				})
-			}
-			else {
-				simple_sprite_obj.push({
-					sprite_id: value.sprite_id,
-					fk_resource_id: value.sprite_resource_id,
-					position_x: value.position_x,
-					position_y: value.position_y,
-					position_z: value.position_z,
-					fk_line_id: i_line_id
-				});
-			}
-		});
+		if(value.fk_linetype_id == 1) {
+			simple_line_obj.push({
+				line_id: value.line_id,
+				sequence: value.sequence,
+				label: value.label,
+				speaker: value.speaker,
+				content: value.content,
+				fk_effect_id: value.fk_effect_id,
+				jumpto_line_id: value.jumpto_line_id,
+				fk_linetype_id: value.fk_linetype_id,
+				background_resource_id: value.background_resource_id,
+				bgm_resource_id: value.bgm_resource_id,
+				sfx_resource_id: value.sfx_resource_id,
+				voice_resource_id: value.voice_resource_id,
+				sprite: []
+			});
+			var i_line_id = value.line_id;
+			$.each(line_obj[i].sprite, function(index, value) {
+				if(value.sprite_id == "new") {
+					simple_sprite_obj.push({
+						sprite_id: value.sprite_id,
+						fk_resource_id: value.sprite_resource_id,
+						position_x: value.position_x,
+						position_y: value.position_y,
+						position_z: value.position_z,
+						fk_line_id: i_line_id,
+						sprite_temp_index: value.sprite_temp_index
+					})
+				}
+				else {
+					simple_sprite_obj.push({
+						sprite_id: value.sprite_id,
+						fk_resource_id: value.sprite_resource_id,
+						position_x: value.position_x,
+						position_y: value.position_y,
+						position_z: value.position_z,
+						fk_line_id: i_line_id
+					});
+				}
+			});
+		}
+		// for choice line
+		else if(value.fk_linetype_id == 2) {
+			simple_line_obj.push({
+				line_id: value.line_id,
+				sequence: value.sequence,
+				label: value.label,
+				fk_linetype_id: value.fk_linetype_id,
+				choice: []
+			});
+			var i_line_id = value.line_id;
+			$.each(line_obj[i].choice, function(index, value) {
+				if(value.content) {
+					simple_choice_obj.push({
+						choice_id: value.choice_id,
+						content: value.content,
+						jumpto_line_id: value.jumpto_line_id,
+						fk_line_id: i_line_id,
+						choice_temp_index: value.choice_temp_index
+					});
+				}
+			});
+		}
 
 		// $.each(line_obj[i].sprite, function(index, value) {
 		// 	simple_line_obj[i].sprite.push({
@@ -387,9 +590,10 @@ function saveLine() {
 		// });
 		i++;
 	});
-var delete_json = JSON.stringify(delete_obj);
+	var delete_json = JSON.stringify(delete_obj);
 	var simple_line_json = JSON.stringify(simple_line_obj);
 	var simple_sprite_json = JSON.stringify(simple_sprite_obj);
+	var simple_choice_json = JSON.stringify(simple_choice_obj);
 	// send update data to server
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/saveLineData',
@@ -397,23 +601,34 @@ var delete_json = JSON.stringify(delete_obj);
 		data: {
 			deletedata: delete_json,
 			linedata: simple_line_json,
-			spritedata: simple_sprite_json
+			spritedata: simple_sprite_json,
+			choicedata: simple_choice_json
 		},
 		dataType: "json"
 	});
 	req.done(function(msg) {
 		if(msg) {
 			console.log(msg);
-			var sprite_update_obj = msg;
-			$.each(sprite_update_obj, function(index, value) {
-				var line_index_to_write = getObjectIndex(line_obj, 'line_id', value.fk_line_id);
-				var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', value.sprite_temp_index);
-				line_obj[line_index_to_write].sprite[index_to_write].sprite_id = value.sprite_id;
-				var line_form_id = $('.select-line').find('input[name=line_id]').val();
-				// if newly created sprite is listed on active sprite area, its id will be updated so no duplicate creation when changing sprite property value after save
-				if(line_form_id == value.fk_line_id) {
-					var select_form = $('.sprite-list tr td form').has('input[name=sprite_temp_index][value='+value.sprite_temp_index+']');
-					$(select_form).find('input[name=sprite_id]').val(value.sprite_id);
+			var update_obj = msg;
+			// update new created sprite in line_obj with insert id
+			$.each(update_obj, function(index, value) {
+				if(value.object == "sprite") {
+					var spr = value.value[0];
+					var line_index_to_write = getObjectIndex(line_obj, 'line_id', spr.fk_line_id);
+					var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', spr.sprite_temp_index);
+					line_obj[line_index_to_write].sprite[index_to_write].sprite_id = spr.sprite_id;
+					var line_form_id = $('.select-line').find('input[name=line_id]').val();
+					// if newly created sprite is listed on active sprite area, its id will be updated so no duplicate creation when changing sprite property value after save
+					if(line_form_id == spr.fk_line_id) {
+						var select_form = $('.sprite-list tr td form').has('input[name=sprite_temp_index][value='+spr.sprite_temp_index+']');
+						$(select_form).find('input[name=sprite_id]').val(value.sprite_id);
+					}
+				}
+				else if(value.object == "choice") {
+					var chc = value.value[0];
+					var line_index_to_write = getObjectIndex(line_obj, 'line_id', chc.fk_line_id);
+					var index_to_write = getObjectIndex(line_obj[line_index_to_write].choice, 'choice_temp_index', chc.choice_temp_index);
+					line_obj[line_index_to_write].choice[index_to_write].choice_id = chc.choice_id;
 				}
 			});
 			callSuccessNotification("work saved!");
@@ -549,10 +764,44 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			}
 			break;
 
+		case "choice_jumpto":
+			var input_id = $(this).siblings('input[name=jumpto_line_id]').val();
+			var input_value = $(this).val();
+			var verify = 0;
+			$.each(label_list, function(index, value) {
+				if(input_id == value.line_id && input_value == value.label) {
+					verify++;
+				}
+			});
+			if(verify == 1) {
+				var input_temp_index = $(this).parent('div').parent('.per-choice').find('input[name=choice_temp_index]').val();
+				console.log(input_temp_index);
+				var choice_index_to_write = getObjectIndex(line_obj[index_to_write].choice, 'choice_temp_index', input_temp_index);
+				line_obj[index_to_write].choice[choice_index_to_write].jumpto_line_id = input_id;
+				$(this).css("color", "");
+				console.log("OK");
+			}
+			else {
+				line_obj[index_to_write].jumpto_line_id = "";
+				$(this).css("color", "rgba(255, 90, 90, 1)");
+				callErrorNotification("label doesn't exist!");
+			}
+			break;
+
 		case "label":
 			var input_value = $(this).val();
 			line_obj[index_to_write].label = input_value;
 			break;
+
+		case "choice_content":
+			var input_value = $(this).val();
+			var input_id = $(this).siblings('input[name=choice_id]').val();
+			var choice_index_to_write = getObjectIndex(line_obj[index_to_write].choice, 'choice_id', input_id);
+			if(input_id == "new") {
+				var input_temp_index = $(this).siblings('input[name=choice_temp_index]').val();
+				choice_index_to_write = getObjectIndex(line_obj[index_to_write].choice, 'choice_temp_index', input_temp_index);
+			}
+			line_obj[index_to_write].choice[choice_index_to_write].content = input_value;
 	}
 });
 
@@ -1060,10 +1309,8 @@ $('.line-list').on('keydown', 'input[name=jumpto]', function() {
 		minLength: 1,
 		focus: function(event, ui) {
 			var input = $(this);
-			// chang value on input
-			$(this.form).find('input[name=jumpto]').val(ui.item.label);
-			// change id on hidden input
-			$(this.form).find('input[name=jumpto_line_id]').val(ui.item.value);
+			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
+			$(this).val(ui.item.label);
 			// for disabling change value on input
 			return false;
 		},
@@ -1084,8 +1331,49 @@ $('.line-list').on('keydown', 'input[name=jumpto]', function() {
 		select: function(event, ui) {
 			// get this input element
 			var input = $(this);
-			$(this.form).find('input[name=jumpto_line_id]').val(ui.item.value);
-			$(this.form).find('input[name=jumpto]').val(ui.item.label);
+			// $(this.form).find('input[name=jumpto_line_id]').val(ui.item.value);
+			// $(this.form).find('input[name=jumpto]').val(ui.item.label);
+			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
+			$(this).val(ui.item.label);
+			return false;
+		},
+		autoFocus: true
+	});
+});
+
+// autocomplete jumpto input
+$('.line-list').on('keydown', 'input[name=choice_jumpto]', function() {
+	$(this).autocomplete({
+		source: label_name_list,
+		minLength: 1,
+		focus: function(event, ui) {
+			var input = $(this);
+			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
+			$(this).val(ui.item.label);
+			// for disabling change value on input
+			return false;
+		},
+		// autosuggest capability
+		open: function(event, ui) {
+			var top = $(this).data('uiAutocomplete').menu.element[0].children[0], 
+			input = $(this),
+			original = input.val(),
+			top_value = $(top).text();
+			var x = $(this).data('uiAutocomplete').menu.element[0].children[0];
+			var xx = $(x).text();
+			if(top_value.toLowerCase().indexOf(original.toLowerCase()) === 0) {
+				input.val(top_value);
+				input[0].selectionStart = original.length;
+				input[0].selectionEnd = top_value.length;
+			}
+		},
+		select: function(event, ui) {
+			// get this input element
+			var input = $(this);
+			// $(this.form).find('input[name=jumpto_line_id]').val(ui.item.value);
+			// $(this.form).find('input[name=jumpto]').val(ui.item.label);
+			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
+			$(this).val(ui.item.label);
 			return false;
 		},
 		autoFocus: true

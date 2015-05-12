@@ -11,10 +11,10 @@
 						<span class="pull-left">Add line</span><br />
 						<div class="btn-toolbar" role="toolbar">
 							<div class="btn-group btn-group-sm" role="group">
-								<button type="button" id="addlinetextbutton" class="btn btn-default">text</button>
-								<button type="button" id="addchoicebutton"  class="btn btn-default">choice</button>
-								<button type="button" id="addvideobutton"  class="btn btn-default">video</button>
-								<button type="button" id="addendbutton"  class="btn btn-default">end</button>
+								<button type="button" id="addtextlinebutton" class="btn btn-default">text</button>
+								<button type="button" id="addchoicelinebutton"  class="btn btn-default">choice</button>
+								<button type="button" id="addvideolinebutton"  class="btn btn-default">video</button>
+								<button type="button" id="addendlinebutton"  class="btn btn-default">end</button>
 							</div>
 							<div class="btn-group btn-group-sm" role="group">
 								<div class="radio">
@@ -40,7 +40,7 @@
 						</span>
 						<table class="table">
 							<tbody class="line-list">
-<!-- line form template new
+<!-- text line form template new
 <tr>
 	<td>
 		<form class="form-horizontal text-line-form">
@@ -99,7 +99,7 @@
  -->
 
 
-<!-- line form template filled
+<!-- text line form template filled
 <tr>
 	<td>
 		<form class="form-horizontal text-line-form">
@@ -156,6 +156,169 @@
 	</td>
 </tr>
  -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- choice line form new
+ <tr>
+	<td>
+		<form class="form-horizontal choice-line-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="line-sequence">'+tail+'</span>
+					<br /> <br />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+				</div>
+				<div class="col-md-10">
+					<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+						<label class="col-md-1 control-label">1</label>
+						<div class="col-md-8">
+							<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
+								<input type="hidden" name="choice_id" value="new" />
+								<input type="hidden" name="choice_temp_index" value="1" />
+						</div>
+						<div class="col-md-3" style="margin-left:-25px;">
+							<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+								<input type="hidden" name="jumpto_line_id" value="" />
+						</div>
+					</div>
+					<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+						<label class="col-md-1 control-label">1</label>
+						<div class="col-md-8">
+							<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
+								<input type="hidden" name="choice_id" value="new" />
+								<input type="hidden" name="choice_temp_index" value="2" />
+						</div>
+						<div class="col-md-3" style="margin-left:-25px;">
+							<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+								<input type="hidden" name="jumpto_line_id" value="" />
+						</div>
+					</div>
+
+					<div class="collapse">
+						<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+							<label class="col-md-1 control-label">1</label>
+							<div class="col-md-8">
+								<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
+									<input type="hidden" name="choice_id" value="new" />
+									<input type="hidden" name="choice_temp_index" value="3" />
+							</div>
+							<div class="col-md-3" style="margin-left:-25px;">
+								<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+									<input type="hidden" name="jumpto_line_id" value="" />
+							</div>
+						</div>
+						<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+							<label class="col-md-1 control-label">1</label>
+							<div class="col-md-8">
+								<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
+									<input type="hidden" name="choice_id" value="new" />
+									<input type="hidden" name="choice_temp_index" value="4" />
+							</div>
+							<div class="col-md-3" style="margin-left:-25px;">
+								<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+									<input type="hidden" name="jumpto_line_id" value="" />
+							</div>
+						</div>
+						<div class="col-md-4 col-md-offset-7">
+							<input type="text" name="label" class="form-control input-xs" placeholder="label" value="" />
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+				</div>
+			
+			</div>
+			<input type="hidden" name="sequence" value="'+tail+'" />
+			<input type="hidden" name="line_id" value="'+new_line_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
+ <!-- choice line form fill
+ <tr>
+	<td>
+		<form class="form-horizontal choice-line-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="line-sequence">'+value.sequence+'</span>
+					<br /> <br />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+				</div>
+				<div class="col-md-10">
+
+
+
+					<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+						<label class="col-md-1 control-label">'+i+'</label>
+						<div class="col-md-8">
+							<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value="'+j_value.content+'"/>
+								<input type="hidden" name="choice_id" value="'+j_value.choice_id+'" />
+								<input type="hidden" name="choice_temp_index" value="'+i+'" />
+						</div>
+						<div class="col-md-3" style="margin-left:-25px;">
+							<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+								<input type="hidden" name="jumpto_line_id" value="'+j_value.jumpto_line_id+'" />
+						</div>
+					</div>
+
+
+
+					<div class="collapse">
+
+
+						<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
+							<label class="col-md-1 control-label">1</label>
+							<div class="col-md-8">
+								<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
+									<input type="hidden" name="choice_id" value="new" />
+									<input type="hidden" name="choice_temp_index" value="3" />
+							</div>
+							<div class="col-md-3" style="margin-left:-25px;">
+								<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+									<input type="hidden" name="jumpto_line_id" value="" />
+							</div>
+						</div>
+						
+						
+
+						<div class="col-md-4 col-md-offset-7">
+							<input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" />
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+				</div>
+			
+			</div>
+			<input type="hidden" name="sequence" value="'+value.sequence+'" />
+			<input type="hidden" name="line_id" value="'+value.line_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
 							</tbody>
 						</table>
 						<div class="line-pagination-area">

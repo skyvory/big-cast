@@ -1,4 +1,8 @@
-﻿0.6
+﻿
+- update database 0.7: update choice table to include "jumpto_line_id"
+- update "jumpto" autocomplete so that all input in same container not changed simultaneously
+
+0.6
 - editor initial interface
 - add line sortability
 - add line add capability

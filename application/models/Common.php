@@ -256,7 +256,6 @@ Class Common extends CI_Model {
 		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 		$result = $query->result_array();
-		$this->fb->log($result);
 		return $result;
 	}
 */
@@ -315,7 +314,15 @@ Class Common extends CI_Model {
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
 		$this->db->where('fk_line_id', $line_id);
-		$query = $this->db->get();d
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getChoice($line_id)  {
+		$this->db->select('choice_id, content, jumpto_line_id');
+		$this->db->from('choice');
+		$this->db->where('fk_line_id', $line_id);
+		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
 	}
@@ -432,8 +439,7 @@ Class Common extends CI_Model {
 				'speaker' => $value['speaker'],
 				'content' => $value['content'],
 				'fk_effect_id' => $value['fk_effect_id'],
-				'jumpto_line_id' => $value['jumpto_line_id'],
-				'fk_linetype_id' => 1
+				'jumpto_line_id' => $value['jumpto_line_id']
 			);
 			$this->db->where('line_id', $value['line_id']);
 			$exec = $this->db->update('line', $data);
@@ -465,8 +471,7 @@ Class Common extends CI_Model {
 					// in case using sequence as reference, possible of update misplaced if sequence changed during save request
 					'fk_line_id' => utf8_encode($value['fk_line_id']),
 					'sprite_temp_index' => utf8_encode($value['sprite_temp_index']),
-					'sprite_id' => utf8_encode($insert_id),
-					'status' => "success"
+					'sprite_id' => utf8_encode($insert_id)
 				);
 			}
 		}
@@ -519,7 +524,6 @@ Class Common extends CI_Model {
 		$this->db->where('fk_resourcetype_id', $resource_type_id);
 		$query = $this->db->get();
 		$result = $query->row_array();
-		$this->fb->log($result);
 		if($query->num_rows() > 0) {
 			return $result;
 		}
@@ -539,6 +543,54 @@ Class Common extends CI_Model {
 		$this->db->set('fk_resource_id', $resource_id);
 		$exec = $this->db->insert('lineres');
 		return $exec;
+	}
+	function createChoice($choice) {
+		$this->db->trans_begin();
+		$choice_create_status = array();
+		foreach ($choice as $key => $value) {
+			$data = array(
+				'content' => $value['content'],
+				'jumpto_line_id' => $value['jumpto_line_id'],
+				'fk_line_id' => $value['fk_line_id']
+			);
+			$exec = $this->db->insert('choice', $data);
+			$insert_id = $this->db->insert_id();
+			if($exec) {
+				$choice_create_status[] = array(
+					// in case using sequence as reference, possible of update misplaced if sequence changed during save request
+					'fk_line_id' => $value['fk_line_id'],
+					'choice_temp_index' => $value['choice_temp_index'],
+					'choice_id' => $insert_id
+				);
+			}
+		}
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return $choice_create_status;
+		}
+	}
+	function updateChoice($choice) {
+		$this->db->trans_begin();
+		foreach ($choice as $key => $value) {
+			$data = array(
+				'content' => $value['content'],
+				'jumpto_line_id' => $value['jumpto_line_id']
+			);
+			$this->db->where('choice_id', $value['choice_id']);
+			$exec = $this->db->update('choice', $data);
+		}
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return TRUE;
+		}
 	}
 }
 ?>
