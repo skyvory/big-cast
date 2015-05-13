@@ -23,13 +23,29 @@ class Editor extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
+		$proj = $this->session->userdata('active_project');
 		$data['sess'] = $this->session->userdata('user_auth');
 		$head['title'] = "Editor";
+
+		$per_page = 5;
+		$total_line = $this->common->getTotalLine($proj['id']);
+		$total_page = ceil($total_line / $per_page);
+		if($total_page > 1) {
+			$current_page = $total_page;
+		}
+		else {
+			$current_page = 1;
+		}
+		$editor['page'] = array(
+			'current_page' => $current_page,
+			'total_page' => $total_page
+		);
+
 
 		$this->load->vars($data);
 		$this->load->view('editor_head', $head);
 		$this->load->view('menu_view');
-		$this->load->view('editor_view');
+		$this->load->view('editor_view', $editor);
 		$this->load->view('foot');
 	}
 	
@@ -43,15 +59,76 @@ class Editor extends CI_Controller {
 		return $string;
 	}
 	
+	public function loadLinePagination() {
+		$this->load->helper('url');
+		$this->load->library('pagination');
+		$proj = $this->session->userdata('active_project');
+		// pagination
+		$config['page_query_string'] = TRUE;
+		$page = 0;
+		$config['base_url'] = base_url() . 'editor/loadLineData';
+		$config['total_rows'] = $this->common->getTotalLine($proj['id']);
+		// $this->fb->log($config['total_rows']);
+
+		$config['per_page'] = 3; //20
+		$config['num_links'] = 8;
+		$config['use_page_numbers'] = FALSE;
+		// $config['first_tag_open'] = '<li class="first">';
+		// $config['first_link'] = '<i class="icon-first-2"></i> First';
+		// $config['first_tag_close'] = '</li>';
+		// $config['prev_tag_open'] = ' <li class="prev">';
+		// $config['prev_link'] = '<i class="icon-previous"></i> Prev';
+		// $config['prev_tag_close'] = '</li>';
+		// $config['cur_tag_open'] = '<li class="active"><a>';
+		// $config['cur_tag_close'] = '</a></li>';
+		// $config['num_tag_open'] = '<li>';
+		// $config['num_tag_close'] = '</li>';
+		// $config['next_tag_open'] = '<li class="next">';
+		// $config['next_link'] = 'Next  <i class="icon-next"></i>';
+		// $config['next_tag_close'] = '</li>';
+		// $config['last_tag_open'] = '<li class="last">';
+		// $config['last_link'] = 'Last <i class="icon-last-2"></i>';
+		// $config['last_tag_close'] = '</li>';
+		$this->pagination->initialize($config);
+		$page = $this->pagination->create_links();
+		echo $page;
+	}
 	public function loadLineData() {
 		$sess = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
-		$limit = $this->input->post('limit');
-		$offset = $this->input->post('offset');
-		$limit = 999;
-		$offset = 0;
 
-		$pass_line = $this->common->getLine($proj['id']);
+		$current_page = $this->input->post('current');
+		$page = $this->input->post('to');
+		$per_page = 5;
+		$total_line = $this->common->getTotalLine($proj['id']);
+		$total_page = ceil($total_line / $per_page);
+		if($page == "last") {
+			$page = $total_page;
+		}
+		else if($page == "first") {
+			$page = 1;
+		}
+		else if($page == "previous") {
+			$page = $current_page - 1;
+		}
+		else if($page == "next") {
+			$page = $current_page +1;
+		}
+		else {
+			$page = $total_page;
+		}
+		// not put with "or" condition so previous and next won't generate error due to out of page
+		if($page > $total_page) {
+			$page = $total_page;
+		}
+		else if($page < 1) {
+			$page = 1;
+		}
+		$this->fb->log($current_page);
+
+		$offset = ($page - 1) * $per_page;
+
+		$pass_line = $this->common->getLine($proj['id'], $per_page, $offset);
 		$line = array();
 		$sprite = array();
 		$i = 0;
@@ -138,7 +215,8 @@ class Editor extends CI_Controller {
 					'voice_resource_id' => utf8_encode($voice['voice_resource_id']),
 					'voice_name' => utf8_encode($voice['voice_name']),
 					'voice_file_name' => utf8_encode($voice['voice_file_name']),
-					'sprite' => array()
+					'sprite' => array(),
+					'jumpto_line_label' => utf8_encode($value['jumpto_line_label'])
 				);
 				$pass_sprite = $this->common->getSprite($value['line_id']);
 				if($pass_sprite) {
@@ -174,7 +252,8 @@ class Editor extends CI_Controller {
 							'choice_id' => utf8_encode($value['choice_id']),
 							'content' => utf8_encode($value['content']),
 							'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
-							'choice_temp_index' => utf8_encode($j)
+							'choice_temp_index' => utf8_encode($j),
+							'jumpto_line_label' => utf8_encode($value['jumpto_line_label'])
 						);
 						$j++;
 					}
@@ -185,7 +264,8 @@ class Editor extends CI_Controller {
 								'choice_id' => "new",
 								'content' => "",
 								'jumpto_line_id' => "",
-								'choice_temp_index' => utf8_encode($j)
+								'choice_temp_index' => utf8_encode($j),
+								'jumpto_line_label' => ""
 							);
 						}
 					}
@@ -202,6 +282,42 @@ class Editor extends CI_Controller {
 					}
 				}
 				
+			}
+			else if($value['fk_linetype_id'] == 3) {
+				$pass_video = $this->common->getVideo($value['line_id']);
+				$video = array();
+				if($pass_video) {
+					$video = array(
+						'video_resource_id' => $pass_video['resource_id'],
+						'video_name' => $pass_video['name'],
+						'video_file_name' => $pass_video['file_name']
+					);
+				}
+				else {
+					$video = array(
+						'video_resource_id' => null,
+						'video_name' => null,
+						'video_file_name' => null
+					);
+				}
+				$line[$i] = array(
+					'line_id' => utf8_encode($value['line_id']),
+					'sequence' => utf8_encode($value['sequence']),
+					'label' => utf8_encode($value['label']),
+					'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
+					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
+					'video_resource_id' => utf8_encode($video['video_resource_id']),
+					'video_name' => utf8_encode($video['video_name']),
+					'video_file_name' => utf8_encode($video['video_file_name']),
+					'jumpto_line_label' => utf8_encode($value['jumpto_line_label'])
+				);
+			}
+			else if($value['fk_linetype_id'] == 4) {
+				$line[$i] = array(
+					'line_id' => utf8_encode($value['line_id']),
+					'sequence' => utf8_encode($value['sequence']),
+					'fk_linetype_id' => utf8_encode($value['fk_linetype_id'])
+				);
 			}
 
 			$i++;
@@ -355,6 +471,12 @@ class Editor extends CI_Controller {
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
 	}
+	public function loadVideoList() {
+		$proj = $this->session->userdata('active_project');
+		$pass = $this->common->getResourceVideo($proj['id']);
+		$this->output->set_content_type('application/json');
+		$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
+	}
 	public function newLine() {
 		$line_type = $this->input->post('linetype');
 		$sequence = $this->input->post('sequence');
@@ -364,6 +486,9 @@ class Editor extends CI_Controller {
 			$this->output->set_content_type('text/html');
 			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
 		}
+	}
+	public function newLineX() {
+		echo "0";
 	}
 	//unnecessary!
 	// public function newSprite() {
@@ -396,57 +521,96 @@ class Editor extends CI_Controller {
 			}
 		}
 		$lineres = array();
-		// validating and assign default value
+		// validation, assign default value, assign lineres
 		foreach ($line as $key => $value) {
+			if($value['fk_linetype_id'] == 1) {
+				if(empty($value['label'])) {
+					$line[$key]['label'] = null;
+				}
+				if(empty($value['speaker'])) {
+					$line[$key]['speaker'] = null;
+				}
+				if(empty($value['content'])) {
+					$line[$key]['content'] = null;
+				}
+				if(empty($value['fk_effect_id'])) {
+					$line[$key]['fk_effect_id'] = null;
+				}
+				if(empty($value['jumpto_line_id'])) {
+					$line[$key]['jumpto_line_id'] = null;
+				}
+				// if resource assigned, append to lineres for db insert
+				if(!empty($value['background_resource_id'])) {
+					$lineres[] = array(
+						'line_id' => $value['line_id'],
+						'resource_id' => $value['background_resource_id'],
+						'resource_type_id' => 2
+					);
+				}
+				if(!empty($value['bgm_resource_id'])) {
+					$lineres[] = array(
+						'line_id' => $value['line_id'],
+						'resource_id' => $value['bgm_resource_id'],
+						'resource_type_id' => 3
+					);
+				}
+				if(!empty($value['sfx_resource_id'])) {
+					$lineres[] = array(
+						'line_id' => $value['line_id'],
+						'resource_id' => $value['sfx_resource_id'],
+						'resource_type_id' => 4
+					);
+				}
+				if(!empty($value['voice_resource_id'])) {
+					$lineres[] = array(
+						'line_id' => $value['line_id'],
+						'resource_id' => $value['voice_resource_id'],
+						'resource_type_id' => 5
+					);
+				}
+			}
+			else if($value['fk_linetype_id'] == 2) {
+				if(empty($value['label'])) {
+					$line[$key]['label'] = null;
+				}
+				// add default key and value
+				$line[$key]['speaker'] = null;
+				$line[$key]['content'] = null;
+				$line[$key]['fk_effect_id'] = null;
+				$line[$key]['jumpto_line_id'] = null;
+			}
+			else if($value['fk_linetype_id'] == 3) {
+				if(empty($value['label'])) {
+					$line[$key]['label'] = null;
+				}
+				if(empty($value['jumpto_line_id'])) {
+					$line[$key]['jumpto_line_id'] = null;
+				}
+				// add default key and value
+				$line[$key]['speaker'] = null;
+				$line[$key]['content'] = null;
+				$line[$key]['fk_effect_id'] = null;
+				// append video data to lineres
+				if(!empty($value['video_resource_id'])) {
+					$lineres[] = array(
+						'line_id' => $value['line_id'],
+						'resource_id' => $value['video_resource_id'],
+						'resource_type_id' => 6
+					);
+				}
+			}
+			else if($value['fk_linetype_id'] == 4) {
+				$line[$key]['label'] = null;
+				$line[$key]['speaker'] = null;
+				$line[$key]['content'] = null;
+				$line[$key]['fk_effect_id'] = null;
+				$line[$key]['jumpto_line_id'] = null;
+			}
 			// change var type
 			$value['sequence'] = (int) $value['sequence'];
 			// check if true int
 			if(!is_int($value['sequence'])){
 				unset($line[$key]);
-			}
-			if(empty($value['label'])) {
-				$line[$key]['label'] = null;
-			}
-			if(empty($value['speaker'])) {
-				$line[$key]['speaker'] = null;
-			}
-			if(empty($value['content'])) {
-				$line[$key]['content'] = null;
-			}
-			if(empty($value['fk_effect_id'])) {
-				$line[$key]['fk_effect_id'] = null;
-			}
-			if(empty($value['jumpto_line_id'])) {
-				$line[$key]['jumpto_line_id'] = null;
-			}
-			// if resource assigned, append to lineres for db insert
-			if(!empty($value['background_resource_id'])) {
-				$lineres[] = array(
-					'line_id' => $value['line_id'],
-					'resource_id' => $value['background_resource_id'],
-					'resource_type_id' => 2
-				);
-			}
-			if(!empty($value['bgm_resource_id'])) {
-				$lineres[] = array(
-					'line_id' => $value['line_id'],
-					'resource_id' => $value['bgm_resource_id'],
-					'resource_type_id' => 3
-				);
-			}
-			if(!empty($value['sfx_resource_id'])) {
-				$lineres[] = array(
-					'line_id' => $value['line_id'],
-					'resource_id' => $value['sfx_resource_id'],
-					'resource_type_id' => 4
-				);
-			}
-			if(!empty($value['voice_resource_id'])) {
-				$lineres[] = array(
-					'line_id' => $value['line_id'],
-					'resource_id' => $value['voice_resource_id'],
-					'resource_type_id' => 5
-				);
 			}
 		}
 		$sprite_to_create = array();
@@ -489,6 +653,9 @@ class Editor extends CI_Controller {
 		$choice_to_create = array();
 		$choice_to_update = array();
 		foreach ($choice as $key => $value) {
+			if(empty($value['jumpto_line_id'])) {
+				$value['jumpto_line_id'] = null;
+			}
 			if($value['choice_id'] == "new") {
 				$choice_to_create[] = array(
 					'content' => $value['content'],

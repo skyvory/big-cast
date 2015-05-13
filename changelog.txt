@@ -5,6 +5,8 @@
 - some tweak to "jumpto" autocomplete
 - disable sprite area when choice line is selected
 - complete choice line manipulation capability
+- complete video line manipulation capability
+- show label name instead id on jumpto input
 
 0.6
 - editor initial interface

@@ -3,10 +3,37 @@
 		<?php if(isset($error)) echo($error); ?>
 	</div>
 
+	<div class="row draggable" style="position:fixed; z-index: 10; bottom: 6%; right: 5%; background-color: rgba(34, 255, 2, 0.09803921568627451);width: 300px; max-width: 500px">
+		<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;" >
+			<div class="line-command-area">
+				<span class="pull-left">Add line</span><br />
+					<div class="btn-group btn-group-sm" role="group">
+						<button type="button" id="addtextlinebutton" class="btn btn-default">text</button>
+						<button type="button" id="addchoicelinebutton"  class="btn btn-default">choice</button>
+						<button type="button" id="addvideolinebutton"  class="btn btn-default">video</button>
+						<button type="button" id="addendlinebutton"  class="btn btn-default">end</button>
+					</div>
+					<button type="button" id="savebutton" class="btn btn-default pull-right">Save</button>
+					<div class="btn-group btn-group-sm" role="group">
+						<div class="radio">
+							<label>
+								<input type="radio" name="line_insert_position" value="after" checked />
+									<span title="you can select line by pointing you mouse on that line" />after selected line</span>
+							</label>
+							<label>
+								<input type="radio" name="line_insert_position" value="end"  />
+									<span>at end of this section</span>
+							</label>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col-md-7">
-			<div class="row draggable" style="position:fixed; z-index: 10;">
-				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px; " >
+			<!-- <div class="row draggable" style="position:fixed; z-index: 10;">
+				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;" >
 					<div class="line-command-area">
 						<span class="pull-left">Add line</span><br />
 						<div class="btn-toolbar" role="toolbar">
@@ -30,6 +57,39 @@
 							</div>
 							<button type="button" id="savebutton" class="btn btn-default pull-right">Save</button>
 						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="row" style="position:fixed; z-index: 10; margin: 0 auto; width: 50%;">
+				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;" >
+					<div class="pagination-area">
+							<div class="btn-group">
+								<button id="firstpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
+								<button id="previouspagebutton" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button>
+							</div>
+							<form class="form-inline" style="display:inline-block; width:20%;">
+								<div class="form-group"> 
+									<div class="input-group">
+										<input type="text" id="currentpage" name="current_page" class="form-control" value="<?php echo $page['current_page']; ?>">
+										<div class="input-group-addon total-page">/ <?php echo $page['total_page']; ?></div>
+									</div>
+								</div>
+							</form>
+						<!-- 	<input type="number" style="width:25%;"/>
+							/ 999 -->
+								
+							<div class="btn-group">
+								<button id="nextpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button>
+								<button id="lastpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+							</div>
+							<form class="form-inline pull-right" style="display:inline-block">
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-addon "><span class="glyphicon glyphicon-search"></span></div>
+										<input type="search" class="form-control" placeholder="search by label">
+									</div>
+								</div>
+							</form>
 					</div>
 				</div>
 			</div>
@@ -98,6 +158,7 @@
 </tr>
  -->
 
+ <!--############################################################################-->
 
 <!-- text line form template filled
 <tr>
@@ -251,6 +312,8 @@
 </tr>
  -->
 
+ <!--############################################################################-->
+
  <!-- choice line form fill
  <tr>
 	<td>
@@ -322,13 +385,27 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- video line form new
  <tr>
 	<td>
 		<form class="form-horizontal video-line-form">
 			<div class="row">
 				<div class="col-md-1">
-					<span class="line-sequence">'+0+'</span>
+					<span class="line-sequence">'+tail+'</span>
 					<br /> <br />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
 				</div>
@@ -340,6 +417,60 @@
 						<div class="col-md-9">
 							<input type="text" name="video" class="form-control input-sm" placeholder="video" value="" />
 								<input type="hidden" name="video_resource_id" value="" />
+						</div>
+					</div>
+					<div class="collapse">
+						<div class="form-inline">
+							<div class="form-group">
+								<div class="col-md-3">
+									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" />
+										<input type="hidden" name="jumpto_line_id" value="" />
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3">
+									<input type="text" name="label" class="form-control input-xs" placeholder="label" value="" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+				</div>
+			
+			</div>
+			<input type="hidden" name="sequence" value="'+tail+'" />
+			<input type="hidden" name="line_id" value="'+new_line_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
+ <!--############################################################################-->
+
+<!-- video line form fill
+ <tr>
+	<td>
+		<form class="form-horizontal video-line-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="line-sequence">'+value.sequence+'</span>
+					<br /> <br />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+				</div>
+				<div class="col-md-2">
+					<span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span>
+				</div>
+				<div class="col-md-8">
+					<div class="form-group">
+						<div class="col-md-9">
+							<input type="text" name="video" class="form-control input-sm" placeholder="video" value="'+value.video_name+'" />
+								<input type="hidden" name="video_resource_id" value="'+value.video_resource_id+'" />
 						</div>
 					</div>
 					<div class="collapse">
@@ -373,6 +504,46 @@
 	</td>
 </tr>
  -->
+
+
+
+
+
+
+
+
+<!-- end line form new
+<tr>
+	<td>
+		<form class="form-horizontal end-line-form">
+			<div class="row">
+				<div class="col-md-1">
+					<span class="line-sequence">'+tail+'</span>
+					<br /> <br />
+					<span class="glyphicon glyphicon-resize-vertical"></span>
+				</div>
+				<div class="col-md-2">
+					<span class="glyphicon glyphicon-step-forward pull-right" style="font-size: 4em;"></span>
+				</div>
+				<div class="col-md-8" style="padding-top: 15px;">
+					<p>End mark.</p>
+				</div>
+				<div class="col-md-1">
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<br />
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<br />
+					
+				</div>
+			
+			</div>
+			<input type="hidden" name="sequence" value="'+tail+'" />
+			<input type="hidden" name="line_id" value="'+new_line_id+'" />
+		</form>
+	</td>
+</tr>
+ -->
+
 
 							</tbody>
 						</table>

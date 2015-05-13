@@ -259,13 +259,23 @@ Class Common extends CI_Model {
 		return $result;
 	}
 */
-	function getLine($project_id) {
+	function getLine($project_id, $limit, $offset) {
 		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
 		$this->db->from('line');
 		$this->db->where('line.fk_project_id', $project_id);
 		$this->db->order_by('sequence', 'ASC');
+		// join and select for jumpto_line_id label name
+		$this->db->select('ref_line.label as jumpto_line_label');
+		$this->db->join('line as ref_line', 'ref_line.line_id = line.jumpto_line_id', 'left');
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 		$result = $query->result_array();
+		return $result;
+	}
+	function getTotalLine($project_id) {
+		$this->db->from('line');
+		$this->db->where('fk_project_id', $project_id);
+		$result = $this->db->count_all_results();
 		return $result;
 	}
 	function getBackground($line_id) {
@@ -319,11 +329,24 @@ Class Common extends CI_Model {
 		return $result;
 	}
 	function getChoice($line_id)  {
-		$this->db->select('choice_id, content, jumpto_line_id');
+		$this->db->select('choice_id, choice.content, choice.jumpto_line_id');
 		$this->db->from('choice');
 		$this->db->where('fk_line_id', $line_id);
+		// join and select for jumpto_line_id label name
+		$this->db->select('ref_line.label as jumpto_line_label');
+		$this->db->join('line as ref_line', 'ref_line.line_id = choice.jumpto_line_id', 'left');
 		$query = $this->db->get();
 		$result = $query->result_array();
+		return $result;
+	}
+	function getVideo($line_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->join('lineres', 'fk_resource_id = resource_id');
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resourcetype_id', 6);
+		$query = $this->db->get();
+		$result = $query->row_array();
 		return $result;
 	}
 	// AUTOCOMPLETE LIST
@@ -408,6 +431,15 @@ Class Common extends CI_Model {
 	function getEffect() {
 		$this->db->select('effect_id, name');
 		$this->db->from('effect');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getResourceVideo($project_id) {
+		$this->db->select('resource_id, name, file_name');
+		$this->db->from('resource');
+		$this->db->where('fk_project_id', $project_id);
+		$this->db->where('fk_resourcetype_id', 6);
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
