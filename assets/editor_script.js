@@ -1860,21 +1860,26 @@ $(document.body).on('mouseup', '.btn', function(){
 
 
 $('#firstpagebutton').click(function() {
-	if(callLineData("first")) {
-	}
-		$('#currentpage').val("1");>>>
+	callLineData("first")
+	$('#currentpage').val("1");
 });
 
 $('#previouspagebutton').click(function() {
 	callLineData("previous");
+	var current = $('#currentpage').val() - 1;
+	$('#currentpage').val(current);
 });
 
 $('#nextpagebutton').click(function() {
 	callLineData("next");
+	var current = $('#currentpage').val() + 1;
+	$('#currentpage').val(current);
 });
 
 $('#lastpagebutton').click(function() {
 	callLineData("last");
+	var current = $('#totalpage').text();
+	$('#currentpage').val(current);
 });
 
 var canvasdisplay = document.getElementsByTagName('canvas')[0];

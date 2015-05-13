@@ -71,7 +71,7 @@
 								<div class="form-group"> 
 									<div class="input-group">
 										<input type="text" id="currentpage" name="current_page" class="form-control" value="<?php echo $page['current_page']; ?>">
-										<div class="input-group-addon total-page">/ <?php echo $page['total_page']; ?></div>
+										<div id="totalpage" class="input-group-addon total-page">/ <?php echo $page['total_page']; ?></div>
 									</div>
 								</div>
 							</form>
