@@ -99,35 +99,45 @@ class Editor extends CI_Controller {
 
 		$current_page = $this->input->post('current');
 		$page = $this->input->post('to');
+		$by = $this->input->post('by');
 		$per_page = 5;
 		$total_line = $this->common->getTotalLine($proj['id']);
 		$total_page = ceil($total_line / $per_page);
-		if($page == "last") {
-			$page = $total_page;
+		if($by == "0") {
+			if($page == "last") {
+				$page = $total_page;
+			}
+			else if($page == "first") {
+				$page = 1;
+			}
+			else if($page == "previous") {
+				$page = $current_page - 1;
+			}
+			else if($page == "next") {
+				$page = $current_page +1;
+			}
+			// not put with "or" condition so previous and next won't generate error due to out of page
+			if($page > $total_page) {
+				$page = $total_page;
+			}
+			else if($page < 1) {
+				$page = 1;
+			}
 		}
-		else if($page == "first") {
-			$page = 1;
-		}
-		else if($page == "previous") {
-			$page = $current_page - 1;
-		}
-		else if($page == "next") {
-			$page = $current_page +1;
-		}
-		else {
-			$page = $total_page;
-		}
-		// not put with "or" condition so previous and next won't generate error due to out of page
-		if($page > $total_page) {
-			$page = $total_page;
-		}
-		else if($page < 1) {
-			$page = 1;
-		}
-		$this->fb->log($current_page);
+		
 
-		$offset = ($page - 1) * $per_page;
+		$this->fb->log($page);
+		// (conditional) load with search or page
+		if($by == "0") {
+			// offset is automatically 0 if string put as value (php)
+			$offset = ($page - 1) * $per_page;
+		}
+		else if($by == "label") {
+			$pass = $this->common->getLineSequenceByLabel($proj['id'], $page);
+			$offset = $pass - 1;
+		}
 
+		
 		$pass_line = $this->common->getLine($proj['id'], $per_page, $offset);
 		$line = array();
 		$sprite = array();

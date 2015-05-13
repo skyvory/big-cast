@@ -25,6 +25,7 @@
 									<span>at end of this section</span>
 							</label>
 						</div>
+						<button id="test">test</button>
 					</div>
 			</div>
 		</div>
@@ -61,17 +62,17 @@
 				</div>
 			</div> -->
 			<div class="row" style="position:fixed; z-index: 10; margin: 0 auto; width: 50%;">
-				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;" >
+				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;">
 					<div class="pagination-area">
 							<div class="btn-group">
-								<button id="firstpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-step-backward"></span></button>
-								<button id="previouspagebutton" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span></button>
+								<button id="firstpagebutton" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="go to first page"><span class="glyphicon glyphicon-step-backward"></span></button>
+								<button id="previouspagebutton" class="btn btn-default"><span class="glyphicon glyphicon-backward"></span> prev</button>
 							</div>
 							<form class="form-inline" style="display:inline-block; width:20%;">
-								<div class="form-group"> 
+								<div class="form-group">
 									<div class="input-group">
 										<input type="text" id="currentpage" name="current_page" class="form-control" value="<?php echo $page['current_page']; ?>">
-										<div id="totalpage" class="input-group-addon total-page">/ <?php echo $page['total_page']; ?></div>
+										<div class="input-group-addon total-page">/ <span id="totalpage"><?php echo $page['total_page']; ?></span></div>
 									</div>
 								</div>
 							</form>
@@ -79,14 +80,14 @@
 							/ 999 -->
 								
 							<div class="btn-group">
-								<button id="nextpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-forward"></span></button>
-								<button id="lastpagebutton" class="btn btn-default"><span class="glyphicon glyphicon-step-forward"></span></button>
+								<button id="nextpagebutton" class="btn btn-default">next <span class="glyphicon glyphicon-forward"></span></button>
+								<button id="lastpagebutton" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="go to last page"><span class="glyphicon glyphicon-step-forward"></span> </button>
 							</div>
-							<form class="form-inline pull-right" style="display:inline-block">
+							<form class="form-inline pull-right" style="display:inline-block; width:30%;">
 								<div class="form-group">
-									<div class="input-group">
-										<div class="input-group-addon "><span class="glyphicon glyphicon-search"></span></div>
-										<input type="search" class="form-control" placeholder="search by label">
+									<div class="input-group" data-toggle="tooltip" data-placement="bottom" title="load lines by label">
+										<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+										<input type="search" id="searchpage" class="form-control" placeholder="search">
 									</div>
 								</div>
 							</form>
@@ -100,6 +101,15 @@
 						</span>
 						<table class="table">
 							<tbody class="line-list">
+
+
+
+
+
+
+
+
+
 <!-- text line form template new
 <tr>
 	<td>
@@ -113,11 +123,15 @@
 				<div class="col-md-10">
 					<div class="form-group">
 						<div class="form-inline">
+							<span class="glyphicon glyphicon-user"></span> 
 							<input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" />
+							<span class="glyphicon glyphicon-picture"></span> 
 							<input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" />
 								<input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" />
+							<span class="glyphicon glyphicon-headphones"></span> 
 							<input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" />
 								<input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" />
+							<span class="glyphicon glyphicon-volume-down"></span> 
 							<input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" />
 								<input type="hidden" name="voice_resource_id" value="" />
 						</div>
@@ -131,10 +145,13 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<div class="form-inline">
+										<span class="glyphicon glyphicon-bullhorn"></span> 
 										<input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/>
 											<input type="hidden" name="sfx_resource_id" value="" />
-										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" />
+										<span class="glyphicon glyphicon-share-alt"></span> 
+										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" />
 											<input type="hidden" name="jumpto_line_id" value="" />
+										<span class="glyphicon glyphicon-tag"></span> 
 										<input type="text" name="label" class="form-control input-xs" placeholder="label" value="" />
 									</div>
 								</div>
@@ -173,11 +190,15 @@
 				<div class="col-md-10">
 					<div class="form-group">
 						<div class="form-inline">
+							<span class="glyphicon glyphicon-user"></span> 
 							<input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+value.speaker+'" />
+							<span class="glyphicon glyphicon-picture"></span> 
 							<input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+value.background_name+'" />
 								<input type="hidden" name="background_resource_id" value="'+value.background_resource_id+'" />
+							<span class="glyphicon glyphicon-headphones"></span> 
 							<input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+value.bgm_name+'" />
 								<input type="hidden" name="bgm_resource_id" value="'+value.bgm_resource_id+'" />
+							<span class="glyphicon glyphicon-volume-down"></span> 
 							<input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+value.voice_name+'" />
 								<input type="hidden" name="voice_resource_id" value="'+value.voice_resource_id+'" />
 						</div>
@@ -191,10 +212,13 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<div class="form-inline">
+										<span class="glyphicon glyphicon-bullhorn"></span> 
 										<input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/>
 											<input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" />
-										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" />
+										<span class="glyphicon glyphicon-share-alt"></span> 
+										<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="'+value.jumpto_line_label+'" />
 											<input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" />
+										<span class="glyphicon glyphicon-tag"></span> 
 										<input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" />
 									</div>
 								</div>
@@ -333,10 +357,10 @@
 						<div class="col-md-8">
 							<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value="'+j_value.content+'"/>
 								<input type="hidden" name="choice_id" value="'+j_value.choice_id+'" />
-								<input type="hidden" name="choice_temp_index" value="'+i+'" />
+								<input type="hidden" name="choice_temp_index" value="'+j_value.choice_temp_index+'" />
 						</div>
 						<div class="col-md-3" style="margin-left:-25px;">
-							<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
+							<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value="'+j_value.jumpto_line_label+'"/>
 								<input type="hidden" name="jumpto_line_id" value="'+j_value.jumpto_line_id+'" />
 						</div>
 					</div>
@@ -344,20 +368,6 @@
 
 
 					<div class="collapse">
-
-
-						<div class="form-group per-choice" style="margin: 0px 5px 5px 0px;">
-							<label class="col-md-1 control-label">1</label>
-							<div class="col-md-8">
-								<input type="text" name="choice_content" class="form-control input-sm" placeholder="choice" value=""/>
-									<input type="hidden" name="choice_id" value="new" />
-									<input type="hidden" name="choice_temp_index" value="3" />
-							</div>
-							<div class="col-md-3" style="margin-left:-25px;">
-								<input type="text" name="choice_jumpto" class="form-control input-sm" placeholder="jump to" value=""/>
-									<input type="hidden" name="jumpto_line_id" value="" />
-							</div>
-						</div>
 						
 						
 
@@ -423,7 +433,7 @@
 						<div class="form-inline">
 							<div class="form-group">
 								<div class="col-md-3">
-									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" />
+									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" />
 										<input type="hidden" name="jumpto_line_id" value="" />
 								</div>
 							</div>
@@ -477,7 +487,7 @@
 						<div class="form-inline">
 							<div class="form-group">
 								<div class="col-md-3">
-									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_id+'" />
+									<input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="'+value.jumpto_line_id+'" />
 										<input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" />
 								</div>
 							</div>
@@ -560,7 +570,7 @@
 					</div>
 				</div>
 			</div>
-			<button id="test">test</button>
+			
 			<div class="row">
 				<div class="col-md-11 col-md-offset-1 sprite-area"  style="position: fixed; width: 30%; margin-top: 220px; margin-left:6%;">
 					<table class="table">

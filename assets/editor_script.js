@@ -40,14 +40,16 @@ function getLastLineObjectBySequence(seq) {
 
 }
 
-function callLineData(page) {
+function callLineData(page, by) {
+	by = by || 0;
 	current_page = $('#currentpage').val();
 	var req = $.ajax({
 		url: config.base + "index.php/editor/loadLineData",
 		type: "POST",
 		data: {
 			current: current_page,
-			to: page
+			to: page,
+			by: by
 		},
 		dataType: "html",
 		beforeSend: function() {
@@ -71,7 +73,7 @@ function callLineData(page) {
 						tail = parseInt(value.sequence);
 					}
 					if(value.fk_linetype_id == "1") {
-						block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+value.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+value.background_name+'" /> <input type="hidden" name="background_resource_id" value="'+value.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+value.bgm_name+'" /> <input type="hidden" name="bgm_resource_id" value="'+value.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+value.voice_name+'" /> <input type="hidden" name="voice_resource_id" value="'+value.voice_resource_id+'" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content">'+value.content+'</textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/> <input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_label+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
+						block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+value.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+value.background_name+'" /> <input type="hidden" name="background_resource_id" value="'+value.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+value.bgm_name+'" /> <input type="hidden" name="bgm_resource_id" value="'+value.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="'+value.voice_name+'" /> <input type="hidden" name="voice_resource_id" value="'+value.voice_resource_id+'" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content">'+value.content+'</textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value="'+value.sfx_name+'"/> <input type="hidden" name="sfx_resource_id" value="'+value.sfx_resource_id+'" /> <span class="glyphicon glyphicon-share-alt"></span> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="'+value.jumpto_line_label+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> <span class="glyphicon glyphicon-tag"></span> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
 						$(block).appendTo('.line-list');
 					}
 					else if(value.fk_linetype_id == "2") {
@@ -88,7 +90,7 @@ function callLineData(page) {
 						$(block).appendTo('.line-list');
 					}
 					else if(value.fk_linetype_id == "3") {
-						block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="'+value.video_name+'" /> <input type="hidden" name="video_resource_id" value="'+value.video_resource_id+'" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="'+value.jumpto_line_label+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
+						block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+value.sequence+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="'+value.video_name+'" /> <input type="hidden" name="video_resource_id" value="'+value.video_resource_id+'" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="'+value.jumpto_line_label+'" /> <input type="hidden" name="jumpto_line_id" value="'+value.jumpto_line_id+'" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="'+value.label+'" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+value.sequence+'" /> <input type="hidden" name="line_id" value="'+value.line_id+'" /> </form> </td> </tr>';
 						$(block).appendTo('.line-list');
 					}
 					else if (value.fk_linetype_id == 4) {
@@ -100,10 +102,6 @@ function callLineData(page) {
 			else {
 				console.log("no result fetched");
 			}
-			return true;
-		}
-		else {
-			return false;
 		}
 	});
 }
@@ -227,7 +225,7 @@ $('#addtextlinebutton').click(function() {
 					console.log(line_obj);
 
 					tail++;
-					var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+					var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> &nbsp; <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> &nbsp; <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> &nbsp; <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> &nbsp; <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> &nbsp; <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> &nbsp; <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <span class="glyphicon glyphicon-tag"></span> &nbsp; <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 
 					// append block of new text line after selected line
 					var element_before_insert = $('.line-list tr').has('input[name=sequence][value='+form_sequence+']');
@@ -289,7 +287,7 @@ $('#addtextlinebutton').click(function() {
 					voice_file_name: "",
 					sprite: []
 				});
-				var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+				var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> &nbsp; <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> &nbsp; <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> &nbsp; <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> &nbsp; <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> &nbsp; <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> &nbsp; <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <span class="glyphicon glyphicon-tag"></span> &nbsp; <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 				$(block).appendTo('.line-list');
 			}
 		});
@@ -504,7 +502,7 @@ $('#addvideolinebutton').click(function() {
 					line_obj.splice(index_to_write, 0, new_line);
 
 					tail++;
-					var block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="" /> <input type="hidden" name="video_resource_id" value="" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+					var block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="" /> <input type="hidden" name="video_resource_id" value="" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 
 					// append block of new choice line after selected line
 					var element_before_insert = $('.line-list tr').has('input[name=sequence][value='+form_sequence+']');
@@ -551,7 +549,7 @@ $('#addvideolinebutton').click(function() {
 					video_name: "",
 					video_resource_id: ""
 				});
-				var block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="" /> <input type="hidden" name="video_resource_id" value="" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" title="jump to another line instead by sequence order" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+				var block = ' <tr> <td> <form class="form-horizontal video-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-2"> <span class="glyphicon glyphicon-film pull-left" style="font-size: 5em;"></span> </div> <div class="col-md-8"> <div class="form-group"> <div class="col-md-9"> <input type="text" name="video" class="form-control input-sm" placeholder="video" value="" /> <input type="hidden" name="video_resource_id" value="" /> </div> </div> <div class="collapse"> <div class="form-inline"> <div class="form-group"> <div class="col-md-3"> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> </div> </div> <div class="form-group"> <div class="col-md-3"> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 				$(block).appendTo('.line-list');
 			}
 		});
@@ -1858,7 +1856,7 @@ $(document.body).on('mouseup', '.btn', function(){
     $(this).blur();
 });
 
-
+// pagination
 $('#firstpagebutton').click(function() {
 	callLineData("first")
 	$('#currentpage').val("1");
@@ -1867,19 +1865,86 @@ $('#firstpagebutton').click(function() {
 $('#previouspagebutton').click(function() {
 	callLineData("previous");
 	var current = $('#currentpage').val() - 1;
+	if(current < 1) {
+		current = 1;
+	}
 	$('#currentpage').val(current);
 });
 
 $('#nextpagebutton').click(function() {
 	callLineData("next");
-	var current = $('#currentpage').val() + 1;
+	var total = $('#totalpage').text();
+	var current = parseInt($('#currentpage').val()) + 1;
+	if(current > total) {
+		current = total;
+	}
 	$('#currentpage').val(current);
 });
 
 $('#lastpagebutton').click(function() {
 	callLineData("last");
-	var current = $('#totalpage').text();
-	$('#currentpage').val(current);
+	var total = $('#totalpage').text();
+	$('#currentpage').val(total);
+});
+
+// delay function
+var delay = (function(){
+	var timer = 0;
+	return function(callback, ms){
+		clearTimeout (timer);
+		timer = setTimeout(callback, ms);
+	};
+})();
+
+// auto load line on page manual input
+$('#currentpage').keyup(function() {
+	var input_value = $(this).val();
+	delay(function() {
+		console.log(input_value);
+		callLineData(input_value);
+	}, 1000);
+});
+
+// prevent enter key default submit
+$('#currentpage').keypress(function(event) {
+	if(event.keyCode == 13) {
+		event.preventDefault();
+	}
+});
+
+// load page by label search
+$('#searchpage').keypress(function(event) {
+	var input_value = $('#searchpage').val();
+	if(event.keyCode == 13) {
+		event.preventDefault();
+		callLineData(input_value, "label");
+	}
+});
+
+// tooltip bootstrap
+$(function () {
+	$('[data-toggle="tooltip"]').tooltip()
+});
+
+$(document.body).on('mouseover', '.line-delete-button, .sprite-delete-button', function() {
+	$(this).tooltip({
+		title: "remove line"
+	});
+	$(this).tooltip('show');
+});
+
+$(document.body).on('mouseover', '.line-collapse-button', function() {
+	$(this).tooltip({
+		title: "show more details"
+	});
+	$(this).tooltip('show');
+});
+
+$(document.body).on('mouseover', 'input[name=jumpto]', function() {
+	$(this).tooltip({
+		title: "label where this line proceed to without following sequence order"
+	});
+	$(this).tooltip('show');
 });
 
 var canvasdisplay = document.getElementsByTagName('canvas')[0];

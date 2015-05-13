@@ -278,6 +278,16 @@ Class Common extends CI_Model {
 		$result = $this->db->count_all_results();
 		return $result;
 	}
+	function getLineSequenceByLabel($project_id, $label) {
+		$this->db->select('sequence');
+		$this->db->from('line');
+		$this->db->where('line.fk_project_id', $project_id);
+		$this->db->like('label', $label, 'after');
+		$this->db->limit(1);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result['sequence'];
+	}
 	function getBackground($line_id) {
 		$this->db->select('resource_id, name, file_name');
 		$this->db->from('resource');

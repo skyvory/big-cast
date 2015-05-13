@@ -1,4 +1,5 @@
 ﻿
+0.7
 - update database 0.7: update choice table to include "jumpto_line_id"
 - update "jumpto" autocomplete so that all input in same container not changed simultaneously
 - decided not to implement "jumpto" together with choice section, make new "choice_jumpto" for choice line
@@ -7,6 +8,9 @@
 - complete choice line manipulation capability
 - complete video line manipulation capability
 - show label name instead id on jumpto input
+- add icon on text line interface
+- add some tooltips
+- complete pagination capability
 
 0.6
 - editor initial interface
