@@ -69,10 +69,11 @@ function callSequentialLineData(returndata) {
 	});
 	req.done(function(msg) {
 		if(msg.length) {
+			// append all line data to line object
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
 			})
-			// line.push(msg);
+			// increase head the same number as retrieved lines
 			current.head+=msg.length;
 			returndata(msg.length);
 		}
@@ -101,26 +102,59 @@ function callSequentialLineData(returndata) {
 // }
 
 function processSequentialResource() {
-	if(cache.head <= cache.head + cache.limit) {
-	console.log(cache.head);
+	if(cache.head < current.sequence + cache.limit) {
+		// console.log(cache.head);
 		cache.head++;
 		var index_to_read = getObjectIndex(line, 'sequence', cache.head);
 		if(line[index_to_read]) {
+			// for text line
 			if(line[index_to_read].fk_linetype_id == 1) {
+				var status = true;
+				// if background exist
 				if(line[index_to_read].background_resource_id) {
 					var path_to_background = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/background/" + line[index_to_read].background_file_name;
-					console.log(path_to_background)
-					preloadImage(path_to_background, line[index_to_read].background_resource_id, function() {
-						processSequentialResource();
+					var resource_id = line[index_to_read].background_resource_id;
+					preloadImage(path_to_background, resource_id, function(returndata) {
+						if(!returndata) {
+							status = false;
+						}
+					});
+				}
+				// if bgm exist
+				if(line[index_to_read].bgm_resource_id) {
+					var path_to_bgm = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/bgm/" + line[index_to_read].bgm_file_name;
+					var resource_id = line[index_to_read].bgm_resource_id;
+					preloadAudio(path_to_bgm, resource_id, function(returndata) {
+						if(!returndata) {
+							status = false;
+						}
+					});
+				}
+				// if voice exist
+				if(line[index_to_read].voice_resource_id) {
+					var path_to_voice = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/voice/" + line[index_to_read].voice_file_name;
+					var resource_id = line[index_to_read].voice_resource_id;
+					preloadAudio(path_to_voice, resource_id, function(returndata) {
+						if(!returndata) {
+							status = false;
+						}
+					});
+				}
+				// if sfx exist
+				if(line[index_to_read].sfx_resource_id) {
+					var path_to_sfx = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/sfx/" + line[index_to_read].sfx_file_name;
+					// console.log(path_to_sfx);
+					var resource_id = line[index_to_read].sfx_resource_id;
+					preloadAudio(path_to_sfx, resource_id, function(returndata) {
+						if(!returndata) {
+							status = false;
+						}
 					});
 				}
 				
-				// if(line[index_to_read].bgm_resource_id) {
-				// 	var path_to_bgm = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/bgm/" + line[index_to_read].bgm_file_name;
-				// }
-				// else {
-				// 	console.log("NO THIS TYPE OF RESOURCE");
-				// }
+				if(status == true) {
+					processSequentialResource();
+				}
 			}
 			else {
 				console.log("NOT A TEXT LINE");
@@ -135,14 +169,12 @@ function preloadImage(source, resource_id, callback) {
 	// check if cache exist
 	var is_exist = $('.image-cache').has('img[id='+resource_id+']').length;
 	if(is_exist) {
-		console.log("already cached");
-		callback();
+		callback(true);
 	}
 	else {
 		$("<img/>").attr("src", source).attr("id", resource_id).css("display", "none").appendTo('.image-cache');
-		$('img[id='+resource_id+']').one('load', function() {
-			console.log("cached");
-			callback();
+		$('img[id='+resource_id+']').on('load', function() {
+			callback(true);
 		});
 	}
 }
@@ -151,13 +183,13 @@ function preloadAudio(source, resource_id, callback){
 	var is_exist = $('.audio-cache').has('audio[id='+resource_id+']').length;
 	if(is_exist) {
 		console.log("already cached");
-		callback();
+		callback(true);
 	}
 	else {
 		$("<audio/>").attr("src", source).attr("id", resource_id).css("display", "none").appendTo('.audio-cache');
 		$('audio[id='+resource_id+']').on('canplaythrough', function() {
 			console.log("cached");
-			callback();
+			callback(true);
 		});
 	}
 }
