@@ -1,18 +1,4 @@
 
-<div>
-	<center><canvas id="visual" style="border:2px solid black;"></canvas></center>
-</div>
-<img src="../resources/a.jpg" id="my-image" style="display:none;">
-<button id="changeSrc">Change Image</button>
-
-<script type="text/javascript">
-
-var canvasdisplay = document.getElementsByTagName('canvas')[0];
-canvasdisplay.width = 800;
-canvasdisplay.height = 600;
-canvasdisplay.style.width  = '800px';
-canvasdisplay.style.height = '600px';
-
 var canvas = new fabric.Canvas('visual');
 canvas.selection = false;
 //canvas.hoverCursor = 'default';
@@ -93,7 +79,7 @@ var str = ['Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam n
 
 var url = '../resources/ap.jpg';
 var count = 0;
-var x = -200;
+var x = -0;
 var url = ['../resources/BG011Y.bmp', '../resources/bg15_01b.jpg', '../resources/bg15_05s.jpg'];
 
 function txtren(){
@@ -118,7 +104,7 @@ function txtrenper(){
 }
 function imgren(){
 	fabric.Image.fromURL(url[count], function(img){
-			var imgx = img.scale(2).set({ top: x, left: 0, opacity: 0, angle: 0, scaleX: 1 });
+			var imgx = img.scale(2).set({ top: x, left: 0, opacity: 0, angle: 0, scaleY: 2 });
 			imgx.set('selectable', false);
 			canvas.add(imgx);
 			imgx.animate('opacity', '1', { 
@@ -133,16 +119,69 @@ function imgren(){
 				onComplete: txtren()
 			});
 		});
-	count++;
+	//move to another line!count++;
 }
+
+bgmurl = ['../resources/02.Active.mp3', '../resources/01.Gentle.mp3', '../resources/03.Clam.mp3', '../resources/04.Bound.mp3', '../resources/05.Eventide.mp3', '../resources/01.Gentle.mp3', '../resources/02.Active.mp3'];
+chvurl = ['../resources/VOICE.arc_000001.ogg', '../resources/VOICE.arc_000002.ogg', '../resources/VOICE.arc_000003.ogg', '../resources/VOICE.arc_000004.ogg', '../resources/VOICE.arc_000005.ogg', '../resources/VOICE.arc_000006.ogg', '../resources/VOICE.arc_000007.ogg', '../resources/VOICE.arc_000008.ogg', '../resources/VOICE.arc_000009.ogg', '../resources/VOICE.arc_000010.ogg', '../resources/VOICE.arc_000011.ogg', '../resources/VOICE.arc_000012.ogg']
+sfxurl = ['../resources/se001.ogg', '../resources/se002.ogg', '../resources/se003.ogg', '../resources/se004.ogg', '../resources/se005.ogg', '../resources/se006.ogg', '../resources/se007.ogg', '../resources/se008.ogg'];
+var bgmplay = 0;
+var bgmobject = document.getElementById('myaudio');
+function sndren(){
+	var sound = new Howl({
+	  //urls: ['../resources/se001.ogg', '../resources/02.Active.mp3'],
+	  urls: [bgmurl[count]],
+	  autoplay: false
+	});
+	
+	sound.play();
+	bgmplay = 1;
+}
+function sfxren(){
+	var sfx = new Howl({
+		id: 'aaa',
+		urls: [sfxurl[count]],
+		autoplay: true
+	});
+}
+
+function sndren2(){
+	if(bgmplay==1){
+	//	audio.pause();
+		//unnecessary!bgmplay = 0;
+	}
+	var audio = new Audio(bgmurl[count]);
+	if(typeof audio.loop == 'boolean'){
+		audio.loop = true;
+	}
+	else{
+		audio.addEventListener('ended', function(){
+			this.currentTime = 0;
+			this.play();
+		}, false);
+	}
+	audio.play();
+}
+//var audio = new Audio(bgmurl[count]);
+//	audio.play();
+//	bgmplay=1;
+//	console.dir(audio);
+
 canvas.on('mouse:down', function(nextline){
 	console.log(count);
-	canvas.clear();
-	
+	//canvas.clear();
 	imgren();
+	
+	if(count%2==1)
+		playBgm(bgmurl[count-1]);
+	else
+		playBgm(bgmurl[count]);
+	playChv(chvurl[count-1]);
+	
+	//sfxren();
+	
 		
-		
-		
+	
 	
 
 		//textx.set({ text: 'another world another route to accomplished' });
@@ -154,7 +193,7 @@ canvas.on('mouse:down', function(nextline){
 //fail canvas.remove(canvas.item('txt1'));
 //canvas.remove(canvas.getActiveObject('alx'));
 	
-
+	count++;
 });
 
 
@@ -167,9 +206,17 @@ $(document).keypress(function(e){
 	if(e.which == 13){
 		//...from fabric to count
 		//setTimeout(typeOut(linetext[count], 25, 25, 32, 10 ), 1000);
-		canvas.remove(obj.get(''));
+		//canvas.remove(obj.get(''));
 		//canvas.remove(canvas.getActiveObject('alx'));
 		//count++;
+		if(bgmplay==1){
+			audio.pause();
+			bgmplay=0;
+		}
+		else{
+			audio.play();
+			bgmplay=1;
+		}
 	}
 });
 
@@ -203,7 +250,76 @@ function typeOut(str, startX, startY, lineHeight, padding) {
 }
 
 
+// Global variable to track current file name.
+var bgmnowplaying, chvnowplaying, sfxnowplaying;
+
+function playBgm(bgmurl) {
+	// Check for audio element support.
+	if (window.HTMLAudioElement) {
+		try {
+			var bgm = $("#bgmfront")[0];
+			//confusing!var audiosource = bgmurl;
+
+			//Skip loading if current file hasn't changed
+			if (bgmurl !== bgmnowplaying) {
+				bgm.src = bgmurl;
+				bgmnowplaying = bgmurl;
+				console.log(bgmnowplaying);
+			
 
 
+				// Tests the paused attribute and set state. 
+				if (bgm.paused) {
+					bgm.volume = 1;
+					//for looping
+					if(typeof bgm.loop == 'boolean'){
+						bgm.loop = true;
+					}
+					else{
+						bgm.addEventListener('ended', function(){
+							this.currentTime = 0;
+							this.play();
+						}, false);
+					}
+					bgm.play();
+				}
+				else {
+					bgm.pause();
+				}
+			}
+			else{
+				//keep playing
+			}
+		}
+		catch (e) {
+			// Fail silently but show in F12 developer tools console
+			 if(window.console && console.error("Error:" + e));
+		}
+	}
+}
 
-</script>
+function playChv(chvurl) {
+	// Check for audio element support.
+	if (window.HTMLAudioElement) {
+		try {
+			var chv = $("#voicefront")[0];
+			//confusing!var audiosource = chvurl;
+
+			//Skip loading if current file hasn't changed
+			if (chvurl !== chvnowplaying) {
+				chv.src = chvurl;
+				chvnowplaying = chvurl;
+				console.log(chvnowplaying);
+			}
+
+
+			// Tests the paused attribute and set state. 
+				chv.volume = 1;
+				chv.play();
+		}
+		catch (e) {
+			// Fail silently but show in F12 developer tools console
+			 if(window.console && console.error("Error:" + e));
+		}
+	}
+}

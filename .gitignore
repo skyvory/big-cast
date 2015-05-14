@@ -11,4 +11,3 @@ application/logs/*
 resources/*
 
 *.ffs_db
-example*

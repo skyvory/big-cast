@@ -27,7 +27,7 @@ class Editor extends CI_Controller {
 		$data['sess'] = $this->session->userdata('user_auth');
 		$head['title'] = "Editor";
 
-		$per_page = 5;
+		$per_page = 50;
 		$total_line = $this->common->getTotalLine($proj['id']);
 		$total_page = ceil($total_line / $per_page);
 		if($total_page > 1) {
@@ -100,7 +100,7 @@ class Editor extends CI_Controller {
 		$current_page = $this->input->post('current');
 		$page = $this->input->post('to');
 		$by = $this->input->post('by');
-		$per_page = 5;
+		$per_page = 50;
 		$total_line = $this->common->getTotalLine($proj['id']);
 		$total_page = ceil($total_line / $per_page);
 		if($by == "0") {
@@ -497,6 +497,13 @@ class Editor extends CI_Controller {
 			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
 		}
 	}
+	public function removeLine() {
+		$line_id = $this->input->post('lineid');
+		$pass = $this->common->deleteLine($line_id);
+		if($pass) {
+			echo "1";
+		}
+	}
 	public function newLineX() {
 		echo "0";
 	}
@@ -526,9 +533,9 @@ class Editor extends CI_Controller {
 			if($value['object'] == "sprite") {
 				$sprite_to_delete[] = $value['id'];
 			}
-			else if($value['object'] == "line") {
-				$line_to_delete[] = $value['id'];
-			}
+			// else if($value['object'] == "line") {
+			// 	$line_to_delete[] = $value['id'];
+			// }
 		}
 		$lineres = array();
 		// validation, assign default value, assign lineres
@@ -550,28 +557,28 @@ class Editor extends CI_Controller {
 					$line[$key]['jumpto_line_id'] = null;
 				}
 				// if resource assigned, append to lineres for db insert
-				if(!empty($value['background_resource_id'])) {
+				if(isset($value['background_resource_id'])) {
 					$lineres[] = array(
 						'line_id' => $value['line_id'],
 						'resource_id' => $value['background_resource_id'],
 						'resource_type_id' => 2
 					);
 				}
-				if(!empty($value['bgm_resource_id'])) {
+				if(isset($value['bgm_resource_id'])) {
 					$lineres[] = array(
 						'line_id' => $value['line_id'],
 						'resource_id' => $value['bgm_resource_id'],
 						'resource_type_id' => 3
 					);
 				}
-				if(!empty($value['sfx_resource_id'])) {
+				if(isset($value['sfx_resource_id'])) {
 					$lineres[] = array(
 						'line_id' => $value['line_id'],
 						'resource_id' => $value['sfx_resource_id'],
 						'resource_type_id' => 4
 					);
 				}
-				if(!empty($value['voice_resource_id'])) {
+				if(isset($value['voice_resource_id'])) {
 					$lineres[] = array(
 						'line_id' => $value['line_id'],
 						'resource_id' => $value['voice_resource_id'],
@@ -684,20 +691,6 @@ class Editor extends CI_Controller {
 		}
 		// check for data existence and write to database
 		$status = TRUE;
-		// sprite delete
-		if(count($sprite_to_delete) > 0 && $status == TRUE) {
-			$pass_sprite_delete = $this->common->deleteSprite($sprite_to_delete);
-			if(!$pass_sprite_delete) {
-				$status = FALSE;
-			}
-		}
-		// line delete
-		if(count($line_to_delete) > 0 && $status == TRUE) {
-			$pass_line_delete = $this->common->deleteLine($line_to_delete);
-			if(!$pass_line_delete) {
-				$status = FALSE;
-			}
-		}
 		// line text update
 		if(count($line) > 0  && $status == TRUE) {
 			$pass_line_update = $this->common->updateTextLine($line);
@@ -810,6 +803,20 @@ class Editor extends CI_Controller {
 				$status = FALSE;
 			}
 		}
+		// sprite delete
+		if(count($sprite_to_delete) > 0 && $status == TRUE) {
+			$pass_sprite_delete = $this->common->deleteSprite($sprite_to_delete);
+			if(!$pass_sprite_delete) {
+				$status = FALSE;
+			}
+		}
+		// line delete
+		// if(count($line_to_delete) > 0 && $status == TRUE) {
+		// 	$pass_line_delete = $this->common->deleteLine($line_to_delete);
+		// 	if(!$pass_line_delete) {
+		// 		$status = FALSE;
+		// 	}
+		// }
 		// output
 		if($status == TRUE) {
 			$this->output->set_content_type('application/json');

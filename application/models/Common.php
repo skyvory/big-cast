@@ -472,6 +472,30 @@ Class Common extends CI_Model {
 			return $insert_id;
 		}
 	}
+	function deleteLine($line_id) {
+		$this->db->trans_begin();
+		$this->db->select('sequence');
+		$this->db->from('line');
+		$this->db->where('line_id', $line_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		$line_sequence = $result['sequence'];
+
+		$this->db->where('line_id', $line_id);
+		$this->db->delete('line');
+
+		$this->db->set('sequence', 'sequence-1', FALSE);
+		$this->db->where('sequence >', $line_sequence);
+		$this->db->update('line');
+		if($this->db->trans_status() === FALSE) {
+			$this->db->trans_rollback();
+			return FALSE;
+		}
+		else {
+			$this->db->trans_commit();
+			return TRUE;
+		}
+	}
 	function updateTextLine($line) {
 		$this->db->trans_begin();
 		foreach ($line as $key => $value) {
@@ -553,11 +577,11 @@ Class Common extends CI_Model {
 		$exec = $this->db->delete('sprite');
 		return $exec;
 	}
-	function deleteLine($line_id) {
-		$this->db->where_in('line_id', $line_id);
-		$exec = $this->db->delete('line');
-		return $exec;
-	}
+	// function deleteLine($line_id) {
+	// 	$this->db->where_in('line_id', $line_id);
+	// 	$exec = $this->db->delete('line');
+	// 	return $exec;
+	// }
 	function getLineres($line_id, $resource_type_id) {
 		$this->db->select('fk_resource_id');
 		$this->db->from('lineres');

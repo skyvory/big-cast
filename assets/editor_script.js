@@ -27,14 +27,26 @@ $('#test').click(function() {
 
 function getLastLineObjectBySequence(seq) {
 	// var select_form = $('.line-list tr td form').has('input[name=sequence][value='+seq+']');
-	var select_index = getObjectIndex(line_obj, 'sequence', seq);
-	var select_obj = {
-		speaker: line_obj[select_index].speaker,
-		background_resource_id: line_obj[select_index].background_resource_id,
-		background: line_obj[select_index].background_name,
-		bgm_resource_id: line_obj[select_index].bgm_resource_id,
-		bgm: line_obj[select_index].bgm_name,
-		sprite: line_obj[select_index].sprite
+	if(seq != 0) {
+		var select_index = getObjectIndex(line_obj, 'sequence', seq);
+		var select_obj = {
+			speaker: line_obj[select_index].speaker,
+			background_resource_id: line_obj[select_index].background_resource_id,
+			background: line_obj[select_index].background_name,
+			bgm_resource_id: line_obj[select_index].bgm_resource_id,
+			bgm: line_obj[select_index].bgm_name,
+			sprite: line_obj[select_index].sprite
+		}
+	}
+	else {
+		var select_obj = {
+			speaker: "",
+			background_resource_id: "",
+			background: "",
+			bgm_resource_id: "",
+			bgm: "",
+			sprite: []
+		}
 	}
 	return select_obj;
 
@@ -62,11 +74,12 @@ function callLineData(page, by) {
 			if(obj.length > 0) {
 				line_obj = obj;
 				head = obj[0]['sequence'];
+				console.log(head);
 				tail = head;
 				var block = "";
 				$('.line-list').html("");
 				$.each(obj, function(index, value) {
-					if(value.sequence < head) {
+					if(parseInt(value.sequence) < head) {
 						head = parseInt(value.sequence);
 					}
 					if(parseInt(value.sequence) > tail) {
@@ -100,6 +113,9 @@ function callLineData(page, by) {
 				});
 			}
 			else {
+				head = 0;
+				tail = 0;
+				$('.line-list').html('<p>No line to display.</p><p>You can add lines by using add line buttons.</p>');
 				console.log("no result fetched");
 			}
 		}
@@ -154,19 +170,25 @@ $('#addtextlinebutton').click(function() {
 	var select_form = $('.select-line');
 	// get value of which radio is selected for line insertion position
 	var insert_position = $('.line-command-area').find('input:radio[name=line_insert_position]:checked').val();
-	console.log(insert_position);
 	// add new line in the middle
 	if(insert_position == "after") {
 		// get sequence value of selected line
 		var form_sequence = $(select_form).find('input[name=sequence]').val();
 		form_sequence = parseInt(form_sequence);
+		var index_to_write = getObjectIndex(line_obj, 'sequence', form_sequence);
+		var form_line_type = line_obj[index_to_write].fk_linetype_id;
 		// throw error if no line selected
 		if(!form_sequence) {
 			callErrorNotification("select line first!");
 		}
 		else {
 			// get object consist of value from selected line
-			var last = getLastLineObjectBySequence(form_sequence);
+			if(form_line_type != 1) {
+				var last = getLastLineObjectBySequence(0);
+			}
+			else {
+				var last = getLastLineObjectBySequence(form_sequence);
+			}
 			var sequence_to_insert = form_sequence + 1;
 			var req = $.ajax({
 				url: config.base + 'index.php/editor/newLine',
@@ -218,7 +240,7 @@ $('#addtextlinebutton').click(function() {
 						voice_resource_id: "",
 						voice_name: "",
 						voice_file_name: "",
-						sprite: []
+						sprite: last.sprite
 					}
 					// insert new text line data in middle of line_obj
 					line_obj.splice(index_to_write, 0, new_line);
@@ -246,7 +268,14 @@ $('#addtextlinebutton').click(function() {
 	}
 	// add text line at end section
 	else if(insert_position == "end") {
-		var last = getLastLineObjectBySequence(tail);
+		var index_to_write = getObjectIndex(line_obj, 'sequence', tail);
+		var form_line_type = line_obj[index_to_write].fk_linetype_id;
+		if(form_line_type != 1) {
+			var last = getLastLineObjectBySequence(0);
+		}
+		else {
+			var last = getLastLineObjectBySequence(tail);
+		}
 		var temp_tail = tail+1;
 		var req = $.ajax({
 			url: config.base + 'index.php/editor/newLine',
@@ -263,6 +292,10 @@ $('#addtextlinebutton').click(function() {
 		req.done(function(msg) {
 			if(msg) {
 				var new_line_id = msg;
+				if(head == 0) {
+					head++;
+					$('.line-list').html("");
+				}
 				tail++;
 				line_obj.push({
 					line_id: msg.toString(),
@@ -285,9 +318,9 @@ $('#addtextlinebutton').click(function() {
 					voice_resource_id: "",
 					voice_name: "",
 					voice_file_name: "",
-					sprite: []
+					sprite: last.sprite
 				});
-				var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> &nbsp; <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> &nbsp; <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> &nbsp; <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> &nbsp; <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> &nbsp; <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> &nbsp; <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <span class="glyphicon glyphicon-tag"></span> &nbsp; <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
+				var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> &nbsp; <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> &nbsp; <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> &nbsp; <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> &nbsp; <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> &nbsp; <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> &nbsp; <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <span class="glyphicon glyphicon-tag"></span> &nbsp; <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 				$(block).appendTo('.line-list');
 			}
 		});
@@ -411,6 +444,10 @@ $('#addchoicelinebutton').click(function() {
 		req.done(function(msg) {
 			if(msg) {
 				var new_line_id = msg;
+				if(head == 0) {
+					head++;
+					$('.line-list').html("");
+				}
 				tail++;
 				line_obj.push({
 					line_id: new_line_id.toString(),
@@ -539,6 +576,10 @@ $('#addvideolinebutton').click(function() {
 		req.done(function(msg) {
 			if(msg) {
 				var new_line_id = msg;
+				if(head == 0) {
+					head++;
+					$('.line-list').html("");
+				}
 				tail++;
 				line_obj.push({
 					line_id: new_line_id.toString(),
@@ -643,6 +684,10 @@ $('#addendlinebutton').click(function() {
 		req.done(function(msg) {
 			if(msg) {
 				var new_line_id = msg;
+				if(head == 0) {
+					head++;
+					$('.line-list').html("");
+				}
 				tail++;
 				line_obj.push({
 					line_id: new_line_id.toString(),
@@ -878,7 +923,36 @@ function saveLine() {
 	})
 }
 
-$('.line-list').on('change', 'input[type=text], textarea', function() {
+// $('.line-list').on('change', 'input[name=background]', function() {
+// 	console.log("OK");
+// 	var input_id = $(select_form).find('input[name=background_resource_id]').val();
+// 	var input_value = $(this).val();
+// 	var verify = 0;
+// 	$.each(background_list, function(index, value) {
+// 		if(input_id == value.resource_id && input_value == value.name) {
+// 			verify++;
+// 		}
+// 	});
+// 	// for (var i = 0; i< background_list.length; i++) {
+// 	// 	if(input_id == background_list[i].resource_id &&input_value == background_list[i].name) {
+// 	// 		verify++;
+// 	// 	}
+// 	// };
+// 	console.log(input_id);
+// 	console.log(input_value);
+// 	if(verify == 1) {
+// 		line_obj[index_to_write].background_resource_id = input_id;
+// 		line_obj[index_to_write].background_name = input_value;
+// 		$(this).css("color", "");
+// 		console.log("OK");
+// 	}
+// 	else {
+// 		line_obj[index_to_write].background_resource_id = "";
+// 		$(this).css("color", "rgba(255, 90, 90, 1)");
+// 		callErrorNotification("background resource doesn't exist!");
+// 	}
+// })
+$('.line-list').on('focusout', 'input[type=text], textarea', function() {
 	var select_form = $(this.form);
 	var input_name = $(this).attr('name');
 	var form_id = $(select_form).find('input[name=line_id]').val();
@@ -894,17 +968,20 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			break;
 
 		case "background":
+			console.log("OK");
 			var input_id = $(select_form).find('input[name=background_resource_id]').val();
 			var input_value = $(this).val();
 			var verify = 0;
-			$.each(background_list, function(index, value) {
-				if(input_id == value.resource_id && input_value == value.name) {
+			for (var i = 0; i< background_list.length; i++) {
+				if(input_id == background_list[i].resource_id &&input_value == background_list[i].name) {
 					verify++;
 				}
-			});
+			};
 			console.log(input_id);
+			console.log(input_value);
 			if(verify == 1) {
 				line_obj[index_to_write].background_resource_id = input_id;
+				line_obj[index_to_write].background_name = input_value;
 				$(this).css("color", "");
 				console.log("OK");
 			}
@@ -918,6 +995,7 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 		case "bgm":
 			var input_id = $(select_form).find('input[name=bgm_resource_id]').val();
 			var input_value = $(this).val();
+			console.log(input_value);
 			var verify = 0;
 			$.each(bgm_list, function(index, value) {
 				if(input_id == value.resource_id && input_value == value.name) {
@@ -926,6 +1004,7 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 			});
 			if(verify == 1) {
 				line_obj[index_to_write].bgm_resource_id = input_id;
+				line_obj[index_to_write].bgm_name = input_value;
 				$(this).css("color", "");
 				console.log("OK");
 			}
@@ -1008,6 +1087,8 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 		case "choice_jumpto":
 			var input_id = $(this).siblings('input[name=jumpto_line_id]').val();
 			var input_value = $(this).val();
+			var input_temp_index = $(this).parent('div').parent('.per-choice').find('input[name=choice_temp_index]').val();
+			var choice_index_to_write = getObjectIndex(line_obj[index_to_write].choice, 'choice_temp_index', input_temp_index);
 			var verify = 0;
 			$.each(label_list, function(index, value) {
 				if(input_id == value.line_id && input_value == value.label) {
@@ -1015,15 +1096,12 @@ $('.line-list').on('change', 'input[type=text], textarea', function() {
 				}
 			});
 			if(verify == 1) {
-				var input_temp_index = $(this).parent('div').parent('.per-choice').find('input[name=choice_temp_index]').val();
-				console.log(input_temp_index);
-				var choice_index_to_write = getObjectIndex(line_obj[index_to_write].choice, 'choice_temp_index', input_temp_index);
 				line_obj[index_to_write].choice[choice_index_to_write].jumpto_line_id = input_id;
 				$(this).css("color", "");
 				console.log("OK");
 			}
 			else {
-				line_obj[index_to_write].jumpto_line_id = "";
+				line_obj[index_to_write].choice[choice_index_to_write].jumpto_line_id = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("label doesn't exist!");
 			}
@@ -1421,14 +1499,6 @@ $('.line-list').on('keydown', 'input[name=speaker]', function() {
 // autocomplete background input
 $('.line-list').on('keydown', 'input[name=background]', function() {
 	$(this).autocomplete({
-		// source: function(request, response) {
-		// 	var list = [];
-		// 	$.each(background_list, function(index, value) {
-		// 		list.push(value.name);
-		// 	});
-		// 	console.log(list);
-		// 	response(list);
-		// },
 		source: background_name_list,
 		minLength: 1,
 		focus: function(event, ui) {
@@ -1454,9 +1524,9 @@ $('.line-list').on('keydown', 'input[name=background]', function() {
 		},
 		select: function(event, ui) {
 			// get this input element
-			var input = $(this);
-			$(this.form).find('input[name=background_resource_id]').val(ui.item.value);
-			$(this.form).find('input[name=background]').val(ui.item.label);
+			var input = $(this.form);
+			$(input).find('input[name=background]').val(ui.item.label);
+			$(input).find('input[name=background_resource_id]').val(ui.item.value);
 			return false;
 		},
 		autoFocus: true
@@ -1786,35 +1856,50 @@ $('.line-list').on('click', '.line-delete-button', function(e) {
 	// delete line data on active line object
 	// delete line_obj[index_to_write];
 	// assign delete_obj with value from line_obj about to be deleted
-	delete_obj.push({
-		object: "line",
-		id: line_obj[index_to_write].line_id
+	// delete_obj.push({
+	// 	object: "line",
+	// 	id: line_obj[index_to_write].line_id
+	// });
+	var req = $.ajax({
+		url: config.base + 'index.php/editor/removeLine',
+		type: "POST",
+		data: {
+			lineid: form_id
+		},
+		dataType: "html"
 	});
-	line_obj.splice(index_to_write, 1);
-	// remove element from page
-	$(select_form).closest('tr').remove();
+	req.done(function(msg) {
+		if(msg == "1") {
+			line_obj.splice(index_to_write, 1);
+			// remove element from page
+			$(select_form).closest('tr').remove();
 
-	// revert tail by one
-	tail--;
+			// revert tail by one
+			tail--;
 
-	// reorder line
-	var count = head;
-	var i = 0;
-	// do something for each sortable data
-	$('.line-list').children('tr').each(function() {
-		// get line id of current iteration
-		var form_id = $(this).find('[name=line_id]').val();
-		// get index of line object with found id
-		var index = getObjectIndex(line_obj, 'line_id', form_id);
-		// change sequence value pointed object with current count iteration 
-		line_obj[index].sequence = count.toString();
-		// write proper index to line
-		$(this).find('.line-sequence').html(count);
-		// change hidden value of sequence
-		$(this).find('[name=sequence]').val(count);
-		count++;
+			// reorder line
+			var count = head;
+			var i = 0;
+			// do something for each sortable data
+			$('.line-list').children('tr').each(function() {
+				// get line id of current iteration
+				var form_id = $(this).find('[name=line_id]').val();
+				// get index of line object with found id
+				var index = getObjectIndex(line_obj, 'line_id', form_id);
+				// change sequence value pointed object with current count iteration 
+				line_obj[index].sequence = count.toString();
+				// write proper index to line
+				$(this).find('.line-sequence').html(count);
+				// change hidden value of sequence
+				$(this).find('[name=sequence]').val(count);
+				count++;
+			});
+		}
+		else {
+			callErrorNotification("Delete failed!");
+		}
 	});
-
+	
 });
 
 // sprite delete capability
@@ -1943,6 +2028,49 @@ $(document.body).on('mouseover', '.line-collapse-button', function() {
 $(document.body).on('mouseover', 'input[name=jumpto]', function() {
 	$(this).tooltip({
 		title: "label where this line proceed to without following sequence order"
+	});
+	$(this).tooltip('show');
+});
+
+$(document.body).on('mouseover', 'input[name=choice_jumpto]', function() {
+	$(this).tooltip({
+		title: "label where this line proceed to without following sequence order<br />left empty if no jump required",
+		html: true
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=sprite]', function() {
+	$(this).tooltip({
+		title: "sprite's name"
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=position_x]', function() {
+	$(this).tooltip({
+		title: "horizontal position"
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=position_y]', function() {
+	$(this).tooltip({
+		title: "vertical position"
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=position_z]', function() {
+	$(this).tooltip({
+		title: "depth position"
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=effect]', function() {
+	$(this).tooltip({
+		title: "transition effect"
 	});
 	$(this).tooltip('show');
 });

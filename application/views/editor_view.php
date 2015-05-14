@@ -17,11 +17,11 @@
 					<div class="btn-group btn-group-sm" role="group">
 						<div class="radio">
 							<label>
-								<input type="radio" name="line_insert_position" value="after" checked />
+								<input type="radio" name="line_insert_position" value="after" />
 									<span title="you can select line by pointing you mouse on that line" />after selected line</span>
 							</label>
 							<label>
-								<input type="radio" name="line_insert_position" value="end"  />
+								<input type="radio" name="line_insert_position" value="end" checked  />
 									<span>at end of this section</span>
 							</label>
 						</div>
@@ -71,7 +71,7 @@
 							<form class="form-inline" style="display:inline-block; width:20%;">
 								<div class="form-group">
 									<div class="input-group">
-										<input type="text" id="currentpage" name="current_page" class="form-control" value="<?php echo $page['current_page']; ?>">
+										<input type="text" id="currentpage" name="current_page" class="form-control" value="<?php echo $page['current_page']; ?>" autocomplete="off">
 										<div class="input-group-addon total-page">/ <span id="totalpage"><?php echo $page['total_page']; ?></span></div>
 									</div>
 								</div>

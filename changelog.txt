@@ -1,4 +1,10 @@
-﻿
+﻿- change event trigger from change to focusout on line-list input for background not changing bug fix
+- update some tooltip
+- fix saving empty line resource not update on database problem
+- fix miscalculated "head" global variable bug on editor
+- change how line deletion works, using ajax to request deletion in a way sequence is retained successfully
+- update database 0.8: update projectstatus table record
+
 0.7
 - update database 0.7: update choice table to include "jumpto_line_id"
 - update "jumpto" autocomplete so that all input in same container not changed simultaneously
@@ -97,6 +103,8 @@ Known Issue:
 - need change php.ini for bigger file upload
 - authentication access per controller
 - bmp image resize
+- checking vn validity on publishment
+- pagination after display line by label
 
 
 Naming convention:
@@ -143,3 +151,4 @@ To Do:
 - change autoinput active verify on blur, not on change for better functionality
 - input restriction on html end
 - offline create new line using temp index line sprite
+- preload audio video only metadata on resource
