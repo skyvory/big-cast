@@ -6,10 +6,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div>
-				<span class="request-loading request-loading-resourcelist" style="">
-					<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
-				</span>
-				<div class="game-are" style="display: none;">
+				<center>
+					<span class="request-loading" style="margin: 0px auto">
+						<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
+					</span>
+				</center>
+				<div class="game-area" style="display: none;">
 					<center><canvas id="visual" style="border:2px solid black;"></canvas></center>
 				</div>
 			</div>
@@ -19,6 +21,8 @@
 			<audio id="sfxfront"></audio>
 		</div>
 	</div>
+</div>
+<div class="interface" style="display: none;">
 </div>
 <div class="image-cache" style="display: none;">
 </div>
