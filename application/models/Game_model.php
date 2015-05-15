@@ -107,5 +107,12 @@ Class Game_model extends CI_Model {
 		$result = $query->row_array();
 		return $result['sequence'];
 	}
+	function getFonttypeAll() {
+		$this->db->select('fonttype_id, name');
+		$this->db->from('fonttype');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
 }
 ?>

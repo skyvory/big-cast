@@ -83,6 +83,13 @@ class Game extends CI_Controller {
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($config, JSON_PRETTY_PRINT));
 	}
+	public function loadFontList() {
+		$pass = $this->game_model->getFonttypeAll();
+		if($pass) {
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
+		}
+	}
 	public function loadLine() {
 		$game = $this->session->userdata('active_game');
 		$head = $this->input->post('head');

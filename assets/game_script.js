@@ -33,6 +33,7 @@ $(document).ready(function() {
 			});
 		});
 	});
+	callFontData();
 });
 
 $('#test').click(function() {
@@ -226,6 +227,19 @@ function preloadInterface(callback) {
 		$("<img/>").attr("src", path_to_ui).attr("id", index).css("display", "none").appendTo('.interface');
 	});
 	callback();
+}
+
+var font_list = [];
+function callFontData() {
+	var req = $.ajax({
+		url: config.base + 'index.php/game/loadFontList',
+		dataType: "json"
+	});
+	req.done(function(msg) {
+		if(msg) {
+			font_list = msg;
+		}
+	})
 }
 
 function failureNotification(message) {
@@ -427,10 +441,165 @@ canvas.on('mouse:down', function(options) {
 	}
 	else if(game.screen == "configuration") {
 		switch(options.target.id) {
-			case "font_arial":
+			case "font":
+				// replace selection before
+				var topafter = 180;
+				for(var i = 0; i < font_list.length; i++) {
+					if(font_list[i].fonttype_id == configuration.fk_fonttype_id) {
+						var cfg_txt = new fabric.Text(font_list[i].name, {
+							id: 'font',
+							fonttype_id: font_list[i].fonttype_id,
+							fontFamily: font_list[i].name,
+							fontSize: 20,
+							top: topafter,
+							left: 80,
+							opacity: 1,
+							fill: '#000000',
+							textAlign: 'left'
+						});
+						cfg_txt.set('selectable', false);
+						canvas.add(cfg_txt);
+					}
+					topafter+= 30;
+				}
+				// remove text behind
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', configuration.fk_fonttype_id);
+				canvas.remove(canvas.item(index_to_read));
+				// prepare index before insert a new one with same id
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', options.target.fonttype_id);
+				// replace selected font
+				var topafter = 180;
+				for(var i = 0; i < font_list.length; i++) {
+					if(font_list[i].fonttype_id == options.target.fonttype_id) {
+						var cfg_txt = new fabric.Text(font_list[i].name, {
+							id: 'font',
+							fonttype_id: options.target.fonttype_id,
+							fontFamily: font_list[i].name,
+							fontSize: 20,
+							top: topafter,
+							left: 80,
+							opacity: 1,
+							fill: '#FEFFB7',
+							textAlign: 'left'
+						});
+						cfg_txt.set('selectable', false);
+						canvas.add(cfg_txt);
+					}
+					topafter+= 30;
+				}
+				// delete selected font behind
+				canvas.remove(canvas.item(index_to_read));
+				// change global configuration value
+				configuration.fk_fonttype_id = options.target.fonttype_id;
 				break;
-			case "font_helvetica":
-
+			case "bgm":
+				// replace old selection
+				var vol = configuration.bgm_volume * 10;
+				// if(configuration.bgm_volume > 0 && configuration.bgm_volume < 1) {
+				// 	var vol = configuration.bgm_volume.slice(2);
+				// }
+				// else if(configuration.bgm_volume >= 1) {
+				// 	var vol = 10;
+				// }
+				var leftafter = 410 + (30 * vol);
+				var cfg_txt = new fabric.Text(vol.toString(), {
+					id: 'bgm',
+					volume_id: vol,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 180,
+					left: leftafter,
+					opacity: 1,
+					fill: '#000000',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', vol);
+				canvas.remove(canvas.item(index_to_read));
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', options.target.bgmvolume_id);
+				// new selection
+				// if(options.target.bgmvolume_id == 0) {
+				// 	vol = 0;
+				// }
+				// else if(options.target.bgmvolume_id < 10) {
+				// 	vol = ("0."+options.target.bgmvolume_id);
+				// }
+				// else {
+				// 	vol = 1;
+				// }
+				vol = options.target.bgmvolume_id / 10;
+				var leftafter = 410 + (30 * options.target.bgmvolume_id);
+				var cfg_txt = new fabric.Text(options.target.bgmvolume_id.toString(), {
+					id: 'bgm',
+					bgmvolume_id: options.target.bgmvolume_id,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 180,
+					left: leftafter,
+					opacity: 1,
+					fill: '#FEFFB7',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				canvas.remove(canvas.item(index_to_read));
+				configuration.bgm_volume = vol;
+				break;
+			case "sfx":
+				// replace old selection
+				var vol = 0;
+				if(configuration.sfx_volume > 0 && configuration.sfx_volume < 1) {
+					var vol = configuration.sfx_volume.slice(2);
+				}
+				else if(configuration.sfx_volume >= 1) {
+					var vol = 10;
+				}
+				var leftafter = 410 + (30 * vol);
+				var cfg_txt = new fabric.Text(vol.toString(), {
+					id: 'sfx',
+					volume_id: vol,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 280,
+					left: leftafter,
+					opacity: 1,
+					fill: '#000000',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', vol);
+				canvas.remove(canvas.item(index_to_read));
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', options.target.sfxvolume_id);
+				// new selection
+				if(options.target.sfxvolume_id == 0) {
+					vol = 0;
+				}
+				else if(options.target.sfxvolume_id < 10) {
+					vol = ("0."+options.target.sfxvolume_id);
+				}
+				else {
+					vol = 1;
+				}
+				var leftafter = 410 + (30 * vol);
+				var cfg_txt = new fabric.Text(vol.toString(), {
+					id: 'sfx',
+					sfxvolume_id: options.target.sfxvolume_id,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 280,
+					left: leftafter,
+					opacity: 1,
+					fill: '#FEFFB7',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				canvas.remove(canvas.item(index_to_read));
+				configuration.sfx_volume = vol;
+				break;
+				
 			default:
 				console.log(options.target.id);
 				break;
@@ -623,7 +792,7 @@ function renderConfigurationScreen() {
 		duration: 1000,
 		easing:fabric.util.ease.easeInOutBack
 	});
-	//render config text
+	//render font head
 	var cfg_txt = new fabric.Text("Font", {
 		id: 'font_head',
 		fontFamily: 'Arial',
@@ -639,157 +808,36 @@ function renderConfigurationScreen() {
 		duration: 800,
 		easing:fabric.util.ease.easeInOutBack,
 		onComplete: function() {
-			// Arial
-			var cfg_txt = new fabric.Text("Arial", {
-				id: 'font_arial',
-				fontFamily: 'Arial',
-				fontSize: 20,
-				top: 180,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 1) {
-				cfg_txt.set('fill', '#FEFFB7');
+			// render font  config
+			var topafter = 180;
+			for(var i = 0; i < font_list.length; i++) {
+				var cfg_txt = new fabric.Text(font_list[i].name, {
+					id: 'font',
+					fonttype_id: font_list[i].fonttype_id,
+					fontFamily: font_list[i].name,
+					fontSize: 20,
+					top: topafter,
+					left: -300,
+					opacity: 1,
+					fill: '#000000',
+					textAlign: 'left'
+				});
+				if(configuration.fk_fonttype_id == font_list[i].fonttype_id) {
+					cfg_txt.set('fill', '#FEFFB7');
+				}
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				cfg_txt.animate('left', '80', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				topafter+= 30;
 			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// Helvetica
-			var cfg_txt = new fabric.Text("Helvetica", {
-				id: 'font_helvetica',
-				fontFamily: 'Helvetica',
-				fontSize: 20,
-				top: 210,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 2) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// Times New Roman
-			var cfg_txt = new fabric.Text("Times New Roman", {
-				id: 'font_timesnewroman',
-				fontFamily: 'Times New Roman',
-				fontSize: 20,
-				top: 240,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 3) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// MS UI Gothic
-			var cfg_txt = new fabric.Text("MS UI Gothic", {
-				id: 'font_msuigothic',
-				fontFamily: 'MS UI Gothic',
-				fontSize: 20,
-				top: 270,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 4) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// Verdana
-			var cfg_txt = new fabric.Text("Verdana", {
-				id: 'font_verdana',
-				fontFamily: 'Verdana',
-				fontSize: 20,
-				top: 300,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 5) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// Tahoma
-			var cfg_txt = new fabric.Text("Tahoma", {
-				id: 'font_tahoma',
-				fontFamily: 'Tahoma',
-				fontSize: 20,
-				top: 330,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 6) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// Comic Sans MS
-			var cfg_txt = new fabric.Text("Comic Sans MS", {
-				id: 'font_comicsansms',
-				fontFamily: 'Comic Sans MS',
-				fontSize: 20,
-				top: 360,
-				left: -300,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.fk_fonttype_id == 7) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '80', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
 		}
 	});
 	
-	// render bgm volume config
+	// render bgm head
 	var cfg_txt = new fabric.Text("BGM Volume", {
 		id: 'bgm_head',
 		fontFamily: 'Arial',
@@ -805,12 +853,22 @@ function renderConfigurationScreen() {
 		duration: 1400,
 		easing:fabric.util.ease.easeInOutBack,
 		onComplete: function() {
-			// render volume config 
-			
-			// long lines of bgm volume buttons config
-			// bgm 0
-			var cfg_txt = new fabric.Text("0", {
-				id: 'bgm_0',
+			// render bgm volume config 
+			var leftafter = 410;
+			var vol = 0;
+			for(var i = 0; i <= 10; i++) {
+				if(i == 0) {
+					vol = 0;
+				}
+				else if(i < 10) {
+					vol = ("0."+i);
+				}
+				else {
+					vol = 1;
+				}
+				var cfg_txt = new fabric.Text(i.toString(), {
+				id: 'bgm',
+				bgmvolume_id: i,
 				fontFamily: 'Arial',
 				fontSize: 25,
 				top: 180,
@@ -818,231 +876,23 @@ function renderConfigurationScreen() {
 				opacity: 1,
 				fill: '#000000',
 				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0) {
-				cfg_txt.set('fill', '#FEFFB7');
+				});
+				if(configuration.bgm_volume == vol) {
+					cfg_txt.set('fill', '#FEFFB7');
+				}
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				cfg_txt.animate('left', leftafter, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				leftafter+= 30;
 			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '410', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 1
-			var cfg_txt = new fabric.Text("1", {
-				id: 'bgm_1',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '440', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 2
-			var cfg_txt = new fabric.Text("2", {
-				id: 'bgm_2',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.2) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '470', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 3
-			var cfg_txt = new fabric.Text("3", {
-				id: 'bgm_3',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.3) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '500', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 4
-			var cfg_txt = new fabric.Text("4", {
-				id: 'bgm_4',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.4) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '530', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 5
-			var cfg_txt = new fabric.Text("5", {
-				id: 'bgm_5',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.5) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '560', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 6
-			var cfg_txt = new fabric.Text("6", {
-				id: 'bgm_6',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.6) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '590', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 7
-			var cfg_txt = new fabric.Text("7", {
-				id: 'bgm_7',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.7) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '620', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 8
-			var cfg_txt = new fabric.Text("8", {
-				id: 'bgm_8',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.8) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '650', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 9
-			var cfg_txt = new fabric.Text("9", {
-				id: 'bgm_9',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 0.9) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '680', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// bgm 10
-			var cfg_txt = new fabric.Text("10", {
-				id: 'bgm_10',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 180,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.bgm_volume == 1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '710', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
 		}
 	});
 
-	// render sfx volume config
+	// render sfx head
 	var cfg_txt = new fabric.Text("SFX Volume", {
 		id: 'sfx_head',
 		fontFamily: 'Arial',
@@ -1058,10 +908,22 @@ function renderConfigurationScreen() {
 		duration: 1700,
 		easing:fabric.util.ease.easeInOutBack,
 		onComplete: function() {
-			// long lines of sfx volume buttons config
-			// sfx 0
-			var cfg_txt = new fabric.Text("0", {
-				id: 'sfx_0',
+			// render sfx vol config
+			var leftafter = 410;
+			var vol = 0;
+			for(var i = 0; i <= 10; i++) {
+				if(i == 0) {
+					vol = 0;
+				}
+				else if(i < 10) {
+					vol = ("0."+i);
+				}
+				else {
+					vol = 1;
+				}
+				var cfg_txt = new fabric.Text(i.toString(), {
+				id: 'sfx',
+				sfxvolume_id: i,
 				fontFamily: 'Arial',
 				fontSize: 25,
 				top: 280,
@@ -1069,231 +931,23 @@ function renderConfigurationScreen() {
 				opacity: 1,
 				fill: '#000000',
 				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0) {
-				cfg_txt.set('fill', '#FEFFB7');
+				});
+				if(configuration.sfx_volume == vol) {
+					cfg_txt.set('fill', '#FEFFB7');
+				}
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				cfg_txt.animate('left', leftafter, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				leftafter+= 30;
 			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '410', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 1
-			var cfg_txt = new fabric.Text("1", {
-				id: 'sfx_1',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '440', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 2
-			var cfg_txt = new fabric.Text("2", {
-				id: 'sfx_2',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.2) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '470', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 3
-			var cfg_txt = new fabric.Text("3", {
-				id: 'sfx_3',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.3) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '500', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 4
-			var cfg_txt = new fabric.Text("4", {
-				id: 'sfx_4',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.4) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '530', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 5
-			var cfg_txt = new fabric.Text("5", {
-				id: 'sfx_5',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.5) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '560', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 6
-			var cfg_txt = new fabric.Text("6", {
-				id: 'sfx_6',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.6) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '590', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 7
-			var cfg_txt = new fabric.Text("7", {
-				id: 'sfx_7',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.7) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '620', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 8
-			var cfg_txt = new fabric.Text("8", {
-				id: 'sfx_8',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.8) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '650', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 9
-			var cfg_txt = new fabric.Text("9", {
-				id: 'sfx_9',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 0.9) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '680', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// sfx 10
-			var cfg_txt = new fabric.Text("10", {
-				id: 'sfx_10',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 280,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.sfx_volume == 1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '710', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
 		}
 	});
 
-	// render voice volume config
+	// render voice head
 	var cfg_txt = new fabric.Text("Voice Volume", {
 		id: 'voice_head',
 		fontFamily: 'Arial',
@@ -1309,10 +963,22 @@ function renderConfigurationScreen() {
 		duration: 2000,
 		easing:fabric.util.ease.easeInOutBack,
 		onComplete: function() {
-			// long lines of sfx volume buttons config
-			// voice 0
-			var cfg_txt = new fabric.Text("0", {
-				id: 'voice_0',
+			// render voice vol config
+			var leftafter = 410;
+			var vol = 0;
+			for(var i = 0; i <= 10; i++) {
+				if(i == 0) {
+					vol = 0;
+				}
+				else if(i < 10) {
+					vol = ("0."+i);
+				}
+				else {
+					vol = 1;
+				}
+				var cfg_txt = new fabric.Text(i.toString(), {
+				id: 'voice',
+				voicevolume_id: i,
 				fontFamily: 'Arial',
 				fontSize: 25,
 				top: 380,
@@ -1320,227 +986,19 @@ function renderConfigurationScreen() {
 				opacity: 1,
 				fill: '#000000',
 				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0) {
-				cfg_txt.set('fill', '#FEFFB7');
+				});
+				if(configuration.voice_volume == vol) {
+					cfg_txt.set('fill', '#FEFFB7');
+				}
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				cfg_txt.animate('left', leftafter, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				leftafter+= 30;
 			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '410', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 1
-			var cfg_txt = new fabric.Text("1", {
-				id: 'voice_1',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '440', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 2
-			var cfg_txt = new fabric.Text("2", {
-				id: 'voice_2',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.2) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '470', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 3
-			var cfg_txt = new fabric.Text("3", {
-				id: 'voice_3',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.3) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '500', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 4
-			var cfg_txt = new fabric.Text("4", {
-				id: 'voice_4',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.4) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '530', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 5
-			var cfg_txt = new fabric.Text("5", {
-				id: 'voice_5',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.5) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '560', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 6
-			var cfg_txt = new fabric.Text("6", {
-				id: 'voice_6',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.6) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '590', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 7
-			var cfg_txt = new fabric.Text("7", {
-				id: 'voice_7',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.7) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '620', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 8
-			var cfg_txt = new fabric.Text("8", {
-				id: 'voice_8',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.8) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '650', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 9
-			var cfg_txt = new fabric.Text("9", {
-				id: 'voice_9',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 0.9) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '680', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
-			// voice 10
-			var cfg_txt = new fabric.Text("10", {
-				id: 'voice_10',
-				fontFamily: 'Arial',
-				fontSize: 25,
-				top: 380,
-				left: 810,
-				opacity: 1,
-				fill: '#000000',
-				textAlign: 'left'
-			});
-			if(configuration.voice_volume == 1) {
-				cfg_txt.set('fill', '#FEFFB7');
-			}
-			cfg_txt.set('selectable', false);
-			canvas.add(cfg_txt);
-			cfg_txt.animate('left', '710', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 300,
-				easing:fabric.util.ease.easeInOutBack
-			});
 		}
 	});
 
