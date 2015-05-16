@@ -59,13 +59,14 @@ class Game extends CI_Controller {
 		$pass_config = $this->game_model->getConfiguration($user['id'], $game['id']);
 		if($pass_config) {
 			$config = array(
+				'game_id' => $game['id'],
+				'creator_id' => $game['creator_id'],
 				'configuration_id' => $pass_config['configuration_id'],
 				'fk_fonttype_id' => $pass_config['fk_fonttype_id'],
 				'text_speed' => $pass_config['text_speed'],
 				'bgm_volume' => $pass_config['bgm_volume'],
 				'voice_volume' => $pass_config['voice_volume'],
-				'sfx_volume' => $pass_config['sfx_volume'],
-				'creator_id' => $game['creator_id']				
+				'sfx_volume' => $pass_config['sfx_volume']
 			);
 		}
 		else {
@@ -247,6 +248,19 @@ class Game extends CI_Controller {
 		} //foreach
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($line, JSON_PRETTY_PRINT));
+	}
+	public function saveConfiguration() {
+		$user = $this->session->userdata('user_auth');
+		$configuration_json = $this->input->post('configdata');
+		$configuration = json_decode($configuration_json, TRUE);
+		$this->fb->log($configuration);
+		$config_exist = $this->game_model->isExistUserConfiguration($user['id'], $configuration['game_id']);
+		if($config_exist) {
+			$pass = $this->game_model->updateConfiguration($configuration['fk_fonttype_id'], $configuration['text_speed'], $configuration['bgm_volume'], $configuration['voice_volume'], $configuration['sfx_volume'], $user['id'], $configuration['game_id']);
+		}
+		else {
+			$pass = $this->game_model->createConfiguration($configuration['fk_fonttype_id'], $configuration['text_speed'], $configuration['bgm_volume'], $configuration['voice_volume'], $configuration['sfx_volume'], $user['id'], $configuration['game_id']);
+		}
 	}
 
 }

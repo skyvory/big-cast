@@ -28,8 +28,8 @@ Class Common extends CI_Model {
 		$this->db->select('username');
 		$this->db->from('user');
 		$this->db->where('username', $username);
-		$result = $this->db->get();
-		if($result->num_rows() > 0) {
+		$query = $this->db->get();
+		if($query->num_rows() > 0) {
 			return TRUE;
 		}
 		else {

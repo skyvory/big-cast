@@ -10,7 +10,7 @@ Class Game_model extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$query = $this->db->get();
-		$result = $query->result_array();
+		$result = $query->row_array();
 		return $result;
 	}
 	function getProject($project_id) {
@@ -113,6 +113,30 @@ Class Game_model extends CI_Model {
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
+	}
+	function isExistUserConfiguration($user_id, $project_id) {
+		$this->db->from('configuration');
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$query = $this->db->get();
+		if($query->num_rows() > 0) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	function createConfiguration($fonttype_id, $text_speed, $bgm_volume, $voice_volume, $sfx_volume, $user_id, $project_id) {
+		$data = array('fk_fonttype_id' => $fonttype_id, 'text_speed' => $text_speed, 'bgm_volume' => $bgm_volume, 'voice_volume' => $voice_volume, 'sfx_volume' => $sfx_volume, 'fk_user_id' => $user_id, 'fk_project_id' => $project_id);
+		$exec = $this->db->insert('configuration', $data);
+		return $exec;
+	}
+	function updateConfiguration($fonttype_id, $text_speed, $bgm_volume, $voice_volume, $sfx_volume, $user_id, $project_id) {
+		$data = array('fk_fonttype_id' => $fonttype_id, 'text_speed' => $text_speed, 'bgm_volume' => $bgm_volume, 'voice_volume' => $voice_volume, 'sfx_volume' => $sfx_volume);
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$exec = $this->db->update('configuration', $data);
+		return $exec;
 	}
 }
 ?>

@@ -343,7 +343,7 @@ function renderTitleMenu() {
 	var str_btn = new fabric.Image(img, {
 		id: 'start_button',
 		top: 380,
-		left: 60,
+		left: 350,
 		opacity: 0,
 		angle: 0
 	});
@@ -363,7 +363,7 @@ function renderTitleMenu() {
 	var str_btn = new fabric.Image(img, {
 		id: 'load_button',
 		top: 380,
-		left: 210,
+		left: 500,
 		opacity: 0,
 		angle: 0
 	});
@@ -383,7 +383,7 @@ function renderTitleMenu() {
 	var cfg_btn = new fabric.Image(img, {
 		id: 'configuration_button',
 		top: 380,
-		left: 360,
+		left: 650,
 		opacity: 0,
 		angle: 0
 	});
@@ -406,7 +406,8 @@ canvas.on('mouse:down', function(options) {
 	if(game.screen == "title") {
 		switch(options.target.id) {
 			case "start_button":
-				console.log("start");
+				renderPlayScreen();
+				game.screen = "play";
 				break;
 			case "load_button":
 				renderLoadScreen();
@@ -442,6 +443,8 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "configuration") {
 		switch(options.target.id) {
 			case "font":
+				// prepare index
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', configuration.fk_fonttype_id);
 				// replace selection before
 				var topafter = 180;
 				for(var i = 0; i < font_list.length; i++) {
@@ -463,7 +466,6 @@ canvas.on('mouse:down', function(options) {
 					topafter+= 30;
 				}
 				// remove text behind
-				var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', configuration.fk_fonttype_id);
 				canvas.remove(canvas.item(index_to_read));
 				// prepare index before insert a new one with same id
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', options.target.fonttype_id);
@@ -494,17 +496,14 @@ canvas.on('mouse:down', function(options) {
 				break;
 			case "bgm":
 				// replace old selection
-				var vol = configuration.bgm_volume * 10;
-				// if(configuration.bgm_volume > 0 && configuration.bgm_volume < 1) {
-				// 	var vol = configuration.bgm_volume.slice(2);
-				// }
-				// else if(configuration.bgm_volume >= 1) {
-				// 	var vol = 10;
-				// }
-				var leftafter = 410 + (30 * vol);
-				var cfg_txt = new fabric.Text(vol.toString(), {
+				var vol_round = configuration.bgm_volume * 10;
+				console.log(vol_round);
+				// prepare index
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', vol_round);
+				var leftafter = 410 + (30 * vol_round);
+				var cfg_txt = new fabric.Text(vol_round.toString(), {
 					id: 'bgm',
-					volume_id: vol,
+					bgmvolume_id: vol_round,
 					fontFamily: 'Arial',
 					fontSize: 25,
 					top: 180,
@@ -515,20 +514,9 @@ canvas.on('mouse:down', function(options) {
 				});
 				cfg_txt.set('selectable', false);
 				canvas.add(cfg_txt);
-				var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', vol);
 				canvas.remove(canvas.item(index_to_read));
+				// prepare index
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', options.target.bgmvolume_id);
-				// new selection
-				// if(options.target.bgmvolume_id == 0) {
-				// 	vol = 0;
-				// }
-				// else if(options.target.bgmvolume_id < 10) {
-				// 	vol = ("0."+options.target.bgmvolume_id);
-				// }
-				// else {
-				// 	vol = 1;
-				// }
-				vol = options.target.bgmvolume_id / 10;
 				var leftafter = 410 + (30 * options.target.bgmvolume_id);
 				var cfg_txt = new fabric.Text(options.target.bgmvolume_id.toString(), {
 					id: 'bgm',
@@ -544,21 +532,17 @@ canvas.on('mouse:down', function(options) {
 				cfg_txt.set('selectable', false);
 				canvas.add(cfg_txt);
 				canvas.remove(canvas.item(index_to_read));
-				configuration.bgm_volume = vol;
+				var vol_decimal = options.target.bgmvolume_id / 10;
+				configuration.bgm_volume = vol_decimal;
 				break;
 			case "sfx":
-				// replace old selection
-				var vol = 0;
-				if(configuration.sfx_volume > 0 && configuration.sfx_volume < 1) {
-					var vol = configuration.sfx_volume.slice(2);
-				}
-				else if(configuration.sfx_volume >= 1) {
-					var vol = 10;
-				}
-				var leftafter = 410 + (30 * vol);
-				var cfg_txt = new fabric.Text(vol.toString(), {
+				var vol_round = configuration.sfx_volume * 10;
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', vol_round);
+				console.log(index_to_read);
+				var leftafter = 410 + (30 * vol_round);
+				var cfg_txt = new fabric.Text(vol_round.toString(), {
 					id: 'sfx',
-					volume_id: vol,
+					sfxvolume_id: vol_round,
 					fontFamily: 'Arial',
 					fontSize: 25,
 					top: 280,
@@ -569,21 +553,10 @@ canvas.on('mouse:down', function(options) {
 				});
 				cfg_txt.set('selectable', false);
 				canvas.add(cfg_txt);
-				var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', vol);
 				canvas.remove(canvas.item(index_to_read));
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', options.target.sfxvolume_id);
-				// new selection
-				if(options.target.sfxvolume_id == 0) {
-					vol = 0;
-				}
-				else if(options.target.sfxvolume_id < 10) {
-					vol = ("0."+options.target.sfxvolume_id);
-				}
-				else {
-					vol = 1;
-				}
-				var leftafter = 410 + (30 * vol);
-				var cfg_txt = new fabric.Text(vol.toString(), {
+				var leftafter = 410 + (30 * options.target.sfxvolume_id);
+				var cfg_txt = new fabric.Text(options.target.sfxvolume_id.toString(), {
 					id: 'sfx',
 					sfxvolume_id: options.target.sfxvolume_id,
 					fontFamily: 'Arial',
@@ -597,8 +570,51 @@ canvas.on('mouse:down', function(options) {
 				cfg_txt.set('selectable', false);
 				canvas.add(cfg_txt);
 				canvas.remove(canvas.item(index_to_read));
-				configuration.sfx_volume = vol;
+				var vol_decimal = options.target.sfxvolume_id / 10;
+				configuration.sfx_volume = vol_decimal;
 				break;
+			case "voice":
+				var vol_round = configuration.voice_volume * 10;
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', vol_round);
+				console.log(index_to_read);
+				var leftafter = 410 + (30 * vol_round);
+				var cfg_txt = new fabric.Text(vol_round.toString(), {
+					id: 'voice',
+					voicevolume_id: vol_round,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 380,
+					left: leftafter,
+					opacity: 1,
+					fill: '#000000',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				canvas.remove(canvas.item(index_to_read));
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', options.target.voicevolume_id);
+				var leftafter = 410 + (30 * options.target.voicevolume_id);
+				var cfg_txt = new fabric.Text(options.target.voicevolume_id.toString(), {
+					id: 'voice',
+					voicevolume_id: options.target.voicevolume_id,
+					fontFamily: 'Arial',
+					fontSize: 25,
+					top: 380,
+					left: leftafter,
+					opacity: 1,
+					fill: '#FEFFB7',
+					textAlign: 'left'
+				});
+				cfg_txt.set('selectable', false);
+				canvas.add(cfg_txt);
+				canvas.remove(canvas.item(index_to_read));
+				var vol_decimal = options.target.voicevolume_id / 10;
+				configuration.voice_volume = vol_decimal;
+				break;
+			case "exit_button":
+				exitConfigurationScreen();
+				callSaveConfiguration();
+				game.screen = "title";
 				
 			default:
 				console.log(options.target.id);
@@ -611,10 +627,20 @@ canvas.on('mouse:down', function(options) {
 	// console.log(ldi);
 	// canvas.remove(canvas.getObjects()[ldi]);
 
-canvas.on('mouse:move', function(options) {
-	console.log(options.e.layerX, options.e.layerY);
-});
+// canvas.on('mouse:move', function(options) {
+// 	console.log(options.e.layerX, options.e.layerY);
+// });
 
+function callSaveConfiguration() {
+	var configuration_json = JSON.stringify(configuration);
+	var req = $.ajax({
+		url: config.base + 'index.php/game/saveConfiguration',
+		type: "POST",
+		data: {
+			configdata: configuration_json
+		}
+	});
+}
 function renderLoadScreen() {
 	// render background
 	var img = $('#configuration_background')[0];
@@ -734,7 +760,7 @@ function exitLoadScreen() {
 		easing: fabric.util.ease.easeInOutBack,
 		onComplete: function() {
 			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'load_head');
-			canvas.remove(canvas.item(index_to_read))
+			canvas.remove(canvas.item(index_to_read));
 		}
 	});
 	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
@@ -744,7 +770,7 @@ function exitLoadScreen() {
 		easing: fabric.util.ease.easeInOutBack,
 		onComplete: function() {
 			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
-			canvas.remove(canvas.item(index_to_read))
+			canvas.remove(canvas.item(index_to_read));
 		}
 	});
 	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
@@ -754,7 +780,7 @@ function exitLoadScreen() {
 		easing: fabric.util.ease.easeInOutBack,
 		onComplete: function() {
 			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
-			canvas.remove(canvas.item(index_to_read))
+			canvas.remove(canvas.item(index_to_read));
 		}
 	});
 }
@@ -855,17 +881,8 @@ function renderConfigurationScreen() {
 		onComplete: function() {
 			// render bgm volume config 
 			var leftafter = 410;
-			var vol = 0;
 			for(var i = 0; i <= 10; i++) {
-				if(i == 0) {
-					vol = 0;
-				}
-				else if(i < 10) {
-					vol = ("0."+i);
-				}
-				else {
-					vol = 1;
-				}
+				var vol = i / 10;
 				var cfg_txt = new fabric.Text(i.toString(), {
 				id: 'bgm',
 				bgmvolume_id: i,
@@ -910,17 +927,8 @@ function renderConfigurationScreen() {
 		onComplete: function() {
 			// render sfx vol config
 			var leftafter = 410;
-			var vol = 0;
 			for(var i = 0; i <= 10; i++) {
-				if(i == 0) {
-					vol = 0;
-				}
-				else if(i < 10) {
-					vol = ("0."+i);
-				}
-				else {
-					vol = 1;
-				}
+				var vol = i / 10;
 				var cfg_txt = new fabric.Text(i.toString(), {
 				id: 'sfx',
 				sfxvolume_id: i,
@@ -965,17 +973,8 @@ function renderConfigurationScreen() {
 		onComplete: function() {
 			// render voice vol config
 			var leftafter = 410;
-			var vol = 0;
 			for(var i = 0; i <= 10; i++) {
-				if(i == 0) {
-					vol = 0;
-				}
-				else if(i < 10) {
-					vol = ("0."+i);
-				}
-				else {
-					vol = 1;
-				}
+				var vol = i / 10;
 				var cfg_txt = new fabric.Text(i.toString(), {
 				id: 'voice',
 				voicevolume_id: i,
@@ -1018,6 +1017,180 @@ function renderConfigurationScreen() {
 		duration: 1000,
 		easing:fabric.util.ease.easeInOutBack
 	});
+}
+
+for(var i = 0; i < font_list.length; i++) {
+	var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', font_list[i].fonttype_id);
+	canvas.remove(canvas.item(index_to_read));
+}
+for(i = 0; i <= 10; i++) {
+	var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', i);
+	canvas.remove(canvas.item(index_to_read));
+}
+function exitConfigurationScreen() {
+	// remove font list
+	for(var i = 0; i < font_list.length; i++) {
+		var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', font_list[i].fonttype_id);
+		canvas.item(index_to_read).animate('left', '-600', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 500,
+			easing: fabric.util.ease.easeInOutBack,
+			onComplete: function() {
+				// remove font config
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'font_head');
+				canvas.item(index_to_read).animate('top', '-300', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing: fabric.util.ease.easeInOutBack,
+					onComplete: function() {
+
+						
+						
+					}
+				}); // remove font config
+				
+			}
+		});
+	}
+	// remove font list end
+
+	// remove voice vol
+	for(var i = 0; i <= 10; i++) {
+		var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', i);
+		canvas.item(index_to_read).animate('left', '810', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 300,
+			easing: fabric.util.ease.easeInOutBack,
+			onComplete: function() {
+				// remove voice config
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
+				canvas.item(index_to_read).animate('top', '-60', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing: fabric.util.ease.easeInOutBack,
+					onComplete: function() {
+						
+						
+						
+					}
+				}); // remove voice vconfig
+				
+			}
+		});
+	}
+	// remove voice vol end
+	// remove sfx vol
+	for(var i = 0; i <= 10; i++) {
+		var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', i);
+		canvas.item(index_to_read).animate('left', '810', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 600,
+			easing: fabric.util.ease.easeInOutBack,
+			onComplete: function() {
+
+				// remove sfx config
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sfx_head');
+				canvas.item(index_to_read).animate('top', '-60', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing: fabric.util.ease.easeInOutBack,
+					onComplete: function() {
+						
+						
+						
+					}
+
+				}); // remove sfx end
+				
+				
+			}
+		});
+	} // remove sfx vol end
+	// remove bgm vol
+	for(var i = 0; i <= 10; i++) {
+		var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', i);
+		canvas.item(index_to_read).animate('left', '810', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 900,
+			easing: fabric.util.ease.easeInOutBack,
+			onComplete: function() {
+				// remove bgm config
+				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'bgm_head');
+				canvas.item(index_to_read).animate('top', '-60', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 300,
+					easing: fabric.util.ease.easeInOutBack,
+					onComplete: function() {
+						
+						// remove config head
+						index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_head');
+						canvas.item(index_to_read).animate('top', '-60', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 300,
+							easing: fabric.util.ease.easeInOutBack,
+							onComplete: function() {
+								// remove exit btn
+								index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
+								canvas.item(index_to_read).animate('top', '-200', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 300,
+									easing: fabric.util.ease.easeInOutBack,
+									onComplete: function() {
+										// remove config background
+										index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
+										canvas.item(index_to_read).animate('top', '-600', {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 500,
+											easing: fabric.util.ease.easeInOutBack,
+											onComplete: function() {
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_head');
+												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'font_head');
+												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'bgm_head');
+												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sfx_head');
+												canvas.remove(canvas.item(index_to_read));
+												for(i = 0; i <= 10; i++) {
+													var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', i);
+													canvas.remove(canvas.item(index_to_read));
+												}
+												for(i = 0; i <= 10; i++) {
+													var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', i);
+													canvas.remove(canvas.item(index_to_read));
+												}
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
+												canvas.remove(canvas.item(index_to_read));
+												for(i = 0; i <= 10; i++) {
+													var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', i);
+													canvas.remove(canvas.item(index_to_read));
+												}
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
+												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
+												canvas.remove(canvas.item(index_to_read));
+												for(var i = 0; i < font_list.length; i++) {
+													var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', font_list[i].fonttype_id);
+													canvas.remove(canvas.item(index_to_read));
+												}
+											}
+										}); // remove config bg end
+										
+									}
+								}); //remove exit button end
+								
+							}
+						}); // remove config head end
+						
+
+					}
+				}); // remove bgm config
+			}
+		});
+	}
+	// remove bgm vol
+	
+	
 }
 
 // !unnecessary

@@ -1,4 +1,6 @@
-﻿- update database 0.9: remove Arial Unicode MS from fonttype table
+﻿- initial load page
+- working configuration page
+- update database 0.9: remove Arial Unicode MS from fonttype table
 - change event trigger from change to focusout on line-list input for background not changing bug fix
 - update some tooltip
 - fix saving empty line resource not update on database problem
