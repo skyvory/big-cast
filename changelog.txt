@@ -1,4 +1,6 @@
-﻿- initial load page
+﻿range of position x is -8 to 8 position y -6 to 6
+
+- initial load page
 - working configuration page
 - update database 0.9: remove Arial Unicode MS from fonttype table
 - change event trigger from change to focusout on line-list input for background not changing bug fix
@@ -155,3 +157,4 @@ To Do:
 - input restriction on html end
 - offline create new line using temp index line sprite
 - preload audio video only metadata on resource
+- sfx loop feature

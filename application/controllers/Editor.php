@@ -634,12 +634,15 @@ class Editor extends CI_Controller {
 		$sprite_to_update = array();
 		foreach ($sprite as $key => $value) {
 			// assign default value if not valid
+			$value['position_x'] = (int) $value['position_x'];
 			if(!is_int($value['position_x'])) {
 				$value['position_x'] = 0;
 			}
+			$value['position_y'] = (int) $value['position_y'];
 			if(!is_int($value['position_y'])) {
 				$value['position_y'] = 0;
 			}
+			$value['position_z'] = (int) $value['position_z'];
 			if(!is_int($value['position_z'])) {
 				$value['position_z'] = 0;
 			}

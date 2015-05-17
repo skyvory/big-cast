@@ -553,6 +553,7 @@ Class Common extends CI_Model {
 	function updateSprite($sprite) {
 		$this->db->trans_begin();
 		foreach ($sprite as $key => $value) {
+			$this->fb->log($value['position_x']);
 			$data = array(
 				'fk_resource_id' => $value['fk_resource_id'],
 				'position_x' => $value['position_x'],

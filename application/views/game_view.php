@@ -11,14 +11,17 @@
 						<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
 					</span>
 				</center>
-				<div class="game-area" style="display: none;">
-					<center><canvas id="visual" style="border:2px solid black;"></canvas></center>
+				<div class="game-area" style="display: none; position: absolute; top:5%; left: 22%;">
+					<!-- <center> --><canvas id="visual" style="border:1px solid #6AE5FF;"><!-- </canvas> --></center>
+				</div>
+				<div class="text-area" style="display: block; position: absolute; top:5%; left: 22%; pointer-events: none;">
+					<!-- <center> --><canvas id="text" style="border:3px solid #000000;"><!-- </canvas> --></center>
 				</div>
 			</div>
 			<!-- <img src="../resources/a.jpg" id="my-image" style="display:none;"> -->
-			<audio id="bgmfront"></audio>
-			<audio id="voicefront"></audio>
-			<audio id="sfxfront"></audio>
+			<audio id="bgm_play"></audio>
+			<audio id="voice_play"></audio>
+			<audio id="sfx_play"></audio>
 		</div>
 	</div>
 </div>

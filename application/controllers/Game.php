@@ -177,6 +177,7 @@ class Game extends CI_Controller {
 					foreach ($pass_sprite as $key => $value) {
 						$line[$i]['sprite'][] = array(
 							'sprite_id' => utf8_encode($value['sprite_id']),
+							'character_name' => utf8_encode($value['character_name']),
 							'position_x' => utf8_encode($value['position_x']),
 							'position_y' => utf8_encode($value['position_y']),
 							'position_z' => utf8_encode($value['position_z']),

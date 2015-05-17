@@ -2063,7 +2063,8 @@ $('.sprite-list').on('mouseover', 'input[name=position_y]', function() {
 
 $('.sprite-list').on('mouseover', 'input[name=position_z]', function() {
 	$(this).tooltip({
-		title: "depth position"
+		title: "depth position<br />leave it at 0 for default",
+		html: true
 	});
 	$(this).tooltip('show');
 });
