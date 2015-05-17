@@ -8,14 +8,21 @@ var current = {
 	head: 0,
 	tail: 0,
 	branch: 0,
-	limit: 30
+	limit: 60
 };
 var cache = {
 	head: 0,
 	tail: 0,
 	limit: 20
 };
+var game = {
+	screen: "title", // title/play/configuration/save/load/backlog/choice
+	mode: "normal", // normal, skip, auto
+	bgm: ""
+}
+var font_list = [];
 
+// canvas renderer
 // var visual_display = document.getElementsByTagName('canvas')[0];
 var visual_display = $('#visual')[0];
 // define weifth and height
@@ -23,6 +30,7 @@ visual_display.width = 800;
 visual_display.height = 600;
 visual_display.style.width  = '800px';
 visual_display.style.height = '600px';
+
 // second canvas
 var text_display = $('#text')[0];
 text_display.width = 800;
@@ -30,6 +38,12 @@ text_display.height = 600;
 text_display.style.width  = '800px';
 text_display.style.height = '600px';
 var context = text_display.getContext('2d');
+
+var canvas = new fabric.Canvas('visual');
+canvas.selection = false;
+canvas.backgroundColor = 'rgba(255, 255, 255,1)';
+
+
 
 // load configuration
 $(document).ready(function() {
@@ -45,10 +59,6 @@ $(document).ready(function() {
 	});
 	callFontData();
 });
-
-$('#test').click(function() {
-	console.log(line);
-})
 
 function callConfigurationData(callback) {
 	var req = $.ajax({
@@ -84,6 +94,8 @@ function callSequentialLineData(callback) {
 			// append all line data to line object
 			if(current.tail == 0) {
 				current.tail = parseInt(msg[0].sequence);
+				// same with current tail for resource maintain, keep cache at 0 would lead to error because no 0 sequenced line
+				cache.tail = current.tail;
 			}
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
@@ -109,10 +121,11 @@ function maintainCurrent(callback) {
 	// delete n number of old line cache if reach limit
 	if(current.head - current.tail > current.limit) {
 		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
-		for(current.tail; current.tail < current.sequence - 3; current.tail++) {
-			var index_to_read = getObjects(line, 'sequence', current.tail);
+		for(current.tail; current.tail < current.sequence - 15; current.tail++) {
+			var index_to_read = getObjectIndex(line, 'sequence', current.tail);
 			line.splice(index_to_read, 1);
 		}
+		console.log("one remove of current");
 	}
 	// request moew lines to cache when lines ahead less than n number
 	if(current.head - current.sequence < 20) {
@@ -127,22 +140,26 @@ function maintainCache(callback) {
 	if(cache.head - cache.tail > cache.limit) {
 		for(cache.tail; cache.tail < current.sequence - 5; cache.tail++) {
 			var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
-			if(line[index_to_read].bgm_resource_id) {
-				$('.audio-cache').find('audio[id='+line[index_to_read].bgm_resource_id+']').remove();
-			}
-			if(line[index_to_read].sfx_resource_id) {
-				$('.audio-cache').find('audio[id='+line[index_to_read].sfx_resource_id+']').remove();
-			}
-			if(line[index_to_read].voice_resource_id) {
-				$('.audio-cache').find('audio[id='+line[index_to_read].voice_resource_id+']').remove();
-			}
-			if(line[index_to_read].background_resource_id) {
-				$('.image-cache').find('img[id='+line[index_to_read].background_resource_id+']').remove();
-			}
-			if(line[index_to_read].sprite.length) {
-				$.each(line[index_to_read].sprite, function(index, value) {
-					$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-				})
+			if(line[index_to_read].fk_linetype_id == 1) {
+				if(line[index_to_read].bgm_resource_id) {
+					$('.audio-cache').find('audio[id='+line[index_to_read].bgm_resource_id+']').remove();
+				}
+				if(line[index_to_read].sfx_resource_id) {
+					$('.audio-cache').find('audio[id='+line[index_to_read].sfx_resource_id+']').remove();
+				}
+				if(line[index_to_read].voice_resource_id) {
+					$('.audio-cache').find('audio[id='+line[index_to_read].voice_resource_id+']').remove();
+				}
+				if(line[index_to_read].background_resource_id) {
+					$('.image-cache').find('img[id='+line[index_to_read].background_resource_id+']').remove();
+				}
+				if(line[index_to_read].sprite) {
+					if(line[index_to_read].sprite.length) {
+						$.each(line[index_to_read].sprite, function(index, value) {
+							$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
+						});
+					}
+				}
 			}
 			console.log("REMOVED");
 		}
@@ -335,7 +352,6 @@ function preloadInterface(callback) {
 	callback();
 }
 
-var font_list = [];
 function callFontData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/game/loadFontList',
@@ -361,6 +377,9 @@ function getObjectIndex(array, attr, value) {
 	return false;
 }
 
+
+
+
 function initializeGame() {
 	$('.request-loading').fadeOut(200, function() {
 		$('.game-area').fadeIn(100, function() { // DEFAULT 1500
@@ -369,15 +388,7 @@ function initializeGame() {
 	});
 }
 
-// canvas renderer
-var game = {
-	screen: "title", // title/play/configuration/save/load/backlog
-	mode: "normal", // normal, skip, auto
-	bgm: ""
-}
-var canvas = new fabric.Canvas('visual');
-canvas.selection = false;
-canvas.backgroundColor = 'rgba(255, 255, 255,1)';
+
 //canvas.hoverCursor = 'default';
 //cnv.setBackgroundImage('http://localhost/cast/resources/a.jpg', function() { cnv.renderAll(); });
 //canvas.onFpsUpdate = function(){ /* ... */ };
@@ -722,6 +733,7 @@ canvas.on('mouse:down', function(options) {
 					game.screen = "title";
 				}
 				else if(game.screen === "in_game_configuration") {
+					// $(text_display).delay(3000).fadeIn(500);
 					game.screen = "play";
 				}
 				break;
@@ -740,13 +752,16 @@ canvas.on('mouse:down', function(options) {
 			case "save_button":
 				break;
 			case "auto_button":
+				$(text_display).fadeOut(1000);
 				break;
 			case "skip_button":
 				break;
 			case "repeat_button":
+				$(text_display).fadeIn(1000);
 				break;
 			case "configuration_button":
 				renderConfigurationScreen();
+				$(text_display).fadeOut(1000);
 				game.screen = "in_game_configuration";
 				break;
 			case "log_button":
@@ -761,7 +776,26 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "save") {
 
 	}
-	console.log(options.e.layerX, options.e.layerY);
+	else if(game.screen = "choice") {
+		if(options.target.line_choice_id) {
+			var choice_id_select = options.target.line_choice_id;
+			var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
+			var choice_index_to_read = getObjectIndex(line[index_to_read].choice, 'choice_id', choice_id_select);
+			if(line[index_to_read].choice[choice_index_to_read].jumpto_line_id && line[index_to_read].choice[choice_index_to_read].jumpto_line_id != current.sequence+1) {
+					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
+					// shiftCurrent(jump_to);
+					shiftCurrent(choice_index_to_read);
+			}
+			else {
+				exitChoice(function() {
+					renderNextLine(function() {
+						game.screen = "play";
+					});
+				});
+			}
+		}
+	}
+	// console.log(options.e.layerX, options.e.layerY);
 });
 
 	// var ldi = getObjectIndex(canvas.getObjects(), 'id', 'start_button');
@@ -771,6 +805,17 @@ canvas.on('mouse:down', function(options) {
 // canvas.on('mouse:move', function(options) {
 // 	console.log(options.e.layerX, options.e.layerY);
 // });
+
+function shiftCurrent(choice_index, callback) {
+	// get index of next line
+	var index_to_write = getObjectIndex(line, 'sequence', current.sequence + 1);
+	// get index of current line
+	var index_to_write = getObjectIndex(line, 'sequence', current.sequence);
+	// remove all line cache ahead and fill with look_ahead in choice 
+	line.splice(index_to_write, current.head - current.sequence, line[index_to_read].choice[choice_index_to_read].look_ahead);
+	// change current line to jump seq - 1?
+	
+} 
 
 function callSaveConfiguration() {
 	var configuration_json = JSON.stringify(configuration);
@@ -821,30 +866,45 @@ function renderLoadScreen() {
 	var img_nodata = $('#save_data_box_nodata')[0];
 	// var img_data = "<<<";
 	// var data_details = "array of data details here";
+	// render quickload slot
+	var qld_dat = new fabric.Image(img_nodata, {
+		id: 'quickload_slot',
+		qsve_slot_id: (i+1),
+		top: -200,
+		left: 350,
+		opacity: 0.8,
+		angle: 0
+	});
+	qld_dat.set('selectable', false);
+	canvas.add(qld_dat);
+	qld_dat.animate('top', 30, {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 1000,
+		easing:fabric.util.ease.easeInOutBack
+	});
 	// render save data group
-	var top_after = 100;
+	var top_after = 130;
 	for(var i = 0; i < 5; i++) {
-		var sav_dat = new fabric.Image(img_nodata, {
-			id: 'save_slot',
+		var ld_dat = new fabric.Image(img_nodata, {
+			id: 'load_slot',
 			save_slot_id: (i+1),
 			top: -200,
 			left: 30,
 			opacity: 0.8,
 			angle: 0
 		});
-		sav_dat.set('selectable', false);
-		canvas.add(sav_dat);
-		sav_dat.animate('top', top_after, {
+		ld_dat.set('selectable', false);
+		canvas.add(ld_dat);
+		ld_dat.animate('top', top_after, {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 1000,
 			easing:fabric.util.ease.easeInOutBack
 		});
 		top_after+=90;
 	}
-	var top_after = 100;
+	var top_after = 130;
 	for(i = i; i < 10; i++) {
-
-		var sav_dat = new fabric.Image(img_nodata, {
+		var ld_dat = new fabric.Image(img_nodata, {
 			id: 'save_slot',
 			save_slot_id: (i+1),
 			top: -200,
@@ -852,9 +912,9 @@ function renderLoadScreen() {
 			opacity: 0.8,
 			angle: 0
 		});
-		sav_dat.set('selectable', false);
-		canvas.add(sav_dat);
-		sav_dat.animate('top', top_after, {
+		ld_dat.set('selectable', false);
+		canvas.add(ld_dat);
+		ld_dat.animate('top', top_after, {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 1000,
 			easing:fabric.util.ease.easeInOutBack
@@ -921,6 +981,16 @@ function exitLoadScreen() {
 		easing: fabric.util.ease.easeInOutBack,
 		onComplete: function() {
 			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
+			canvas.remove(canvas.item(index_to_read));
+		}
+	});
+	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
+	canvas.item(index_to_read).animate('top', '-600', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 1000,
+		easing: fabric.util.ease.easeInOutBack,
+		onComplete: function() {
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
 			canvas.remove(canvas.item(index_to_read));
 		}
 	});
@@ -1284,6 +1354,7 @@ function exitConfigurationScreen() {
 											duration: 500,
 											easing: fabric.util.ease.easeInOutBack,
 											onComplete: function() {
+												$(text_display).fadeIn(500);
 												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_head');
 												canvas.remove(canvas.item(index_to_read));
 												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'font_head');
@@ -1388,6 +1459,8 @@ function whiteOut(duration, callback) {
 		onChange: canvas.renderAll.bind(canvas),
 		duration: duration,
 		onComplete: function() {
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'white');
+			canvas.remove(canvas.item(index_to_read));
 			if(callback) {
 				callback();
 			}
@@ -1424,18 +1497,44 @@ function renderNextLine(callback) {
 			}
 			// var prev_index_to_read = getObjectIndex(line, 'sequence', (current.sequence-1));
 			// if(line[prev_index_to_read].fk_linetype_id == 1) {
-				if(line[index_to_read].background_resource_id) {
-					// render background
-					var bg_id = line[index_to_read].background_resource_id;
-					var img = $('.image-cache').find('img[id='+bg_id+']')[0];
-					var bg = new fabric.Image(img, {
-						line_sequence_background: current.sequence,
-						top: 0,
-						left: 0,
-						opacity: 0
-					});
-					bg.set('selectable', false);
-					canvas.add(bg);
+				if(line[prev_index_to_read].background_resource_id != line[index_to_read].background_resource_id) {
+					console.log("different background");
+					if(line[index_to_read].background_resource_id) {
+						// transiate
+						// whiteIn(500, function() {
+						// 	whiteOut(500);
+						// });
+						// render background
+						var bg_id = line[index_to_read].background_resource_id;
+						var img = $('.image-cache').find('img[id='+bg_id+']')[0];
+						var bg = new fabric.Image(img, {
+							line_background_resource_id: bg_id,
+							top: 0,
+							left: 0,
+							opacity: 1
+						});
+						bg.set('selectable', false);
+						canvas.add(bg);
+						canvas.sendToBack(bg);
+						bg.animate('opacity', '1', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 500
+						});
+					}
+					if(line[prev_index_to_read].background_resource_id) {
+						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
+						console.log(canvas_index);
+						bg = canvas.item(canvas_index);
+						bg.animate('opacity', '0', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 500,
+							onComplete: function() {
+								canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
+								canvas.remove(canvas.item(canvas_index));
+							}
+						});
+					}
+					
 				}
 				
 				// render sprites
@@ -1471,7 +1570,7 @@ function renderNextLine(callback) {
 							var sprite_move = false;
 							var sprite_passed_index = getObjectIndex(line[prev_index_to_read].sprite, 'sprite_resource_id', value.sprite_resource_id);
 							// if sprite is one from previous line
-							console.log(line[prev_index_to_read].sprite[sprite_passed_index]);
+							// console.log(line[prev_index_to_read].sprite[sprite_passed_index]);
 							if(line[prev_index_to_read].sprite[sprite_passed_index]) {
 								// chack for same sprite and same position
 								/*$.each(line[prev_index_to_read].sprite, function(j_index, j_value) {
@@ -1556,7 +1655,7 @@ function renderNextLine(callback) {
 						var spr = canvas.item(canvas_index);
 						spr.animate('opacity', '0', {
 							onChange: canvas.renderAll.bind(canvas),
-							duration: 1000,
+							duration: 500,
 							onComplete: function() {
 								$.each(sprite_to_remove, function(index, value) {
 									var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
@@ -1584,7 +1683,7 @@ function renderNextLine(callback) {
 				var bg_id = line[index_to_read].background_resource_id;
 				var img = $('.image-cache').find('img[id='+bg_id+']')[0];
 				var bg = new fabric.Image(img, {
-					line_sequence_background: current.sequence,
+					line_background_resource_id: bg_id,
 					top: 0,
 					left: 0,
 					opacity: 0
@@ -1646,10 +1745,62 @@ function renderNextLine(callback) {
 			playSfx(path_to_voice);
 		}
 
-		console.log(line[index_to_read].content);
+		// console.log(line[index_to_read].content);
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
-		// renderLineText(line[index_to_read].content);
-		renderLineText("dd line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area ");
+		renderLineText(line[index_to_read].content);
+		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
+	}
+	// render choice
+	else if(line[index_to_read].fk_linetype_id == 2) {
+		game.screen = "choice";
+		var top_after = 200;
+		if(line[index_to_read].choice.length == 3) {
+			top_after = 180;
+		}
+		else if(line[index_to_read].choice.length == 4) {
+			top_after = 160;
+		}
+		for(var i = 0; i < line[index_to_read].choice.length; i++) {
+			// prepare choice box
+			var img = $('.interface').find('img[id=in_choice_box]')[0];
+			var chc_box = new fabric.Image(img, {
+				originX: 'center',
+				originY: 'center',
+				opacity: 0,
+				scaleX: 0.8
+			});
+			// prepare text
+			var txt = line[index_to_read].choice[i].content;
+			var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
+			var chc_txt = new fabric.Text(txt, {
+				fontSize: 20,
+				fontFamily: font_list[font_index].name,
+				originX: 'center',
+				originY: 'center'
+			});
+			// combine to group
+			var chc = new fabric.Group([ chc_box, chc_txt ], {
+				line_choice_id: line[index_to_read].choice[i].choice_id,
+				top: top_after,
+				left: 100
+			});
+			chc.set('selectable', false);
+			canvas.add(chc);
+			chc.animate('opacity', '0.9', {
+				onChange: canvas.renderAll.bind(canvas),
+				duration: 1000
+			});
+			var option = line[index_to_read].choice.length;
+			if(line[index_to_read].choice.length == 2) {
+				top_after+= 80;
+			}
+			else if(line[index_to_read].choice.length == 3) {
+				top_after+= 70;
+			}
+			else if(line[index_to_read].choice.length == 4) {
+				top_after+= 60;
+			}
+		}
 	}
 	// }
 	// if(typeof callback === 'function' && callback()) {
@@ -1661,8 +1812,33 @@ function renderNextLine(callback) {
 	}
 }
 
+// remove choice from canv
+function exitChoice(callback) {
+	// fade out choice and remove
+	var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
+	$.each(line[index_to_read].choice, function(index, value) {
+		var canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
+		var chc = canvas.item(canvas_index);
+		chc.animate('opacity', '0', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 500,
+			onComplete: function() {
+				$.each(line[index_to_read].choice, function(index, value) {
+					canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
+					canvas.remove(canvas.item(canvas_index));
+				});
+				if(callback) {
+					callback();
+				}
+			}
+		});
+	});
+}
+
+
 function renderInGameInterface(callback) {
 	if(current.sequence == current.tail) {
+		// line interface id for looping through the interface
 		// text box
 		var img = $('.interface').find('img[id=in_text_window]')[0];
 		var txt_box = new fabric.Image(img, {
@@ -1735,7 +1911,7 @@ function renderInGameInterface(callback) {
 			id: 'auto_button',
 			line_interface_id: 7,
 			top: 470,
-			left: 640,
+			left: 20, // original: 640
 			opacity: 0.9
 		});
 		auto_btn.set('selectable', false);
@@ -1757,7 +1933,7 @@ function renderInGameInterface(callback) {
 			id: 'repeat_button',
 			line_interface_id: 9,
 			top: 530,
-			left: 635,
+			left: 15, // original: 635
 			opacity: 1
 		});
 		repeat_btn.set('selectable', false);
@@ -1838,19 +2014,19 @@ function playVoice(source) {
 
 
 
-context.font = '24px sans-serif';
+// font_size, point_x, start_y, line_height, right_padding
+// 18px, 100, 490, 25, 100 = 390 chars
+// 21. 100. 490. 31. 100 = 160 chars
+context.font = '21px sans-serif';
 function renderLineText(line_content) {
-	// predefined
-	var startX = 25;
-	var startY = 400;
-	var lineHeight = 32;
-	var padding = 200;
-	var intervaltiming = 1.3;
-	// main func
-	var cursorX = startX || 0;
-	var cursorY = startY || 0;
-	var lineHeight = lineHeight || 32;
-	padding = padding || 10;
+	var cursor_x = 100;
+	var cursor_y = 490;
+	var line_break = cursor_x;
+	var line_height = 31;
+	var right_padding = 100;
+	var interval_speed = 1.0;
+	var line_height = line_height || 32;
+	right_padding = right_padding || 10;
 	var i = 0;
 	var inter = setInterval(function() {
 		var rem = line_content.substr(i);
@@ -1864,15 +2040,15 @@ function renderLineText(line_content) {
 		// space = (space === -1)?line_content.length:space;
 		var wordwidth = context.measureText(rem.substring(0, space)).width;
 		var w = context.measureText(line_content.charAt(i)).width;
-		if(cursorX + wordwidth >= text_display.width - padding) {
-			cursorX = startX;
-			cursorY += lineHeight;
+		if(cursor_x + wordwidth >= text_display.width - right_padding) {
+			cursor_x = line_break;
+			cursor_y += line_height;
 		}
-		context.fillText(line_content.charAt(i), cursorX, cursorY);
+		context.fillText(line_content.charAt(i), cursor_x, cursor_y);
 		i++;
-		cursorX += w;
+		cursor_x += w;
 		if(i === line_content.length) {
 			clearInterval(inter);
 		}
-	}, intervaltiming);
+	}, interval_speed);
 }

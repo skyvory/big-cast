@@ -1,4 +1,5 @@
 ﻿range of position x is -8 to 8 position y -6 to 6
+max line content is 160
 
 - initial load page
 - working configuration page

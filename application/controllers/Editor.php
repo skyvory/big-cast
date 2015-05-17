@@ -126,7 +126,7 @@ class Editor extends CI_Controller {
 		}
 		
 
-		$this->fb->log($page);
+		// $this->fb->log($page);
 		// (conditional) load with search or page
 		if($by == "0") {
 			// offset is automatically 0 if string put as value (php)

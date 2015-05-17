@@ -29,6 +29,26 @@ function getLastLineObjectBySequence(seq) {
 	// var select_form = $('.line-list tr td form').has('input[name=sequence][value='+seq+']');
 	if(seq != 0) {
 		var select_index = getObjectIndex(line_obj, 'sequence', seq);
+		// prepare sprite duplication
+		var sprite_duplicate = [];
+		var count = 0;	
+		// duplicate sprite with fresh id
+		$.each(line[select_index].sprite, function(index, value) {
+			sprite_duplicate.push({
+				sprite_temp_index: count,
+				sprite_id: "new",
+				position_x: value.position_x,
+				position_y: value.position_y,
+				position_z: value.position_z,
+				sprite_resource_id: value.sprite_resource_id,
+				sprite_name: value.sprite_name,
+				sprite_file_name: value.sprite_file_name,
+				sprite_character_name: value.sprite_character_name,
+				sprite_figure_name: value.sprite_figure_name,
+				sprite_expression_name: value.sprite_expression_name
+			});
+			count++;
+		})
 		var select_obj = {
 			speaker: line_obj[select_index].speaker,
 			background_resource_id: line_obj[select_index].background_resource_id,
@@ -1760,6 +1780,8 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 			var input = $(this);
 			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.resource_id);
 			$(this.form).find('input[name=sprite]').val(ui.item.name);
+			// trigger on change method to change value immediately
+			$(this).trigger('change');
 			return false;
 		},
 		autoFocus: true,
