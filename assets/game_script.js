@@ -623,47 +623,74 @@ function renderTitleMenu() {
 // });
 var key_enable = true;
 $(document).bind('keydown', function(e){
-	if(game.screen == "play" && key_enable == true) {
-		switch(e.keyCode) {
-			// enter key
-			case 13:
-					key_enable = false;
-					renderNextLine();
-					maintainCurrent();
-					maintainCache();
-				break;
-			// ctrl key
-			case 17:
-				game.screen = "skip";
-				break;
-			// a key
-			case 65:
-				// toggle
-				game.screen = "auto";
-			// f key
-			case 70:
-				// toggle
-				game.screen = "skip";
-			// s key
-			case 83:
-				// open save
-				break;
-			// l key
-			case 76:
-				// open save
-				break;
-			// r key
-			case 82:
-				// repeat voice
-				
-			default:
-				break;
+	if(key_enable == true) {
+		if(game.screen == "play") {
+			switch(e.which) {
+				// enter key
+				case 13:
+						key_enable = false;
+						renderNextLine();
+						maintainCurrent();
+						maintainCache();
+					break;
+				// ctrl key
+				case 17:
+					game.screen = "skip";
+					playSkip();
+					break;
+				// a key
+				case 65:
+					// toggle
+					game.screen = "auto";
+					playAuto();
+					break;
+				// f key
+				case 70:
+					// toggle skip
+					game.screen = "skip";
+					playSkip();
+					break;
+				// s key
+				case 83:
+					// open save
+					game.screen = "save";
+					renderSaveScreen();
+					break;
+				// l key
+				case 76:
+					// open load
+					game.screen = "load";
+					renderLoadScreen();
+					break;
+				// r key
+				case 82:
+					playVoice();
+					// repeat voice
+					
+				default:
+					break;
+			}
+		}
+		else if(game.screen == "auto") {
+			switch(e.which) {
+				// return to normal play
+				case 13:
+					game.screen = "play";
+					break;
+				// toggle auto
+				case 65:
+					game.screen = "play";
+					break
+				default:
+					break;
+			}
 		}
 	}
 });
 $(document).bind('keyup', function(e){
 	if(game.screen == "play") {
 		switch(e.keyCode) {
+			// toggle skip
 			case 17:
 				game.screen = "play";
 				break;
@@ -900,39 +927,48 @@ canvas.on('mouse:down', function(options) {
 		}
 	}
 	else if(game.screen == "play") {
-		switch(options.target.id) {
-			case "quickload_button":
-				break;
-			case "quicksave_button":
-				break;
-			case "load_button":
-				break;
-			case "save_button":
-				break;
-			case "auto_button":
-				game.screen = "auto";
-				playAuto();
-				break;
-			case "skip_button":
-				game.screen = "skip";
-				playSkip();
-				break;
-			case "repeat_button":
-				playVoice();
-				break;
-			case "configuration_button":
-				renderConfigurationScreen();
-				$(text_display).fadeOut(1000);
-				game.screen = "in_game_configuration";
-				break;
-			case "log_button":
-				break;
-			default:
-				renderNextLine();
-				maintainCurrent();
-				maintainCache();
-				break;
+		if(options.target != undefined) {
+			switch(options.target.id) {
+				case "quickload_button":
+					break;
+				case "quicksave_button":
+					break;
+				case "load_button":
+					break;
+				case "save_button":
+					break;
+				case "auto_button":
+					game.screen = "auto";
+					playAuto();
+					break;
+				case "skip_button":
+					game.screen = "skip";
+					playSkip();
+					break;
+				case "repeat_button":
+					playVoice();
+					break;
+				case "configuration_button":
+					renderConfigurationScreen();
+					$(text_display).fadeOut(1000);
+					game.screen = "in_game_configuration";
+					break;
+				case "log_button":
+					break;
+				default:
+					renderNextLine();
+					maintainCurrent();
+					maintainCache();
+					break;
+			}
 		}
+		else {
+			console.log("GODDAMN");
+			renderNextLine();
+			maintainCurrent();
+			maintainCache();
+		}
+
 	}
 	else if(game.screen == "save") {
 
@@ -943,7 +979,7 @@ canvas.on('mouse:down', function(options) {
 			// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
 			var choice_index_to_read = getObjectIndex(line[current.sequence].choice, 'choice_id', choice_id_select);
 			// console.log(line);
-			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != current.sequence+1) {
+			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
 					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
 					// shiftCurrent(jump_to);
 					// shiftCurrent(choice_index_to_read);
@@ -1738,7 +1774,27 @@ function compareSpriteIndex(a, b) {
 function renderNextLine(callback) {
 	//if before same or something whatever
 	current.sequence++;
+
+	// for line jump
+	if(line[current.sequence].jumpto_line_id) {
+		game.screen = "stall";
+		console.log("has jump to");
+		if(line[current.sequence].jumpto_line_id && line[current.sequence].jumpto_line_id != line[current.sequence+1].line_id) {
+				var index_to_remove = current.sequence + 1;
+				line.splice(index_to_remove, current.head - current.sequence);
+				current.head = current.sequence;
+				var offset_jump = line[current.sequence].look_ahead[0].sequence;
+				callSequentialLineData(parseInt(offset_jump)-1, function() {
+					processSequentialResource();
+					setTimeout(function() {
+						game.screen = "play";
+					}, 1000);
+				});
+		}
+	}
+
 	console.log(current.sequence);
+	// render text line
 	if(parseInt(line[current.sequence].fk_linetype_id) === 1) {
 		if(current.sequence > 0) {
 			// prepare latest index in line which is text type
@@ -2060,8 +2116,9 @@ function renderNextLine(callback) {
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		renderLineText(line[current.sequence].content);
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
+
 	}
-	// render choice
+	// render choice line
 	else if(line[current.sequence].fk_linetype_id == 2) {
 		game.screen = "choice";
 		var top_after = 200;
@@ -2114,6 +2171,7 @@ function renderNextLine(callback) {
 			}
 		}
 	}
+	// render video line
 	else if(line[current.sequence].fk_linetype_id == 3) {
 		game.screen = "stall";
 		var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
@@ -2162,6 +2220,7 @@ function renderNextLine(callback) {
 		});
 
 	}
+	// render end line
 	else if(line[current.sequence].fk_linetype_id == 4) {
 		game.screen = "stall";
 		$('.text-area').fadeOut(2000);
@@ -2185,6 +2244,9 @@ function renderNextLine(callback) {
 		keep.bringToFront();
 	}
 
+
+
+	// render interface
 	renderInGameInterface();
 	if(callback) {
 		callback();

@@ -173,7 +173,7 @@ class Game extends CI_Controller {
 					'sprite' => array(),
 					'look_ahead' => array()
 				);
-				// preload look ahead for choice
+				// preload look ahead for text line
 				$look_ahead = array();
 				if($value['jumpto_line_id'] != null || !empty($value['jumpto_line_id'])) {
 					$sequence_after = $this->game_model->getLineSequence($value['jumpto_line_id']);
@@ -256,14 +256,32 @@ class Game extends CI_Controller {
 						'video_file_name' => null
 					);
 				}
+
 				$line[$i] = array(
 					'line_id' => utf8_encode($value['line_id']),
 					'sequence' => utf8_encode($value['sequence']),
 					'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
 					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
 					'video_resource_id' => utf8_encode($video['video_resource_id']),
-					'video_file_name' => utf8_encode($video['video_file_name'])
+					'video_file_name' => utf8_encode($video['video_file_name']),
+					'look_ahead' => array()
 				);
+				// preload look ahead for video line
+				if($value['jumpto_line_id'] != null || !empty($value['jumpto_line_id'])) {
+					$sequence_after = $this->game_model->getLineSequence($value['jumpto_line_id']);
+					$pass_line_ahead = $this->game_model->getLine($game['id'], 1, $sequence_after-1);
+					foreach ($pass_line_ahead as $j_key => $j_value) {
+						$line[$i]['look_ahead'][] = array(
+							'line_id' => utf8_encode($j_value['line_id']),
+							'sequence' => utf8_encode($j_value['sequence']),
+							'speaker' => utf8_encode($j_value['speaker']),
+							'content' => utf8_encode($j_value['content']),
+							'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
+							'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
+							'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
+						);
+					}
+				}
 			}
 			else if($value['fk_linetype_id'] == 4) {
 				$line[$i] = array(
