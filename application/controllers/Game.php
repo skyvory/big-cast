@@ -93,9 +93,9 @@ class Game extends CI_Controller {
 	}
 	public function loadLine() {
 		$game = $this->session->userdata('active_game');
-		$head = $this->input->post('head');
+		$offset = $this->input->post('offset');
 		$limit = $this->input->post('limit');
-		$pass_line = $this->game_model->getLine($game['id'], $limit, $head);
+		$pass_line = $this->game_model->getLine($game['id'], $limit, $offset);
 		$line = array();
 		$sprite = array();
 		$choice = array();
@@ -197,20 +197,29 @@ class Game extends CI_Controller {
 				$pass_choice = $this->game_model->getChoice($value['line_id']);
 				if($pass_choice) {
 					foreach ($pass_choice as $key => $value) {
+						// preload look ahead for choice
+						$look_ahead = array();
+						if($value['jumpto_line_id'] != null || !empty($value['jumpto_line_id'])) {
+							$sequence_after = $this->game_model->getLineSequence($value['jumpto_line_id']);
+							$pass_line_ahead = $this->game_model->getLine($game['id'], 1, $sequence_after-1);
+							foreach ($pass_line_ahead as $j_key => $j_value) {
+								$look_ahead[] = array(
+									'line_id' => utf8_encode($j_value['line_id']),
+									'sequence' => utf8_encode($j_value['sequence']),
+									'speaker' => utf8_encode($j_value['speaker']),
+									'content' => utf8_encode($j_value['content']),
+									'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
+									'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
+									'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
+								);
+							}
+						}
 						$line[$i]['choice'][] = array(
 							'choice_id' => utf8_encode($value['choice_id']),
 							'content' => utf8_encode($value['content']),
 							'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
-							'look_ahead' => array()
+							'look_ahead' => $look_ahead
 						);
-						// enchanced
-						if($value['jumpto_line_id'] != null) {
-							$sequence_after = $this->game_model->getLineSequence($value['jumpto_line_id']);
-							$pass_line_ahead = $this->game_model->getLine($game['id'], 8, $sequence_after-1);
-							// $this->fb->log($value['content']);
-							// $this->fb->log($pass_line_ahead);
-							// >>>
-						}
 					}
 				}
 			}

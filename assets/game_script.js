@@ -6,14 +6,15 @@ var line = [];
 var current = {
 	sequence: -1,
 	head: 0,
-	tail: 0,
+	// tail: 0,
 	branch: 0,
-	limit: 60
+	limit: 10 //60
 };
 var cache = {
-	head: 0,
-	tail: 0,
-	limit: 20
+	head: -1,
+	// tail: 0,
+	limit: 60, // 20
+	count: 0
 };
 var game = {
 	screen: "title", // title/play/configuration/save/load/backlog/choice
@@ -49,7 +50,7 @@ canvas.backgroundColor = 'rgba(255, 255, 255,1)';
 $(document).ready(function() {
 	preloadInterface(function() {
 		callConfigurationData(function() {
-			callSequentialLineData(function() {
+			callSequentialLineData(0, function() {
 				processSequentialResource();
 				setTimeout(function() {
 					initializeGame();
@@ -77,14 +78,19 @@ function callConfigurationData(callback) {
 	});
 }
 
-function callSequentialLineData(callback) {
+function callSequentialLineData(offset, callback) {
 	// current.head + current.limit would result line with total number of limit cached ahead
 	var process_limit = current.head + current.limit;
+	// var offset = 0;
+	// if(current.head > 0) {
+	// 	offset = parseInt(line[current.head].sequence) + 1;
+	// 	console.log(offset);
+	// }
 	var req = $.ajax({
 		url: config.base +'index.php/game/loadLine',
 		type: "POST",
 		data: {
-			head: current.head,
+			offset: offset,
 			limit: process_limit
 		},
 		dataType: "json"
@@ -92,11 +98,11 @@ function callSequentialLineData(callback) {
 	req.done(function(msg) {
 		if(msg.length) {
 			// append all line data to line object
-			if(current.tail == 0) {
+			// if(current.tail == 0) {
 				// current.tail = parseInt(msg[0].sequence);
 				// same with current tail for resource maintain, keep cache at 0 would lead to error because no 0 sequenced line
 				// cache.tail = current.tail;
-			}
+			// }
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
 				// if(parseInt(value.sequence) < current.tail) {
@@ -118,57 +124,227 @@ function callSequentialLineData(callback) {
 }
 
 function maintainCurrent(callback) {
-	console.log("maintainintng current");
 	// delete n number of old line cache if reach limit
-	if(current.head - current.tail > current.limit) {
+	if(current.head > current.limit) {
 		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
-		for(current.tail; current.tail < current.sequence - 15; current.tail++) {
+		for(var i = 0; i < current.sequence - 15; i++) {
 			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
-			line.splice(current.tail, 1);
+			line.splice(0, 1);
+			current.head--;
+			current.sequence--;
 			console.log("currents removed");
 		}
 	}
 	// request new lines to cache when lines ahead less than n number
 	if(current.head - current.sequence < 20) {
-		callSequentialLineData();
+		callSequentialLineData(parseInt(line[current.sequence].sequence) + 1);
 	}
 	if(callback) {
 		callback();
 	}
 }
 function maintainCache(callback) {
-	console.log("maintaining cache");
 	// delete old cache
-	if(cache.head - cache.tail > cache.limit) {
-		for(cache.tail; cache.tail < current.sequence - 5; cache.tail++) {
-			// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
-			if(line[cache.tail].fk_linetype_id == 1) {
-				if(line[cache.tail].bgm_resource_id) {
-					$('.audio-cache').find('audio[id='+line[cache.tail].bgm_resource_id+']').remove();
-				}
-				if(line[cache.tail].sfx_resource_id) {
-					$('.audio-cache').find('audio[id='+line[cache.tail].sfx_resource_id+']').remove();
-				}
-				if(line[cache.tail].voice_resource_id) {
-					$('.audio-cache').find('audio[id='+line[cache.tail].voice_resource_id+']').remove();
-				}
-				if(line[cache.tail].background_resource_id) {
-					$('.image-cache').find('img[id='+line[cache.tail].background_resource_id+']').remove();
-				}
-				if(line[cache.tail].sprite) {
-					if(line[cache.tail].sprite.length) {
-						$.each(line[cache.tail].sprite, function(index, value) {
-							$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-						});
+	if(cache.count > cache.limit) {
+		$('image-cache').children('img').each(function() {
+			var id = $(this.).find('id').val();
+			for(var i = current.sequence; i < current.sequence + 10; i++) {
+				var j = 0;
+				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
+				if(line[i].fk_linetype_id == 1) {
+					// checking ahead to resolve resource missing
+					var bg_del = true;
+					var bgm_del = true;
+					var sfx_del = true;
+					var voice_del = true;
+					for(var i = current.sequence; i < cache.head; i++) {
+						if(line[i].fk_linetype_id == 1) {
+							if(line[i].bgm_resource_id) {
+								if(line[0].bgm_resource_id) {
+									if(line[0].bgm_resource_id == line[i].bgm_resource_id) {
+										bgm_del = false;
+									}
+								}
+							}
+							if(line[i].sfx_resource_id) {
+								if(line[0].sfx_resource_id) {
+									if(line[0].sfx_resource_id == line[i].sfx_resource_id) {
+										sfx_del = false;
+									}
+								}
+							}
+							if(line[i].voice_resource_id) {
+								if(line[0].voice_resource_id) {
+									if(line[0].voice_resource_id == line[i].voice_resource_id) {
+										voice_del = false;
+									}
+								}
+							}
+							if(line[i].background_resource_id) {
+								if(line[0].background_resource_id) {
+									if(line[0].background_resource_id == line[i].background_resource_id) {
+										background_del = false;
+									}
+								}
+							}
+						}
+					}
+					if(line[0].bgm_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
+					}
+					if(line[0].sfx_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
+					}
+					if(line[0].voice_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
+					}
+					if(line[0].background_resource_id) {
+						$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
+					}
+					if(line[0].sprite) {
+						if(line[0].sprite.length) {
+							$.each(line[0].sprite, function(index, value) {
+								// check ahead
+								var spr_del = true;
+								for(var i = current.sequence; i < cache.head; i++) {
+									if(line[i].fk_linetype_id == 1) {
+										if(line[i].sprite.length) {
+											$.each(line[i].sprite, function(j_index, j_value) {
+												if(value.sprite_resource_id == j_value.sprite_resource_id) {
+													spr_del = false;
+												}
+											});
+										}
+									}
+								}
+								if(spr_del == true) {
+									$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
+								}
+							});
+						}
 					}
 				}
+				cache.head--;
+				console.log("caches removed");
 			}
-			console.log("caches removed");
+		}
+
+		$('image-cache').children('img').each(function() {
+			var id = $(this.).find('id').val();
+			for(var i = current.sequence; i < current.sequence + 10; i++) {
+				var j = 0;
+				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
+				if(line[0].fk_linetype_id == 1) {
+					// checking ahead to resolve resource missing
+					var bg_del = true;
+					var bgm_del = true;
+					var sfx_del = true;
+					var voice_del = true;
+					for(var i = current.sequence; i < cache.head; i++) {
+						if(line[i].fk_linetype_id == 1) {
+							if(line[i].bgm_resource_id) {
+								if(line[0].bgm_resource_id) {
+									if(line[0].bgm_resource_id == line[i].bgm_resource_id) {
+										bgm_del = false;
+									}
+								}
+							}
+							if(line[i].sfx_resource_id) {
+								if(line[0].sfx_resource_id) {
+									if(line[0].sfx_resource_id == line[i].sfx_resource_id) {
+										sfx_del = false;
+									}
+								}
+							}
+							if(line[i].voice_resource_id) {
+								if(line[0].voice_resource_id) {
+									if(line[0].voice_resource_id == line[i].voice_resource_id) {
+										voice_del = false;
+									}
+								}
+							}
+							if(line[i].background_resource_id) {
+								if(line[0].background_resource_id) {
+									if(line[0].background_resource_id == line[i].background_resource_id) {
+										background_del = false;
+									}
+								}
+							}
+						}
+					}
+					if(line[0].bgm_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
+					}
+					if(line[0].sfx_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
+					}
+					if(line[0].voice_resource_id) {
+						$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
+					}
+					if(line[0].background_resource_id) {
+						$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
+					}
+					if(line[0].sprite) {
+						if(line[0].sprite.length) {
+							$.each(line[0].sprite, function(index, value) {
+								// check ahead
+								var spr_del = true;
+								for(var i = current.sequence; i < cache.head; i++) {
+									if(line[i].fk_linetype_id == 1) {
+										if(line[i].sprite.length) {
+											$.each(line[i].sprite, function(j_index, j_value) {
+												if(value.sprite_resource_id == j_value.sprite_resource_id) {
+													spr_del = false;
+												}
+											});
+										}
+									}
+								}
+								if(spr_del == true) {
+									$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
+								}
+							});
+						}
+					}
+				}
+				cache.head--;
+				console.log("caches removed");
+			}
 		}
 	}
 	// request new cache
 	if(cache.head - current.sequence < 10) {
 		processSequentialResource();
+	}
+	if(callback) {
+		callback();
+	}
+}
+
+function removeOldCache(callback) {
+	// delete old cache
+	for(; cache.head > current.sequence; cache.head--) {
+		if(line[0].fk_linetype_id == 1) {
+			if(line[0].bgm_resource_id) {
+				$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
+			}
+			if(line[0].sfx_resource_id) {
+				$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
+			}
+			if(line[0].voice_resource_id) {
+				$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
+			}
+			if(line[0].background_resource_id) {
+				$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
+			}
+			if(line[0].sprite) {
+				if(line[0].sprite.length) {
+					$.each(line[0].sprite, function(index, value) {
+						$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
+					});
+				}
+			}
+		}
 	}
 	if(callback) {
 		callback();
@@ -193,6 +369,7 @@ function maintainCache(callback) {
 
 function processSequentialResource() {
 	if(cache.head < current.sequence + cache.limit) {
+		cache.head++;
 		// console.log(cache.head);
 		// var index_to_read = getObjectIndex(line, 'sequence', cache.head);
 		if(line[cache.head]) {
@@ -225,8 +402,9 @@ function processSequentialResource() {
 						}
 					});
 				}
-				setTimeout(function() {
+				// setTimeout(function() {
 					// if bgm exist
+					console.log(cache.head);
 					if(line[cache.head].bgm_resource_id) {
 						var path_to_bgm = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/bgm/" + line[cache.head].bgm_file_name;
 						var resource_id = line[cache.head].bgm_resource_id;
@@ -257,19 +435,18 @@ function processSequentialResource() {
 							}
 						});
 					}
-					
-				if(status == true) {
-					cache.head++;
-					processSequentialResource();
-				}
-				}, 1000);
+					if(status == true) {
+						// cache.head++;
+						processSequentialResource();
+					}
+				// }, 1000);
 			}
 			else if(line[cache.head].fk_linetype_id == 2) {
-				cache.head++;
+				// cache.head++;
 				processSequentialResource();
 			}
 			else {
-				cache.head++;
+				// cache.head++;
 				processSequentialResource();
 			}
 		}
@@ -285,6 +462,7 @@ function preloadImage(source, resource_id, callback) {
 	}
 	else {
 		$("<img/>").attr("src", source).attr("id", resource_id).css("display", "none").appendTo('.image-cache');
+		cache.count++;
 		$('img[id='+resource_id+']').on('load', function() {
 			callback(true);
 		});
@@ -300,13 +478,14 @@ function preloadSprite(sourcearray, callback) {
 			}
 			else {
 				$("<img/>").attr("src", value.source).attr("id", value.resource_id).css("display", "none").appendTo('.image-cache');
+				cache.count++;
 				$('img[id='+value.resource_id+']').on('load', function() {
 					if(index == sourcearray.length) {
 						callback(true);
 					}
 				});
 			}
-		}, index * 3000);
+		}, index * 1000);
 		
 	});
 }
@@ -319,6 +498,7 @@ function preloadAudio(source, resource_id, callback){
 	}
 	else {
 		$("<audio/>").attr("src", source).attr("id", resource_id).css("display", "none").appendTo('.audio-cache');
+		cache.count++;
 		$('audio[id='+resource_id+']').on('canplaythrough', function() {
 			// console.log("cached");
 			callback(true);
@@ -776,6 +956,9 @@ canvas.on('mouse:down', function(options) {
 				renderNextLine();
 				maintainCurrent();
 				maintainCache();
+				console.log("cache head", cache.head);
+				console.log("current head", current.head);
+				console.log("currend seq", current.sequence);
 				break;
 		}
 	}
@@ -792,19 +975,31 @@ canvas.on('mouse:down', function(options) {
 					// shiftCurrent(jump_to);
 					// shiftCurrent(choice_index_to_read);
 					//>>>change to unresponsive game screen for loading line resource
-					callSequentialLineData(function() {
-						processSequentialResource(function() {
-							// return gamescreen>>>
-							renderNextLine();
+					var index_to_remove = current.sequence + 1;
+					// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index_to_read].look_ahead[0]);
+					line.splice(index_to_remove, current.head - current.sequence);
+					removeOldCache(function() {
+						current.head = current.sequence;
+						var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
+						callSequentialLineData(parseInt(offset_jump)-1, function() {
+							processSequentialResource(function() {
+								// return gamescreen>>>		
+							});
+							exitChoice();
+							setTimeout(function() {
+								renderNextLine();
+								game.screen = "play";
+							}, 500);
 						});
 					});
+					
 			}
 			else {
-				exitChoice(function() {
-					renderNextLine(function() {
-						game.screen = "play";
-					});
-				});
+				exitChoice();
+				setTimeout(function() {
+					renderNextLine();
+					game.screen = "play";
+				}, 500);
 			}
 		}
 	}
@@ -818,6 +1013,7 @@ canvas.on('mouse:down', function(options) {
 // canvas.on('mouse:move', function(options) {
 // 	console.log(options.e.layerX, options.e.layerY);
 // });
+
 
 function shiftCurrent(choice_index, callback) {
 
@@ -1511,7 +1707,7 @@ function renderNextLine(callback) {
 		if(current.sequence > 0) {
 			// prepare latest index in line which is text type
 			var prev_index_to_read = ""; 
-			for(var i = current.sequence - 1; i >= current.tail; i--) {
+			for(var i = current.sequence - 1; i >= 0; i--) {
 				// var j = getObjectIndex(line, 'sequence', i);
 				if(line[i].fk_linetype_id == 1) {
 					prev_index_to_read = i;
@@ -1519,6 +1715,7 @@ function renderNextLine(callback) {
 					i = -1;
 				}
 			}
+			console.log("prev index to read", prev_index_to_read);
 				if(line[prev_index_to_read].background_resource_id != line[current.sequence].background_resource_id) {
 					console.log("different background");
 					if(line[current.sequence].background_resource_id) {
@@ -1633,6 +1830,11 @@ function renderNextLine(callback) {
 											});
 										}
 									}
+									else
+										console.log("ugh");
+								}
+								else {
+									console.log("aww");
 								}
 							}
 							else {
@@ -1690,7 +1892,19 @@ function renderNextLine(callback) {
 					
 				}
 				else {
-						// var canvas_index = get
+					$.each(line[prev_index_to_read].sprite, function(index, value) {
+						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+						var spr = canvas.item(canvas_index);
+						spr.animate('opacity', '0', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 500,
+							onComplete: function() {
+								// repeat get index because canvas index value would change after each and result in wrong index, since function is executed after completion of transition
+								canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+								canvas.remove(canvas.item(canvas_index));
+							}
+						})
+					});
 
 				}
 			// }
@@ -1864,7 +2078,7 @@ function exitChoice(callback) {
 
 
 function renderInGameInterface(callback) {
-	if(current.sequence == current.tail) {
+	if(current.sequence == 0) {
 		// line interface id for looping through the interface
 		// text box
 		var img = $('.interface').find('img[id=in_text_window]')[0];
