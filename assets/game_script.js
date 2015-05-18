@@ -1766,37 +1766,55 @@ function renderNextLine(callback) {
 						var bg_id = line[current.sequence].background_resource_id;
 						console.log("bg added", bg_id);
 						var img = $('.image-cache').find('img[id='+bg_id+']')[0];
-						var bg = new fabric.Image(img, {
-							line_background_resource_id: bg_id,
-							top: 0,
-							left: 0,
-							opacity: 0
-						});
-						bg.set('selectable', false);
-						canvas.add(bg);
-						canvas.sendToBack(bg);
-						bg.animate('opacity', '1', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
-							onComplete: function() {
-								//
-							}
-						});
+						if(game.screen == "skip") {
+							var bg = new fabric.Image(img, {
+								line_background_resource_id: bg_id,
+								top: 0,
+								left: 0,
+								opacity: 1
+							});
+							bg.set('selectable', false);
+							canvas.add(bg);
+							canvas.sendToBack(bg);
+						}
+						else {
+							var bg = new fabric.Image(img, {
+								line_background_resource_id: bg_id,
+								top: 0,
+								left: 0,
+								opacity: 0
+							});
+							bg.set('selectable', false);
+							canvas.add(bg);
+							canvas.sendToBack(bg);
+							bg.animate('opacity', '1', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 500,
+								onComplete: function() {
+									//
+								}
+							});
+						}
 					}
-					console.log("prev", prev_index_to_read);
+					// console.log("prev", prev_index_to_read);
 					if(line[prev_index_to_read].background_resource_id) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 						console.log("canvas index to delete", canvas_index);
 						var bg_bottom = canvas.item(canvas_index);
-						console.log("bg bottom element", bg_bottom);
-						bg_bottom.animate('opacity', '0', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
-							onComplete: function() {
-								canvas.remove(canvas.item(canvas_index));
-								console.log("bg removed at index", canvas_index);
-							}
-						});
+						// console.log("bg bottom element", bg_bottom);
+						if(game.screen == "skip") {
+							canvas.remove(canvas.item(canvas_index));
+						}
+						else {
+							bg_bottom.animate('opacity', '0', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 500,
+								onComplete: function() {
+									canvas.remove(canvas.item(canvas_index));
+									// console.log("bg removed at index", canvas_index);
+								}
+							});
+						}
 					}
 				
 				}
@@ -1807,67 +1825,107 @@ function renderNextLine(callback) {
 					if(line[current.sequence].sprite.length > 1) {
 						line[current.sequence].sprite.sort(compareSpriteIndex);
 					}
-					// get sprite list not passed from prev seq
-					// prepare empty new var
-					var sprite_to_remove = [];
-					// iterate and add to new var if not found same
-					var i = 0;
-					$.each(line[prev_index_to_read].sprite, function(index, value) {
-						var same = false;
-						$.each(line[current.sequence].sprite, function(j_index, j_value) {
-							if(value.sprite_resource_id == j_value.sprite_resource_id) {
-								same = true;
-							}
-						});
-						if(same == false) {
-							sprite_to_remove.push(line[prev_index_to_read].sprite[i]);
+					if(game.screen == "skip") {
+						if(line[prev_index_to_read].sprite.length > 0) {
+							$.each(line[prev_index_to_read].sprite, function(index, value) {
+								var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+								canvas.remove(canvas.item(canvas_index));
+							});
 						}
-						i++;
-					});
-					$.each(line[current.sequence].sprite, function(index, value) {
-						// if prev text line has sprite
-						if(line[prev_index_to_read].sprite.length > 0){
-							var sprite_still = false;
-							var sprite_move = false;
-							var sprite_passed_index = getObjectIndex(line[prev_index_to_read].sprite, 'sprite_resource_id', value.sprite_resource_id);
-							// if sprite is one from previous line
-							if(line[prev_index_to_read].sprite[sprite_passed_index]) {
-								// chack for same sprite and same position
-								if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id && value.position_x == line[prev_index_to_read].sprite[sprite_passed_index].position_x && value.position_y == line[prev_index_to_read].sprite[sprite_passed_index].position_y && value.position_z == line[prev_index_to_read].sprite[sprite_passed_index].position_z) {
-									sprite_still = true;
+						if(line[current.sequence].sprite.length > 0) {
+							$.each(line[current.sequence].sprite, function(index, value) {
+								var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
+								var spr = new fabric.Image(img, {
+									line_sprite_resource_id: value.sprite_resource_id,
+									top: (value.position_y * 100),
+									left: (value.position_x * 100),
+									opacity: 1
+								});
+								spr.set('selectable', false);
+								canvas.add(spr);
+							});
+						}
+					}
+					else {
+						// get sprite list not passed from prev seq
+						// prepare empty new var
+						var sprite_to_remove = [];
+						// iterate and add to new var if not found same
+						var i = 0;
+						$.each(line[prev_index_to_read].sprite, function(index, value) {
+							var same = false;
+							$.each(line[current.sequence].sprite, function(j_index, j_value) {
+								if(value.sprite_resource_id == j_value.sprite_resource_id) {
+									same = true;
 								}
-								if(sprite_still == false) {
-									// check for same sprite (different position)
-									if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id) {
-										sprite_move = true;
+							});
+							if(same == false) {
+								sprite_to_remove.push(line[prev_index_to_read].sprite[i]);
+							}
+							i++;
+						});
+						$.each(line[current.sequence].sprite, function(index, value) {
+							// if prev text line has sprite
+							if(line[prev_index_to_read].sprite.length > 0){
+								var sprite_still = false;
+								var sprite_move = false;
+								var sprite_passed_index = getObjectIndex(line[prev_index_to_read].sprite, 'sprite_resource_id', value.sprite_resource_id);
+								// if sprite is one from previous line
+								if(line[prev_index_to_read].sprite[sprite_passed_index]) {
+									// chack for same sprite and same position
+									if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id && value.position_x == line[prev_index_to_read].sprite[sprite_passed_index].position_x && value.position_y == line[prev_index_to_read].sprite[sprite_passed_index].position_y && value.position_z == line[prev_index_to_read].sprite[sprite_passed_index].position_z) {
+										sprite_still = true;
 									}
-									// if sprite_move not null
-									if(sprite_move == true) {
-										// get canvas index for sprite to move
-										var j_index_to_read = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
-										var spr = canvas.item(j_index_to_read);
-										if(value.position_x != line[prev_index_to_read].sprite[sprite_passed_index].position_x) {
-											spr.animate('left', (value.position_x * 100), {
-												onChange: canvas.renderAll.bind(canvas),
-												duration: 500
-											});
+									if(sprite_still == false) {
+										// check for same sprite (different position)
+										if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id) {
+											sprite_move = true;
 										}
-										if(value.position_y != line[prev_index_to_read].sprite[sprite_passed_index].position_y) {
-											spr.animate('top', (value.position_y * 100), {
-												onChange: canvas.renderAll.bind(canvas),
-												duration: 500
-											});
+										// if sprite_move not null
+										if(sprite_move == true) {
+											// get canvas index for sprite to move
+											var j_index_to_read = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											var spr = canvas.item(j_index_to_read);
+											if(value.position_x != line[prev_index_to_read].sprite[sprite_passed_index].position_x) {
+												spr.animate('left', (value.position_x * 100), {
+													onChange: canvas.renderAll.bind(canvas),
+													duration: 500
+												});
+											}
+											if(value.position_y != line[prev_index_to_read].sprite[sprite_passed_index].position_y) {
+												spr.animate('top', (value.position_y * 100), {
+													onChange: canvas.renderAll.bind(canvas),
+													duration: 500
+												});
+											}
 										}
+										else
+											console.log("ugh");
 									}
-									else
-										console.log("ugh");
+									else {
+										console.log("aww");
+									}
 								}
 								else {
-									console.log("aww");
+									// if new sprite
+									var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: (value.position_y * 100),
+										left: (value.position_x * 100),
+										opacity: 0
+									});
+									spr.set('selectable', false);
+									// get 
+									canvas.add(spr);
+									spr.animate('opacity', '1', {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 500
+									});
 								}
 							}
+							// if prev text line has NO sprite
 							else {
-								// if new sprite
 								var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
 								var spr = new fabric.Image(img, {
 									line_sprite_resource_id: value.sprite_resource_id,
@@ -1876,46 +1934,29 @@ function renderNextLine(callback) {
 									opacity: 0
 								});
 								spr.set('selectable', false);
-								// get 
 								canvas.add(spr);
 								spr.animate('opacity', '1', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 500
 								});
 							}
-						}
-						// if prev text line has NO sprite
-						else {
-							var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
-							var spr = new fabric.Image(img, {
-								line_sprite_resource_id: value.sprite_resource_id,
-								top: (value.position_y * 100),
-								left: (value.position_x * 100),
-								opacity: 0
-							});
-							spr.set('selectable', false);
-							canvas.add(spr);
-							spr.animate('opacity', '1', {
-								onChange: canvas.renderAll.bind(canvas),
-								duration: 500
-							});
-						}
-					});
-					// remove previous unneeded sprites
-					$.each(sprite_to_remove, function(index, value) {
-						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
-						var spr = canvas.item(canvas_index);
-						spr.animate('opacity', '0', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
-							onComplete: function() {
-								$.each(sprite_to_remove, function(j_index, j_value) {
-									var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', j_value.sprite_resource_id);
-									canvas.remove(canvas.item(canvas_index));
-								});
-							}
 						});
-					});
+						// remove previous unneeded sprites
+						$.each(sprite_to_remove, function(index, value) {
+							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+							var spr = canvas.item(canvas_index);
+							spr.animate('opacity', '0', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 500,
+								onComplete: function() {
+									$.each(sprite_to_remove, function(j_index, j_value) {
+										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', j_value.sprite_resource_id);
+										canvas.remove(canvas.item(canvas_index));
+									});
+								}
+							});
+						});
+					}
 					
 				}
 				else {
@@ -1990,27 +2031,29 @@ function renderNextLine(callback) {
 		else {
 			stopBgm();
 		}
-		// render sfx
-		var sfx_id = line[current.sequence].sfx_resource_id;
-		if(sfx_id.length) {
-			var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
-			playSfx(path_to_sfx);
-		}
-		else{
-			stopVoice();
-		}
-		var voice_id = line[current.sequence].voice_resource_id;
-		if(voice_id.length) {
-			var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[current.sequence].voice_file_name;
-			// reset voice playing status
-			game.status.voice = "idle";
-			playVoice(path_to_voice);
-		}
-		else{
-			// uncomment for "playing voice through the next line" option
-			// if(game.status.voice == "busy") {
+		if(game.screen != "skip") {
+			// render sfx
+			var sfx_id = line[current.sequence].sfx_resource_id;
+			if(sfx_id.length) {
+				var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
+				playSfx(path_to_sfx);
+			}
+			else{
 				stopVoice();
-			// }
+			}
+			var voice_id = line[current.sequence].voice_resource_id;
+			if(voice_id.length) {
+				var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[current.sequence].voice_file_name;
+				// reset voice playing status
+				game.status.voice = "idle";
+				playVoice(path_to_voice);
+			}
+			else{
+				// uncomment for "playing voice through the next line" option
+				// if(game.status.voice == "busy") {
+					stopVoice();
+				// }
+			}
 		}
 
 		// console.log(line[current.sequence].content);
@@ -2163,15 +2206,13 @@ function playAuto() {
 }
 
 function playSkip() {
-	var wait = 1000;
-	if(game.screen == "auto") {
-		if(game.status.text == "idle" && game.status.voice == "idle") {
-			renderNextLine();
-			maintainCurrent();
-			maintainCache();
-		}
+	var wait = 100;
+	if(game.screen == "skip") {
+		renderNextLine();
+		maintainCurrent();
+		maintainCache();
 		setTimeout(function() {
-			playAuto();
+			playSkip();
 		}, wait);
 	}
 }
