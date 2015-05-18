@@ -1592,13 +1592,11 @@ function compareSpriteIndex(a, b) {
 function renderNextLine(callback) {
 	//if before same or something whatever
 	current.sequence++;
-	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
 	if(parseInt(line[current.sequence].fk_linetype_id) === 1) {
 		if(current.sequence > 0) {
 			// prepare latest index in line which is text type
 			var prev_index_to_read; 
 			for(var i = current.sequence - 1; i >= 0; i--) {
-				// var j = getObjectIndex(line, 'sequence', i);
 				if(parseInt(line[i].fk_linetype_id) === 1) {
 					prev_index_to_read = i;
 					// stop iteration
@@ -1615,20 +1613,6 @@ function renderNextLine(callback) {
 
 					if(line[prev_index_to_read].background_resource_id) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
-						// console.log(canvas_index);
-						// var bg = canvas.item(canvas_index);
-						// console.log(canvas.getObjects());
-						// console.log("index", canvas_index);
-						// // console.log("bg removed", canvas.item(canvas_index).line_background_resource_id);
-						// bg.animate('opacity', '0', {
-						// 	onChange: canvas.renderAll.bind(canvas),
-						// 	duration: 300,
-						// 	onComplete: function() {
-						// 		console.log("BG REMOVED");
-						// 		canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
-						// 		canvas.remove(canvas.item(canvas_index));
-						// 	}
-						// });
 						var bg_bottom = canvas.item(0);
 						bg_bottom.animate('opacity', '0', {
 							onChange: canvas.renderAll.bind(canvas),
@@ -1641,11 +1625,6 @@ function renderNextLine(callback) {
 					}
 
 					if(line[current.sequence].background_resource_id > 0) {
-						// transiate
-						// whiteIn(500, function() {
-						// 	whiteOut(500);
-						// });
-						// render background
 						line[current.sequence].background_resource_id;
 						console.log("bg added", bg_id);
 						var img = $('.image-cache').find('img[id='+bg_id+']')[0];
@@ -1672,9 +1651,6 @@ function renderNextLine(callback) {
 						line[current.sequence].sprite.sort(compareSpriteIndex);
 					}
 					// get sprite list not passed from prev seq
-					// var sprite_to_remove = line[prev_index_to_read].sprite.filter(function(list) {
-					// 	return line[current.sequence].sprite.indexOf(list) === -1;
-					// });
 					// prepare empty new var
 					var sprite_to_remove = [];
 					// iterate and add to new var if not found same
@@ -1698,24 +1674,13 @@ function renderNextLine(callback) {
 							var sprite_move = false;
 							var sprite_passed_index = getObjectIndex(line[prev_index_to_read].sprite, 'sprite_resource_id', value.sprite_resource_id);
 							// if sprite is one from previous line
-							// console.log(line[prev_index_to_read].sprite[sprite_passed_index]);
 							if(line[prev_index_to_read].sprite[sprite_passed_index]) {
 								// chack for same sprite and same position
-								/*$.each(line[prev_index_to_read].sprite, function(j_index, j_value) {
-									if(value.sprite_resource_id == j_value.sprite_resource_id && value.position_x == j_value.position_x && value.position_y == j_value.position_y && value.position_z == j_value.position_z) {
-										sprite_still = j_index;
-									}
-								});*/
 								if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id && value.position_x == line[prev_index_to_read].sprite[sprite_passed_index].position_x && value.position_y == line[prev_index_to_read].sprite[sprite_passed_index].position_y && value.position_z == line[prev_index_to_read].sprite[sprite_passed_index].position_z) {
 									sprite_still = true;
 								}
 								if(sprite_still == false) {
 									// check for same sprite (different position)
-									/*$.each(line[prev_index_to_read].sprite, function(j_index, j_value) {
-										if(value.sprite_resource_id == j_value.sprite_resource_id) {
-											sprite_move = j_index;
-										}
-									});*/
 									if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id) {
 										sprite_move = true;
 									}
@@ -1861,14 +1826,6 @@ function renderNextLine(callback) {
 		var bgm_id = line[current.sequence].bgm_resource_id;
 		if(bgm_id.length) {
 			var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[current.sequence].bgm_file_name;
-			// if(current.sequence > current.tail) {
-			// 	var prev_index_to_read = getObjectIndex(line, 'sequence', (current.sequence-1));
-			// 	var prev_bgm_id = line[prev_index_to_read].bgm_resource_id;
-			// 	if(bgm_id != prev_bgm_id){
-			// 		playBgm(path_to_bgm);
-			// 	}
-			// }
-			// else {
 			playBgm(path_to_bgm);
 			// }
 
