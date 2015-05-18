@@ -19,7 +19,12 @@ var game = {
 	screen: "title", // title/play/configuration/save/load/backlog/choice
 	mode: "normal", // normal, skip, auto
 	bgm: "",
-	background: ""
+	background: "",
+	status: {
+		// idle | busy
+		text: "idle",
+		voice: "idle"
+	}
 }
 var font_list = [];
 
@@ -905,12 +910,15 @@ canvas.on('mouse:down', function(options) {
 			case "save_button":
 				break;
 			case "auto_button":
-				$(text_display).fadeOut(1000);
+				game.screen = "auto";
+				playAuto();
 				break;
 			case "skip_button":
+				game.screen = "skip";
+				playSkip();
 				break;
 			case "repeat_button":
-				$(text_display).fadeIn(1000);
+				playVoice();
 				break;
 			case "configuration_button":
 				renderConfigurationScreen();
@@ -989,6 +997,13 @@ canvas.on('mouse:down', function(options) {
 				});
 			}, 3000);
 		});
+	}
+	// during autoplay
+	else if(game.screen == "auto") {
+		game.screen = "play";
+	}
+	else if(game.screen == "skip") {
+		game.screen = "play";
 	}
 	// console.log(options.e.layerX, options.e.layerY);
 });
@@ -1981,10 +1996,21 @@ function renderNextLine(callback) {
 			var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
 			playSfx(path_to_sfx);
 		}
+		else{
+			stopVoice();
+		}
 		var voice_id = line[current.sequence].voice_resource_id;
 		if(voice_id.length) {
 			var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[current.sequence].voice_file_name;
-			playSfx(path_to_voice);
+			// reset voice playing status
+			game.status.voice = "idle";
+			playVoice(path_to_voice);
+		}
+		else{
+			// uncomment for "playing voice through the next line" option
+			// if(game.status.voice == "busy") {
+				stopVoice();
+			// }
 		}
 
 		// console.log(line[current.sequence].content);
@@ -2064,6 +2090,7 @@ function renderNextLine(callback) {
 					$('.video-area').fadeOut(2000);
 					setTimeout(function() {
 						$('.text-area').fadeIn(1000);
+						game.screen = "play";
 					}, 1000);
 				}
 				blackOut(1000, function() {
@@ -2118,6 +2145,34 @@ function renderNextLine(callback) {
 	renderInGameInterface();
 	if(callback) {
 		callback();
+	}
+}
+
+function playAuto() {
+	var wait = 1000;
+	if(game.screen == "auto") {
+		if(game.status.text == "idle" && game.status.voice == "idle") {
+			renderNextLine();
+			maintainCurrent();
+			maintainCache();
+		}
+		setTimeout(function() {
+			playAuto();
+		}, wait);
+	}
+}
+
+function playSkip() {
+	var wait = 1000;
+	if(game.screen == "auto") {
+		if(game.status.text == "idle" && game.status.voice == "idle") {
+			renderNextLine();
+			maintainCurrent();
+			maintainCache();
+		}
+		setTimeout(function() {
+			playAuto();
+		}, wait);
 	}
 }
 
@@ -2305,6 +2360,15 @@ function stopBgm() {
 	});
 }
 
+function stopVoice() {
+	var voice = $('#voice_play')[0];
+	voice.pause();
+	voice.currentTime = 0;
+	game.status.voice = "idle";
+}
+
+
+
 function playSfx(source) {
 	var sfx = $('#sfx_play')[0];
 	if(sfx.paused) {
@@ -2317,17 +2381,25 @@ function playSfx(source) {
 }
 
 function playVoice(source) {
-	var voice = $('#voice_play')[0];
-	if(source.length) {
-		if(bgm.src !== source) {
+	if(game.status.voice == "idle") {
+		var voice = $('#voice_play')[0];
+		if(source) {
 			voice.src = source;
 			voice.volume = configuration.voice_volume;
 			voice.loop = false;
+			game.status.voice = "busy";
+			voice.play();
+			voice.onended = function() {
+				game.status.voice = "idle";
+			}
 		}
-		voice.play();
-	}
-	else {
-		voice.play();
+		else {
+			game.status.voice = "busy";
+			voice.play();
+			voice.onended = function() {
+				game.status.voice = "idle";
+			}
+		}
 	}
 }
 
@@ -2338,36 +2410,69 @@ function playVoice(source) {
 // 21. 100. 490. 31. 100 = 160 chars
 context.font = '21px sans-serif';
 function renderLineText(line_content) {
+	var interval_speed = (parseInt(configuration.text_speed) * 10);
 	var cursor_x = 100;
 	var cursor_y = 490;
 	var line_break = cursor_x;
 	var line_height = 31;
 	var right_padding = 100;
-	var interval_speed = 1.0;
 	var line_height = line_height || 32;
 	right_padding = right_padding || 10;
 	var i = 0;
-	var inter = setInterval(function() {
-		var rem = line_content.substr(i);
-		var space = rem.indexOf(' ');
-		if(space == -1) {
-			space = line_content.length;
+	if(game.screen == "skip" || interval_speed == 0) {
+		var index = 0;
+		for(var i = 0; i <= line_content.length; i++) {
+			var rem = line_content.substr(i);
+			var space = rem.indexOf(' ');
+			if(space == -1) {
+				space = line_content.length;
+			}
+			else {
+				space = space;
+			}
+			var word_width = context.measureText(rem.substring(0, space)).width;
+			var w = context.measureText(line_content.charAt(i)).width;
+			if(cursor_x + word_width >= text_display.width - right_padding) {
+				cursor_x = line_break;
+				cursor_y += line_height;
+			}
+			context.fillText(line_content.charAt(i), cursor_x, cursor_y);
+			cursor_x += w;
 		}
-		else {
-			space = space;
-		}
-		// space = (space === -1)?line_content.length:space;
-		var wordwidth = context.measureText(rem.substring(0, space)).width;
-		var w = context.measureText(line_content.charAt(i)).width;
-		if(cursor_x + wordwidth >= text_display.width - right_padding) {
-			cursor_x = line_break;
-			cursor_y += line_height;
-		}
-		context.fillText(line_content.charAt(i), cursor_x, cursor_y);
-		i++;
-		cursor_x += w;
-		if(i === line_content.length) {
-			clearInterval(inter);
-		}
-	}, interval_speed);
+	}
+	else {
+		game.status.text = "busy";
+		var inter = setInterval(function() {
+			var rem = line_content.substr(i);
+			var space = rem.indexOf(' ');
+			// if no space found
+			if(space == -1) {
+				space = line_content.length;
+			}
+			else {
+				space = space;
+			}
+			// space = (space === -1)?line_content.length:space;
+			// calculate width of word
+			var word_width = context.measureText(rem.substring(0, space)).width;
+			// calculate width of char
+			var w = context.measureText(line_content.charAt(i)).width;
+			// if word exceed width minus right padding, break the line and restore cursor to the left
+			if(cursor_x + word_width >= text_display.width - right_padding) {
+				cursor_x = line_break;
+				cursor_y += line_height;
+			}
+			// type text to canvas
+			context.fillText(line_content.charAt(i), cursor_x, cursor_y);
+			// increment i for char pointer on content
+			i++;
+			// increment cursor with the width of typed char
+			cursor_x += w;
+			// if all typed, finish interval
+			if(i === line_content.length) {
+				clearInterval(inter);
+				game.status.text = "idle";
+			}
+		}, interval_speed);
+	}
 }
