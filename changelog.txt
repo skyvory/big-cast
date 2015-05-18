@@ -159,3 +159,4 @@ To Do:
 - offline create new line using temp index line sprite
 - preload audio video only metadata on resource
 - sfx loop feature
+- use index for sequencing on gameplay

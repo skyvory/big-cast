@@ -4,7 +4,7 @@ var configuration = [];
 var line = [];
 // differ from editor, head here means the latest while tail is the oldest
 var current = {
-	sequence: 0,
+	sequence: -1,
 	head: 0,
 	tail: 0,
 	branch: 0,
@@ -93,15 +93,15 @@ function callSequentialLineData(callback) {
 		if(msg.length) {
 			// append all line data to line object
 			if(current.tail == 0) {
-				current.tail = parseInt(msg[0].sequence);
+				// current.tail = parseInt(msg[0].sequence);
 				// same with current tail for resource maintain, keep cache at 0 would lead to error because no 0 sequenced line
-				cache.tail = current.tail;
+				// cache.tail = current.tail;
 			}
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
-				if(parseInt(value.sequence) < current.tail) {
-					current.tail = parseInt(value.sequence);
-				}
+				// if(parseInt(value.sequence) < current.tail) {
+				// 	current.tail = parseInt(value.sequence);
+				// }
 			})
 			// increase head the same number as retrieved lines
 			current.head+=msg.length;
@@ -118,16 +118,17 @@ function callSequentialLineData(callback) {
 }
 
 function maintainCurrent(callback) {
+	console.log("maintainintng current");
 	// delete n number of old line cache if reach limit
 	if(current.head - current.tail > current.limit) {
 		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
 		for(current.tail; current.tail < current.sequence - 15; current.tail++) {
-			var index_to_read = getObjectIndex(line, 'sequence', current.tail);
-			line.splice(index_to_read, 1);
+			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
+			line.splice(current.tail, 1);
+			console.log("currents removed");
 		}
-		console.log("one remove of current");
 	}
-	// request moew lines to cache when lines ahead less than n number
+	// request new lines to cache when lines ahead less than n number
 	if(current.head - current.sequence < 20) {
 		callSequentialLineData();
 	}
@@ -136,32 +137,33 @@ function maintainCurrent(callback) {
 	}
 }
 function maintainCache(callback) {
+	console.log("maintaining cache");
 	// delete old cache
 	if(cache.head - cache.tail > cache.limit) {
 		for(cache.tail; cache.tail < current.sequence - 5; cache.tail++) {
-			var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
-			if(line[index_to_read].fk_linetype_id == 1) {
-				if(line[index_to_read].bgm_resource_id) {
-					$('.audio-cache').find('audio[id='+line[index_to_read].bgm_resource_id+']').remove();
+			// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
+			if(line[cache.tail].fk_linetype_id == 1) {
+				if(line[cache.tail].bgm_resource_id) {
+					$('.audio-cache').find('audio[id='+line[cache.tail].bgm_resource_id+']').remove();
 				}
-				if(line[index_to_read].sfx_resource_id) {
-					$('.audio-cache').find('audio[id='+line[index_to_read].sfx_resource_id+']').remove();
+				if(line[cache.tail].sfx_resource_id) {
+					$('.audio-cache').find('audio[id='+line[cache.tail].sfx_resource_id+']').remove();
 				}
-				if(line[index_to_read].voice_resource_id) {
-					$('.audio-cache').find('audio[id='+line[index_to_read].voice_resource_id+']').remove();
+				if(line[cache.tail].voice_resource_id) {
+					$('.audio-cache').find('audio[id='+line[cache.tail].voice_resource_id+']').remove();
 				}
-				if(line[index_to_read].background_resource_id) {
-					$('.image-cache').find('img[id='+line[index_to_read].background_resource_id+']').remove();
+				if(line[cache.tail].background_resource_id) {
+					$('.image-cache').find('img[id='+line[cache.tail].background_resource_id+']').remove();
 				}
-				if(line[index_to_read].sprite) {
-					if(line[index_to_read].sprite.length) {
-						$.each(line[index_to_read].sprite, function(index, value) {
+				if(line[cache.tail].sprite) {
+					if(line[cache.tail].sprite.length) {
+						$.each(line[cache.tail].sprite, function(index, value) {
 							$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
 						});
 					}
 				}
 			}
-			console.log("REMOVED");
+			console.log("caches removed");
 		}
 	}
 	// request new cache
@@ -192,25 +194,24 @@ function maintainCache(callback) {
 function processSequentialResource() {
 	if(cache.head < current.sequence + cache.limit) {
 		// console.log(cache.head);
-		cache.head++;
-		var index_to_read = getObjectIndex(line, 'sequence', cache.head);
-		if(line[index_to_read]) {
+		// var index_to_read = getObjectIndex(line, 'sequence', cache.head);
+		if(line[cache.head]) {
 			// for text line
-			if(line[index_to_read].fk_linetype_id == 1) {
+			if(line[cache.head].fk_linetype_id == 1) {
 				var status = true;
 				// if background exist
-				if(line[index_to_read].background_resource_id) {
-					var path_to_background = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/background/" + line[index_to_read].background_file_name;
-					var resource_id = line[index_to_read].background_resource_id;
+				if(line[cache.head].background_resource_id) {
+					var path_to_background = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/background/" + line[cache.head].background_file_name;
+					var resource_id = line[cache.head].background_resource_id;
 					preloadImage(path_to_background, resource_id, function(returndata) {
 						if(!returndata) {
 							status = false;
 						}
 					});
 				}
-				if(line[index_to_read].sprite.length) {
+				if(line[cache.head].sprite.length) {
 					var sprite_to_preload = [];
-					$.each(line[index_to_read].sprite, function(index, value) {
+					$.each(line[cache.head].sprite, function(index, value) {
 						var path_to_sprite = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/sprite/" + value.sprite_file_name;
 						var resource_id = value.sprite_resource_id;
 						sprite_to_preload.push({
@@ -226,9 +227,9 @@ function processSequentialResource() {
 				}
 				setTimeout(function() {
 					// if bgm exist
-					if(line[index_to_read].bgm_resource_id) {
-						var path_to_bgm = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/bgm/" + line[index_to_read].bgm_file_name;
-						var resource_id = line[index_to_read].bgm_resource_id;
+					if(line[cache.head].bgm_resource_id) {
+						var path_to_bgm = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/bgm/" + line[cache.head].bgm_file_name;
+						var resource_id = line[cache.head].bgm_resource_id;
 						preloadAudio(path_to_bgm, resource_id, function(returndata) {
 							if(!returndata) {
 								status = false;
@@ -236,9 +237,9 @@ function processSequentialResource() {
 						});
 					}
 					// if voice exist
-					if(line[index_to_read].voice_resource_id) {
-						var path_to_voice = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/voice/" + line[index_to_read].voice_file_name;
-						var resource_id = line[index_to_read].voice_resource_id;
+					if(line[cache.head].voice_resource_id) {
+						var path_to_voice = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/voice/" + line[cache.head].voice_file_name;
+						var resource_id = line[cache.head].voice_resource_id;
 						preloadAudio(path_to_voice, resource_id, function(returndata) {
 							if(!returndata) {
 								status = false;
@@ -246,10 +247,10 @@ function processSequentialResource() {
 						});
 					}
 					// if sfx exist
-					if(line[index_to_read].sfx_resource_id) {
-						var path_to_sfx = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/sfx/" + line[index_to_read].sfx_file_name;
+					if(line[cache.head].sfx_resource_id) {
+						var path_to_sfx = "../../../resources/" + configuration.creator_id + "/" + configuration.game_id + "/sfx/" + line[cache.head].sfx_file_name;
 						// console.log(path_to_sfx);
-						var resource_id = line[index_to_read].sfx_resource_id;
+						var resource_id = line[cache.head].sfx_resource_id;
 						preloadAudio(path_to_sfx, resource_id, function(returndata) {
 							if(!returndata) {
 								status = false;
@@ -258,14 +259,17 @@ function processSequentialResource() {
 					}
 					
 				if(status == true) {
+					cache.head++;
 					processSequentialResource();
 				}
 				}, 1000);
 			}
-			else if(line[index_to_read].fk_linetype_id == 2) {
+			else if(line[cache.head].fk_linetype_id == 2) {
+				cache.head++;
 				processSequentialResource();
 			}
 			else {
+				cache.head++;
 				processSequentialResource();
 			}
 		}
@@ -349,7 +353,9 @@ function preloadInterface(callback) {
 		var path_to_ui = '../../../assets/sys/' + value;
 		$("<img/>").attr("src", path_to_ui).attr("id", index).css("display", "none").appendTo('.interface');
 	});
-	callback();
+	if(callback) {
+		callback();
+	}
 }
 
 function callFontData() {
@@ -779,12 +785,19 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen = "choice") {
 		if(options.target.line_choice_id) {
 			var choice_id_select = options.target.line_choice_id;
-			var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
-			var choice_index_to_read = getObjectIndex(line[index_to_read].choice, 'choice_id', choice_id_select);
-			if(line[index_to_read].choice[choice_index_to_read].jumpto_line_id && line[index_to_read].choice[choice_index_to_read].jumpto_line_id != current.sequence+1) {
+			// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
+			var choice_index_to_read = getObjectIndex(line[current.sequence].choice, 'choice_id', choice_id_select);
+			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != current.sequence+1) {
 					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
 					// shiftCurrent(jump_to);
-					shiftCurrent(choice_index_to_read);
+					// shiftCurrent(choice_index_to_read);
+					//>>>change to unresponsive game screen for loading line resource
+					callSequentialLineData(function() {
+						processSequentialResource(function() {
+							// return gamescreen>>>
+							renderNextLine();
+						});
+					});
 			}
 			else {
 				exitChoice(function() {
@@ -807,15 +820,26 @@ canvas.on('mouse:down', function(options) {
 // });
 
 function shiftCurrent(choice_index, callback) {
+
 	// get index of next line
-	var index_to_write = getObjectIndex(line, 'sequence', current.sequence + 1);
+	// var index_to_remove = current.sequence + 1;
 	// get index of current line
-	var index_to_write = getObjectIndex(line, 'sequence', current.sequence);
+	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
 	// remove all line cache ahead and fill with look_ahead in choice 
-	line.splice(index_to_write, current.head - current.sequence, line[index_to_read].choice[choice_index_to_read].look_ahead);
+	// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index].look_ahead);
+	// current.head+= line[current.sequence].choice[choice_index].look_ahead.length;
+	// loadLine
 	// change current line to jump seq - 1?
-	
+	// index_to_read + 1 is jumped line
+	// var jump_index = index_to_read + 1;
+	// delete all previous cache
+	// removeOldCache();
+	// removeOldLine();
+
+	// change current sequence
+	// current.sequence = line[jump_index].sequence;
 } 
+
 
 function callSaveConfiguration() {
 	var configuration_json = JSON.stringify(configuration);
@@ -1482,30 +1506,28 @@ function compareSpriteIndex(a, b) {
 function renderNextLine(callback) {
 	//if before same or something whatever
 	current.sequence++;
-	var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
-	if(line[index_to_read].fk_linetype_id == 1) {
-		if(current.sequence > current.tail) {
+	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
+	if(line[current.sequence].fk_linetype_id == 1) {
+		if(current.sequence > 0) {
 			// prepare latest index in line which is text type
 			var prev_index_to_read = ""; 
 			for(var i = current.sequence - 1; i >= current.tail; i--) {
-				var j = getObjectIndex(line, 'sequence', i);
-				if(line[j].fk_linetype_id == 1) {
-					prev_index_to_read = j;
+				// var j = getObjectIndex(line, 'sequence', i);
+				if(line[i].fk_linetype_id == 1) {
+					prev_index_to_read = i;
 					// stop iteration
 					i = -1;
 				}
 			}
-			// var prev_index_to_read = getObjectIndex(line, 'sequence', (current.sequence-1));
-			// if(line[prev_index_to_read].fk_linetype_id == 1) {
-				if(line[prev_index_to_read].background_resource_id != line[index_to_read].background_resource_id) {
+				if(line[prev_index_to_read].background_resource_id != line[current.sequence].background_resource_id) {
 					console.log("different background");
-					if(line[index_to_read].background_resource_id) {
+					if(line[current.sequence].background_resource_id) {
 						// transiate
 						// whiteIn(500, function() {
 						// 	whiteOut(500);
 						// });
 						// render background
-						var bg_id = line[index_to_read].background_resource_id;
+						var bg_id = line[current.sequence].background_resource_id;
 						var img = $('.image-cache').find('img[id='+bg_id+']')[0];
 						var bg = new fabric.Image(img, {
 							line_background_resource_id: bg_id,
@@ -1523,7 +1545,7 @@ function renderNextLine(callback) {
 					}
 					if(line[prev_index_to_read].background_resource_id) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
-						console.log(canvas_index);
+						// console.log(canvas_index);
 						bg = canvas.item(canvas_index);
 						bg.animate('opacity', '0', {
 							onChange: canvas.renderAll.bind(canvas),
@@ -1538,22 +1560,22 @@ function renderNextLine(callback) {
 				}
 				
 				// render sprites
-				if(line[index_to_read].sprite.length > 0) {
+				if(line[current.sequence].sprite.length > 0) {
 					// sort sprite according z-index
-					if(line[index_to_read].sprite.length > 1) {
-						line[index_to_read].sprite.sort(compareSpriteIndex);
+					if(line[current.sequence].sprite.length > 1) {
+						line[current.sequence].sprite.sort(compareSpriteIndex);
 					}
 					// get sprite list not passed from prev seq
-					var sprite_to_remove = line[prev_index_to_read].sprite.filter(function(list) {
-						return line[index_to_read].sprite.indexOf(list) === -1;
-					});
+					// var sprite_to_remove = line[prev_index_to_read].sprite.filter(function(list) {
+					// 	return line[current.sequence].sprite.indexOf(list) === -1;
+					// });
 					// prepare empty new var
 					var sprite_to_remove = [];
 					// iterate and add to new var if not found same
 					var i = 0
 					$.each(line[prev_index_to_read].sprite, function(index, value) {
 						var same = false;
-						$.each(line[index_to_read].sprite, function(j_index, j_value) {
+						$.each(line[current.sequence].sprite, function(j_index, j_value) {
 							if(value.sprite_resource_id == j_value.sprite_resource_id) {
 								same = true;
 							}
@@ -1563,7 +1585,7 @@ function renderNextLine(callback) {
 						}
 						i++;
 					})
-					$.each(line[index_to_read].sprite, function(index, value) {
+					$.each(line[current.sequence].sprite, function(index, value) {
 						// if prev text line has sprite
 						if(line[prev_index_to_read].sprite.length > 0){
 							var sprite_still = false;
@@ -1657,14 +1679,15 @@ function renderNextLine(callback) {
 							onChange: canvas.renderAll.bind(canvas),
 							duration: 500,
 							onComplete: function() {
-								$.each(sprite_to_remove, function(index, value) {
-									var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+								$.each(sprite_to_remove, function(j_index, j_value) {
+									var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', j_value.sprite_resource_id);
 									canvas.remove(canvas.item(canvas_index));
 									console.log("removed");
 								});
 							}
 						});
 					});
+					
 				}
 				else {
 						// var canvas_index = get
@@ -1678,9 +1701,9 @@ function renderNextLine(callback) {
 			}
 		}
 		else {
-			if(line[index_to_read].background_resource_id) {
+			if(line[current.sequence].background_resource_id) {
 				// render background
-				var bg_id = line[index_to_read].background_resource_id;
+				var bg_id = line[current.sequence].background_resource_id;
 				var img = $('.image-cache').find('img[id='+bg_id+']')[0];
 				var bg = new fabric.Image(img, {
 					line_background_resource_id: bg_id,
@@ -1696,8 +1719,8 @@ function renderNextLine(callback) {
 				});
 			}
 
-			if(line[index_to_read].sprite.length > 0) {
-				$.each(line[index_to_read].sprite, function(index, value) {
+			if(line[current.sequence].sprite.length > 0) {
+				$.each(line[current.sequence].sprite, function(index, value) {
 					var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
 					var spr = new fabric.Image(img, {
 						line_sprite_resource_id: value.sprite_resource_id,
@@ -1715,9 +1738,9 @@ function renderNextLine(callback) {
 			}
 		}
 		// render bgm
-		var bgm_id = line[index_to_read].bgm_resource_id;
+		var bgm_id = line[current.sequence].bgm_resource_id;
 		if(bgm_id.length) {
-			var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[index_to_read].bgm_file_name;
+			var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[current.sequence].bgm_file_name;
 			// if(current.sequence > current.tail) {
 			// 	var prev_index_to_read = getObjectIndex(line, 'sequence', (current.sequence-1));
 			// 	var prev_bgm_id = line[prev_index_to_read].bgm_resource_id;
@@ -1734,33 +1757,33 @@ function renderNextLine(callback) {
 			stopBgm();
 		}
 		// render sfx
-		var sfx_id = line[index_to_read].sfx_resource_id;
+		var sfx_id = line[current.sequence].sfx_resource_id;
 		if(sfx_id.length) {
-			var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[index_to_read].sfx_file_name;
+			var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
 			playSfx(path_to_sfx);
 		}
-		var voice_id = line[index_to_read].voice_resource_id;
+		var voice_id = line[current.sequence].voice_resource_id;
 		if(voice_id.length) {
-			var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[index_to_read].voice_file_name;
+			var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[current.sequence].voice_file_name;
 			playSfx(path_to_voice);
 		}
 
-		// console.log(line[index_to_read].content);
+		// console.log(line[current.sequence].content);
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
-		renderLineText(line[index_to_read].content);
+		renderLineText(line[current.sequence].content);
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 	}
 	// render choice
-	else if(line[index_to_read].fk_linetype_id == 2) {
+	else if(line[current.sequence].fk_linetype_id == 2) {
 		game.screen = "choice";
 		var top_after = 200;
-		if(line[index_to_read].choice.length == 3) {
+		if(line[current.sequence].choice.length == 3) {
 			top_after = 180;
 		}
-		else if(line[index_to_read].choice.length == 4) {
+		else if(line[current.sequence].choice.length == 4) {
 			top_after = 160;
 		}
-		for(var i = 0; i < line[index_to_read].choice.length; i++) {
+		for(var i = 0; i < line[current.sequence].choice.length; i++) {
 			// prepare choice box
 			var img = $('.interface').find('img[id=in_choice_box]')[0];
 			var chc_box = new fabric.Image(img, {
@@ -1770,17 +1793,18 @@ function renderNextLine(callback) {
 				scaleX: 0.8
 			});
 			// prepare text
-			var txt = line[index_to_read].choice[i].content;
+			var txt = line[current.sequence].choice[i].content;
 			var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
 			var chc_txt = new fabric.Text(txt, {
 				fontSize: 20,
 				fontFamily: font_list[font_index].name,
+				opacity: 0,
 				originX: 'center',
 				originY: 'center'
 			});
 			// combine to group
 			var chc = new fabric.Group([ chc_box, chc_txt ], {
-				line_choice_id: line[index_to_read].choice[i].choice_id,
+				line_choice_id: line[current.sequence].choice[i].choice_id,
 				top: top_after,
 				left: 100
 			});
@@ -1790,14 +1814,14 @@ function renderNextLine(callback) {
 				onChange: canvas.renderAll.bind(canvas),
 				duration: 1000
 			});
-			var option = line[index_to_read].choice.length;
-			if(line[index_to_read].choice.length == 2) {
+			var option = line[current.sequence].choice.length;
+			if(line[current.sequence].choice.length == 2) {
 				top_after+= 80;
 			}
-			else if(line[index_to_read].choice.length == 3) {
+			else if(line[current.sequence].choice.length == 3) {
 				top_after+= 70;
 			}
-			else if(line[index_to_read].choice.length == 4) {
+			else if(line[current.sequence].choice.length == 4) {
 				top_after+= 60;
 			}
 		}
@@ -1815,18 +1839,21 @@ function renderNextLine(callback) {
 // remove choice from canv
 function exitChoice(callback) {
 	// fade out choice and remove
-	var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
-	$.each(line[index_to_read].choice, function(index, value) {
+	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
+	$.each(line[current.sequence].choice, function(index, value) {
 		var canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
 		var chc = canvas.item(canvas_index);
 		chc.animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 500,
 			onComplete: function() {
-				$.each(line[index_to_read].choice, function(index, value) {
-					canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
-					canvas.remove(canvas.item(canvas_index));
-				});
+				// $.each(line[current.sequence].choice, function(index, value) {
+				// 	console.log(value);
+				// 	canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
+				// 	canvas.remove(canvas.item(canvas_index));
+				// });
+				canvas_index = getObjectIndex(canvas.getObjects(), 'line_choice_id', value.choice_id);
+				canvas.remove(canvas.item(canvas_index));
 				if(callback) {
 					callback();
 				}
