@@ -1,4 +1,3 @@
-'use strict';
 
 var configuration = [];
 var line = [];
@@ -8,7 +7,7 @@ var current = {
 	head: -1,
 	// tail: 0,
 	branch: 0,
-	limit: 10 //60
+	limit: 60
 };
 var cache = {
 	head: -1,
@@ -80,7 +79,8 @@ function callConfigurationData(callback) {
 
 function callSequentialLineData(offset, callback) {
 	// current.head + current.limit would result line with total number of limit cached ahead
-	var process_limit = current.head + current.limit;
+	//var process_limit = current.head + current.limit;
+	var process_limit = 10;
 	// var offset = 0;
 	// if(current.head > 0) {
 	// 	offset = parseInt(line[current.head].sequence) + 1;
@@ -126,6 +126,7 @@ function callSequentialLineData(offset, callback) {
 function maintainCurrent(callback) {
 	// delete n number of old line cache if reach limit
 	if(current.head > current.limit) {
+		console.log("current removed");
 		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
 		for(var i = 0; i < current.sequence - 15; i++) {
 			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
@@ -136,7 +137,8 @@ function maintainCurrent(callback) {
 		}
 	}
 	// request new lines to cache when lines ahead less than n number
-	if(current.head - current.sequence < 20) {
+	if(current.head - current.sequence < 10) {
+		console.log("more line call");
 		callSequentialLineData(parseInt(line[current.head].sequence) - 1);
 	}
 	if(callback) {
@@ -428,7 +430,8 @@ function preloadInterface(callback) {
 		in_choice_box: "arc_001255.png",
 		save_data_box_nodata: "arc_000951.png",
 		exit_button: "arc_001273.png",
-		white: "white.jpg"
+		white: "white.jpg",
+		black: "black.jpg"
 
 	};
 	$.each(ui, function(index, value) {
@@ -598,6 +601,10 @@ function renderTitleMenu() {
 		duration: 500,
 		easing: fabric.util.ease.easeInOutCubic
 	});
+
+
+	
+	
 }
 
 canvas.on('mouse:down', function(options) {
@@ -870,7 +877,7 @@ canvas.on('mouse:down', function(options) {
 					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
 					// shiftCurrent(jump_to);
 					// shiftCurrent(choice_index_to_read);
-					//>>>change to unresponsive game screen for loading line resource
+					//change to unresponsive game screen for loading line resource
 					var index_to_remove = current.sequence + 1;
 					// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index_to_read].look_ahead[0]);
 					line.splice(index_to_remove, current.head - current.sequence);
@@ -896,6 +903,15 @@ canvas.on('mouse:down', function(options) {
 				}, 500);
 			}
 		}
+	}
+	else if(game.screen == "video") {
+		var vidx = $('#video_play');
+		vidx.animate({volume: 0}, 2000, function() {
+			var vid = $('#video_play')[0];
+			vid.pause();
+			game.screen = "play";
+		});
+		$('.video-area').fadeOut(2000);
 	}
 	// console.log(options.e.layerX, options.e.layerY);
 });
@@ -1537,7 +1553,7 @@ function renderPlayScreen() {
 	whiteIn(100, function() { //DEFAULT 500
 		canvas.clear();
 		renderNextLine();
-	})
+	});
 }
 
 function whiteIn(duration, callback) {
@@ -1578,6 +1594,44 @@ function whiteOut(duration, callback) {
 	});
 }
 
+function blackIn(duration, callback) {
+	var img = $('#black')[0];
+	var wht = new fabric.Image(img, {
+		id: 'black',
+		top: 0,
+		left: 0,
+		opacity: 0,
+		angle: 0
+	});
+	wht.set('selectable', false);
+	canvas.add(wht);
+	wht.animate('opacity', '1', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: duration, //5000
+		onComplete: function() {
+			if(callback) {
+				callback();
+			}
+		}
+	});
+}
+
+function blackOut(duration, callback) {
+	var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'black');
+	var blk = canvas.item(index_to_read);
+	blk.animate('opacity', '0', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: duration,
+		onComplete: function() {
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'black');
+			canvas.remove(canvas.item(index_to_read));
+			if(callback) {
+				callback();
+			}
+		}
+	});
+}
+
 // for sorting
 function compareSpriteIndex(a, b) {
 	if(a.position_z < b.position_z) {
@@ -1603,7 +1657,8 @@ function renderNextLine(callback) {
 					i = -1;
 				}
 			}
-			console.log("prev index to read", prev_index_to_read);
+			console.log("prev index", prev_index_to_read);
+			console.log("prev bg res id", line[prev_index_to_read].background_resource_id);
 			console.log("current sequence", current.sequence);
 				if(line[prev_index_to_read].background_resource_id === line[current.sequence].background_resource_id) {
 					console.log("same background");
@@ -1611,21 +1666,11 @@ function renderNextLine(callback) {
 				else {
 					console.log("different background");
 
-					if(line[prev_index_to_read].background_resource_id) {
-						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
-						var bg_bottom = canvas.item(0);
-						bg_bottom.animate('opacity', '0', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
-							onComplete: function() {
-								canvas.remove(canvas.item(0));
-								console.log("BG REMOVED");
-							}
-						});
-					}
+					
 
 					if(line[current.sequence].background_resource_id > 0) {
 						line[current.sequence].background_resource_id;
+						var bg_id = line[current.sequence].background_resource_id;
 						console.log("bg added", bg_id);
 						var img = $('.image-cache').find('img[id='+bg_id+']')[0];
 						var bg = new fabric.Image(img, {
@@ -1639,9 +1684,28 @@ function renderNextLine(callback) {
 						canvas.sendToBack(bg);
 						bg.animate('opacity', '1', {
 							onChange: canvas.renderAll.bind(canvas),
-							duration: 500
+							duration: 500,
+							onComplete: function() {
+								//
+							}
 						});
 					}
+					console.log("prev", prev_index_to_read);
+					if(line[prev_index_to_read].background_resource_id) {
+						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
+						console.log("canvas index to delete", canvas_index);
+						var bg_bottom = canvas.item(canvas_index);
+						console.log("bg bottom element", bg_bottom);
+						bg_bottom.animate('opacity', '0', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 500,
+							onComplete: function() {
+								canvas.remove(canvas.item(canvas_index));
+								console.log("bg removed at index", canvas_index);
+							}
+						});
+					}
+				
 				}
 				
 				// render sprites
@@ -1654,19 +1718,19 @@ function renderNextLine(callback) {
 					// prepare empty new var
 					var sprite_to_remove = [];
 					// iterate and add to new var if not found same
-					var i = 0
+					var i = 0;
 					$.each(line[prev_index_to_read].sprite, function(index, value) {
 						var same = false;
 						$.each(line[current.sequence].sprite, function(j_index, j_value) {
 							if(value.sprite_resource_id == j_value.sprite_resource_id) {
 								same = true;
 							}
-						})
+						});
 						if(same == false) {
 							sprite_to_remove.push(line[prev_index_to_read].sprite[i]);
 						}
 						i++;
-					})
+					});
 					$.each(line[current.sequence].sprite, function(index, value) {
 						// if prev text line has sprite
 						if(line[prev_index_to_read].sprite.length > 0){
@@ -1773,7 +1837,7 @@ function renderNextLine(callback) {
 								canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 								canvas.remove(canvas.item(canvas_index));
 							}
-						})
+						});
 					});
 
 				}
@@ -1903,10 +1967,47 @@ function renderNextLine(callback) {
 			}
 		}
 	}
-	// }
-	// if(typeof callback === 'function' && callback()) {
-	// 	callback();
-	// }
+	else if(line[current.sequence].fk_linetype_id == 3) {
+		game.screen = "video";
+		var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
+		$('.video-area').html("");
+		$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+		stopBgm();
+		blackIn(2000, function() {
+			setTimeout(function() {
+				var op = $('#video_play')[0];
+				$('.video-area').fadeIn(1000);
+				op.play();
+				op.onended = function() {
+					$('.video-area').fadeOut(2000);
+				}
+				blackOut(1000, function() {
+					// canvas.clear();
+					
+					// var vid = $('#videoclip')[0];
+					// var op = new fabric.Image(vid, {
+					// 	left: 300,
+					// 	top: 300,
+					// 	angle: 0,
+					// 	originX: 'center',
+					// 	originY: 'center'
+					// });
+					// canvas.add(op);
+					// // canvas.bringToFront(op);
+					// op.getElement().play();
+					// fabric.util.requestAnimFrame(function render() {
+					// 	canvas.renderAll();
+					// 	fabric.util.requestAnimFrame(render);
+					// });
+
+
+					
+				})
+			}, 3000);
+		});
+
+	}
+
 	renderInGameInterface();
 	if(callback) {
 		callback();
@@ -2084,10 +2185,17 @@ function playBgm(source) {
 	}
 }
 
+$('#test').click(function() {
+	stopBgm();
+})
+
 function stopBgm() {
-	var bgm = $('#bgm_play')[0];
-	bgm.pause();
-	bgm.currentTime = 0;
+	var bgmx = $('#bgm_play');
+	bgmx.animate({volume: 0}, 3000, function() {
+		var bgm = $('#bgm_play')[0];
+		bgm.pause();
+		bgm.currentTime = 0;
+	});
 }
 
 function playSfx(source) {
