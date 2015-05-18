@@ -170,8 +170,26 @@ class Game extends CI_Controller {
 					'sfx_file_name' => utf8_encode($sfx['sfx_file_name']),
 					'voice_resource_id' => utf8_encode($voice['voice_resource_id']),
 					'voice_file_name' => utf8_encode($voice['voice_file_name']),
-					'sprite' => array()
+					'sprite' => array(),
+					'look_ahead' => array()
 				);
+				// preload look ahead for choice
+				$look_ahead = array();
+				if($value['jumpto_line_id'] != null || !empty($value['jumpto_line_id'])) {
+					$sequence_after = $this->game_model->getLineSequence($value['jumpto_line_id']);
+					$pass_line_ahead = $this->game_model->getLine($game['id'], 1, $sequence_after-1);
+					foreach ($pass_line_ahead as $j_key => $j_value) {
+						$line[$i]['look_ahead'][] = array(
+							'line_id' => utf8_encode($j_value['line_id']),
+							'sequence' => utf8_encode($j_value['sequence']),
+							'speaker' => utf8_encode($j_value['speaker']),
+							'content' => utf8_encode($j_value['content']),
+							'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
+							'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
+							'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
+						);
+					}
+				}
 				$pass_sprite = $this->game_model->getSprite($value['line_id']);
 				if($pass_sprite) {
 					foreach ($pass_sprite as $key => $value) {

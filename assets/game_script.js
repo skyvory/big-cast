@@ -5,7 +5,7 @@ var line = [];
 // differ from editor, head here means the latest while tail is the oldest
 var current = {
 	sequence: -1,
-	head: 0,
+	head: -1,
 	// tail: 0,
 	branch: 0,
 	limit: 10 //60
@@ -72,7 +72,6 @@ function callConfigurationData(callback) {
 			configuration = msg;
 		}
 		else {
-			console.log("error");
 		}
 		callback();
 	});
@@ -132,12 +131,13 @@ function maintainCurrent(callback) {
 			line.splice(0, 1);
 			current.head--;
 			current.sequence--;
+			cache.head--;
 			console.log("currents removed");
 		}
 	}
 	// request new lines to cache when lines ahead less than n number
 	if(current.head - current.sequence < 20) {
-		callSequentialLineData(parseInt(line[current.sequence].sequence) + 1);
+		callSequentialLineData(parseInt(line[current.head].sequence) - 1);
 	}
 	if(callback) {
 		callback();
@@ -147,170 +147,81 @@ function maintainCache(callback) {
 	// delete old cache
 	if(cache.count > cache.limit) {
 		$('image-cache').children('img').each(function() {
-			var id = $(this.).find('id').val();
+			var id = $(this).find('id').val();
+			var bg_del = true;
+			var spr_del = true;
 			for(var i = current.sequence; i < current.sequence + 10; i++) {
 				var j = 0;
 				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
 				if(line[i].fk_linetype_id == 1) {
 					// checking ahead to resolve resource missing
-					var bg_del = true;
-					var bgm_del = true;
-					var sfx_del = true;
-					var voice_del = true;
-					for(var i = current.sequence; i < cache.head; i++) {
-						if(line[i].fk_linetype_id == 1) {
-							if(line[i].bgm_resource_id) {
-								if(line[0].bgm_resource_id) {
-									if(line[0].bgm_resource_id == line[i].bgm_resource_id) {
-										bgm_del = false;
-									}
-								}
-							}
-							if(line[i].sfx_resource_id) {
-								if(line[0].sfx_resource_id) {
-									if(line[0].sfx_resource_id == line[i].sfx_resource_id) {
-										sfx_del = false;
-									}
-								}
-							}
-							if(line[i].voice_resource_id) {
-								if(line[0].voice_resource_id) {
-									if(line[0].voice_resource_id == line[i].voice_resource_id) {
-										voice_del = false;
-									}
-								}
-							}
-							if(line[i].background_resource_id) {
-								if(line[0].background_resource_id) {
-									if(line[0].background_resource_id == line[i].background_resource_id) {
-										background_del = false;
-									}
-								}
-							}
+					if(line[i].background_resource_id) {
+						if(id == line[i].background_resource_id) {
+							bg_del = false;
 						}
 					}
-					if(line[0].bgm_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
-					}
-					if(line[0].sfx_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
-					}
-					if(line[0].voice_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
-					}
-					if(line[0].background_resource_id) {
-						$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
-					}
-					if(line[0].sprite) {
-						if(line[0].sprite.length) {
-							$.each(line[0].sprite, function(index, value) {
-								// check ahead
-								var spr_del = true;
-								for(var i = current.sequence; i < cache.head; i++) {
-									if(line[i].fk_linetype_id == 1) {
-										if(line[i].sprite.length) {
-											$.each(line[i].sprite, function(j_index, j_value) {
-												if(value.sprite_resource_id == j_value.sprite_resource_id) {
-													spr_del = false;
-												}
-											});
-										}
-									}
-								}
-								if(spr_del == true) {
-									$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-								}
-							});
-						}
+					if(line[i].sprite.length) {
+						$.each(line[i].sprite, function(j_index, j_value) {
+							if(id == j_value.sprite_resource_id) {
+								spr_del = true;
+							}
+						});
 					}
 				}
-				cache.head--;
+			}
+			if(bg_del == true) {
+				console.log(this);
+				$(this).remove();
+				cache.count--;
 				console.log("caches removed");
 			}
-		}
+			if(spr_del == true) {
+				$(this).remove();
+				cache.count--;
+			}
+		});
 
-		$('image-cache').children('img').each(function() {
-			var id = $(this.).find('id').val();
+		$('audio-cache').children('audio').each(function() {
+			var id = $(this).find('id').val();
+			var bgm_del = true;
+			var sfx_del = true;
+			var voice_del = true;
 			for(var i = current.sequence; i < current.sequence + 10; i++) {
 				var j = 0;
 				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
-				if(line[0].fk_linetype_id == 1) {
-					// checking ahead to resolve resource missing
-					var bg_del = true;
-					var bgm_del = true;
-					var sfx_del = true;
-					var voice_del = true;
-					for(var i = current.sequence; i < cache.head; i++) {
-						if(line[i].fk_linetype_id == 1) {
-							if(line[i].bgm_resource_id) {
-								if(line[0].bgm_resource_id) {
-									if(line[0].bgm_resource_id == line[i].bgm_resource_id) {
-										bgm_del = false;
-									}
-								}
-							}
-							if(line[i].sfx_resource_id) {
-								if(line[0].sfx_resource_id) {
-									if(line[0].sfx_resource_id == line[i].sfx_resource_id) {
-										sfx_del = false;
-									}
-								}
-							}
-							if(line[i].voice_resource_id) {
-								if(line[0].voice_resource_id) {
-									if(line[0].voice_resource_id == line[i].voice_resource_id) {
-										voice_del = false;
-									}
-								}
-							}
-							if(line[i].background_resource_id) {
-								if(line[0].background_resource_id) {
-									if(line[0].background_resource_id == line[i].background_resource_id) {
-										background_del = false;
-									}
-								}
-							}
+				if(line[i].fk_linetype_id == 1) {
+					if(line[i].bgm_resource_id) {
+						if(id == line[i].bgm_resource_id) {
+							bgm_del = false;
 						}
 					}
-					if(line[0].bgm_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
+					if(line[i].sfx_resource_id) {
+						if(id == line[i].sfx_resource_id) {
+							sfx_del = false;
+						}
 					}
-					if(line[0].sfx_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
-					}
-					if(line[0].voice_resource_id) {
-						$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
-					}
-					if(line[0].background_resource_id) {
-						$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
-					}
-					if(line[0].sprite) {
-						if(line[0].sprite.length) {
-							$.each(line[0].sprite, function(index, value) {
-								// check ahead
-								var spr_del = true;
-								for(var i = current.sequence; i < cache.head; i++) {
-									if(line[i].fk_linetype_id == 1) {
-										if(line[i].sprite.length) {
-											$.each(line[i].sprite, function(j_index, j_value) {
-												if(value.sprite_resource_id == j_value.sprite_resource_id) {
-													spr_del = false;
-												}
-											});
-										}
-									}
-								}
-								if(spr_del == true) {
-									$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-								}
-							});
+					if(line[i].voice_resource_id) {
+						if(id == line[i].voice_resource_id) {
+							voice_del = false;
 						}
 					}
 				}
-				cache.head--;
-				console.log("caches removed");
 			}
-		}
+			if(bgm_del == true) {
+				console.log(this);
+				$(this).remove();
+				cache.count--;
+				console.log("bgm removed");
+			}
+			if(sfx_del == true) {
+				$(this).remove();
+				cache.count--;
+			}
+			if(voice_del == true) {
+				$(this).remove();
+				cache.count--;
+			}
+		});
 	}
 	// request new cache
 	if(cache.head - current.sequence < 10) {
@@ -321,35 +232,35 @@ function maintainCache(callback) {
 	}
 }
 
-function removeOldCache(callback) {
-	// delete old cache
-	for(; cache.head > current.sequence; cache.head--) {
-		if(line[0].fk_linetype_id == 1) {
-			if(line[0].bgm_resource_id) {
-				$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
-			}
-			if(line[0].sfx_resource_id) {
-				$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
-			}
-			if(line[0].voice_resource_id) {
-				$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
-			}
-			if(line[0].background_resource_id) {
-				$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
-			}
-			if(line[0].sprite) {
-				if(line[0].sprite.length) {
-					$.each(line[0].sprite, function(index, value) {
-						$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-					});
-				}
-			}
-		}
-	}
-	if(callback) {
-		callback();
-	}
-}
+// function removeOldCache(callback) {
+// 	// delete old cache
+// 	for(; cache.head > current.sequence; cache.head--) {
+// 		if(line[0].fk_linetype_id == 1) {
+// 			if(line[0].bgm_resource_id) {
+// 				$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
+// 			}
+// 			if(line[0].sfx_resource_id) {
+// 				$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
+// 			}
+// 			if(line[0].voice_resource_id) {
+// 				$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
+// 			}
+// 			if(line[0].background_resource_id) {
+// 				$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
+// 			}
+// 			if(line[0].sprite) {
+// 				if(line[0].sprite.length) {
+// 					$.each(line[0].sprite, function(index, value) {
+// 						$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
+// 					});
+// 				}
+// 			}
+// 		}
+// 	}
+// 	if(callback) {
+// 		callback();
+// 	}
+// }
 
 // function processSequentialResource() {
 // 	var process_limit = cache.head + 5;
@@ -368,7 +279,7 @@ function removeOldCache(callback) {
 // }
 
 function processSequentialResource() {
-	if(cache.head < current.sequence + cache.limit) {
+	if(cache.head - current.sequence < 10) {
 		cache.head++;
 		// console.log(cache.head);
 		// var index_to_read = getObjectIndex(line, 'sequence', cache.head);
@@ -956,9 +867,6 @@ canvas.on('mouse:down', function(options) {
 				renderNextLine();
 				maintainCurrent();
 				maintainCache();
-				console.log("cache head", cache.head);
-				console.log("current head", current.head);
-				console.log("currend seq", current.sequence);
 				break;
 		}
 	}
@@ -978,20 +886,18 @@ canvas.on('mouse:down', function(options) {
 					var index_to_remove = current.sequence + 1;
 					// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index_to_read].look_ahead[0]);
 					line.splice(index_to_remove, current.head - current.sequence);
-					removeOldCache(function() {
+					// removeOldCache(function() {
 						current.head = current.sequence;
 						var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
 						callSequentialLineData(parseInt(offset_jump)-1, function() {
-							processSequentialResource(function() {
-								// return gamescreen>>>		
-							});
+							processSequentialResource();
 							exitChoice();
 							setTimeout(function() {
 								renderNextLine();
 								game.screen = "play";
 							}, 500);
 						});
-					});
+					// });
 					
 			}
 			else {
@@ -1715,7 +1621,8 @@ function renderNextLine(callback) {
 					i = -1;
 				}
 			}
-			console.log("prev index to read", prev_index_to_read);
+			console.log("prev sequence", line[prev_index_to_read].sequence);
+			console.log("now sequence", line[current.sequence].sequence);
 				if(line[prev_index_to_read].background_resource_id != line[current.sequence].background_resource_id) {
 					console.log("different background");
 					if(line[current.sequence].background_resource_id) {
@@ -1746,8 +1653,9 @@ function renderNextLine(callback) {
 						bg = canvas.item(canvas_index);
 						bg.animate('opacity', '0', {
 							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
+							duration: 300,
 							onComplete: function() {
+								console.log("BG REMOVED");
 								canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 								canvas.remove(canvas.item(canvas_index));
 							}
@@ -1799,7 +1707,6 @@ function renderNextLine(callback) {
 								});*/
 								if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id && value.position_x == line[prev_index_to_read].sprite[sprite_passed_index].position_x && value.position_y == line[prev_index_to_read].sprite[sprite_passed_index].position_y && value.position_z == line[prev_index_to_read].sprite[sprite_passed_index].position_z) {
 									sprite_still = true;
-									console.log("sprite exact same")
 								}
 								if(sprite_still == false) {
 									// check for same sprite (different position)
@@ -1813,7 +1720,6 @@ function renderNextLine(callback) {
 									}
 									// if sprite_move not null
 									if(sprite_move == true) {
-										console.log("sprite is moving");
 										// get canvas index for sprite to move
 										var j_index_to_read = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 										var spr = canvas.item(j_index_to_read);
@@ -1846,7 +1752,7 @@ function renderNextLine(callback) {
 									left: (value.position_x * 100),
 									opacity: 0
 								});
-								// spr.set('selectable', false);>>>DEBUG TEMP
+								spr.set('selectable', false);
 								// get 
 								canvas.add(spr);
 								spr.animate('opacity', '1', {
@@ -1857,7 +1763,6 @@ function renderNextLine(callback) {
 						}
 						// if prev text line has NO sprite
 						else {
-							console.log("new sprite");
 							var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
 							var spr = new fabric.Image(img, {
 								line_sprite_resource_id: value.sprite_resource_id,
@@ -1865,7 +1770,7 @@ function renderNextLine(callback) {
 								left: (value.position_x * 100),
 								opacity: 0
 							});
-							// spr.set('selectable', false);>>>DEBUG TEMP
+							spr.set('selectable', false);
 							canvas.add(spr);
 							spr.animate('opacity', '1', {
 								onChange: canvas.renderAll.bind(canvas),
@@ -1884,7 +1789,6 @@ function renderNextLine(callback) {
 								$.each(sprite_to_remove, function(j_index, j_value) {
 									var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', j_value.sprite_resource_id);
 									canvas.remove(canvas.item(canvas_index));
-									console.log("removed");
 								});
 							}
 						});
