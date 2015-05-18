@@ -33,7 +33,7 @@ function getLastLineObjectBySequence(seq) {
 		var sprite_duplicate = [];
 		var count = 0;	
 		// duplicate sprite with fresh id
-		$.each(line[select_index].sprite, function(index, value) {
+		$.each(line_obj[select_index].sprite, function(index, value) {
 			sprite_duplicate.push({
 				sprite_temp_index: count,
 				sprite_id: "new",

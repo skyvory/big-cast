@@ -867,7 +867,7 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "save") {
 
 	}
-	else if(game.screen = "choice") {
+	else if(game.screen == "choice") {
 		if(options.target.line_choice_id) {
 			var choice_id_select = options.target.line_choice_id;
 			// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
@@ -904,14 +904,29 @@ canvas.on('mouse:down', function(options) {
 			}
 		}
 	}
+	// when click on video play
 	else if(game.screen == "video") {
+		// get element
 		var vidx = $('#video_play');
-		vidx.animate({volume: 0}, 2000, function() {
+		// fade out volume
+		vidx.animate({volume: 0}, 3000, function() {
 			var vid = $('#video_play')[0];
+			// pause video
 			vid.pause();
-			game.screen = "play";
+			
 		});
-		$('.video-area').fadeOut(2000);
+		whiteIn(1000, function() {
+			// hide video area
+			$('.video-area').fadeOut(2000);
+			setTimeout(function() {
+				renderNextLine();
+				$('.text-area').fadeIn(2500);
+				whiteOut(2000, function() {
+					// change game screen
+					game.screen = "play";
+				});
+			}, 3000);
+		});
 	}
 	// console.log(options.e.layerX, options.e.layerY);
 });
@@ -1646,6 +1661,7 @@ function compareSpriteIndex(a, b) {
 function renderNextLine(callback) {
 	//if before same or something whatever
 	current.sequence++;
+	console.log(current.sequence);
 	if(parseInt(line[current.sequence].fk_linetype_id) === 1) {
 		if(current.sequence > 0) {
 			// prepare latest index in line which is text type
@@ -1968,7 +1984,7 @@ function renderNextLine(callback) {
 		}
 	}
 	else if(line[current.sequence].fk_linetype_id == 3) {
-		game.screen = "video";
+		game.screen = "stall";
 		var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
 		$('.video-area').html("");
 		$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
@@ -1976,10 +1992,17 @@ function renderNextLine(callback) {
 		blackIn(2000, function() {
 			setTimeout(function() {
 				var op = $('#video_play')[0];
-				$('.video-area').fadeIn(1000);
+				$('.text-area').fadeOut(1000);
+				$('.video-area').fadeIn(1000, function() {
+					game.screen = "video";
+				});
 				op.play();
+				// after video end
 				op.onended = function() {
 					$('.video-area').fadeOut(2000);
+					setTimeout(function() {
+						$('.text-area').fadeIn(1000);
+					}, 1000);
 				}
 				blackOut(1000, function() {
 					// canvas.clear();
@@ -2002,10 +2025,19 @@ function renderNextLine(callback) {
 
 
 					
-				})
+				});
 			}, 3000);
 		});
 
+	}
+	else if(line[current.sequence].fk_linetype_id == 3) {
+	}
+
+	// keep white transition in top
+	var is_white = getObjectIndex(canvas.getObjects(), 'id', 'white');
+	if(is_white) {
+		var keep = canvas.item(is_white);
+		keep.bringToFront();
 	}
 
 	renderInGameInterface();
@@ -2165,7 +2197,7 @@ function playBgm(source) {
 	if(current.bgm != source) {
 		bgm.src = source;
 		// if paused successfully
-		// if(bgm.paused) {
+		if(bgm.paused) {
 			bgm.volume = configuration.bgm_volume;
 			if(typeof bgm.loop == 'boolean') {
 				bgm.loop = true;
@@ -2178,7 +2210,7 @@ function playBgm(source) {
 			}
 			bgm.play();
 			current.bgm = source;
-		// }
+		}
 		// else {
 		// 	// bgm.pause();
 		// }
