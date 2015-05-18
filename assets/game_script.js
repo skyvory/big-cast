@@ -139,7 +139,7 @@ function maintainCurrent(callback) {
 	// request new lines to cache when lines ahead less than n number
 	if(current.head - current.sequence < 10) {
 		console.log("more line call");
-		callSequentialLineData(parseInt(line[current.head].sequence) - 1);
+		callSequentialLineData(parseInt(line[current.head].sequence));
 	}
 	if(callback) {
 		callback();
@@ -601,11 +601,73 @@ function renderTitleMenu() {
 		duration: 500,
 		easing: fabric.util.ease.easeInOutCubic
 	});
-
-
-	
-	
 }
+
+// $(document).keypress(function(e){
+// 	if(game.screen == play) {
+// 		switch(e.which){
+// 			case 13:
+// 				renderNextLine();
+// 				maintainCurrent();
+// 				maintainCache();
+// 				break;
+// 			case 
+// 		}
+		
+// 	}
+// });
+var key_enable = true;
+$(document).bind('keydown', function(e){
+	if(game.screen == "play" && key_enable == true) {
+		switch(e.keyCode) {
+			// enter key
+			case 13:
+					key_enable = false;
+					renderNextLine();
+					maintainCurrent();
+					maintainCache();
+				break;
+			// ctrl key
+			case 17:
+				game.screen = "skip";
+				break;
+			// a key
+			case 65:
+				// toggle
+				game.screen = "auto";
+			// f key
+			case 70:
+				// toggle
+				game.screen = "skip";
+			// s key
+			case 83:
+				// open save
+				break;
+			// l key
+			case 76:
+				// open save
+				break;
+			// r key
+			case 82:
+				// repeat voice
+				
+			default:
+				break;
+		}
+	}
+});
+$(document).bind('keyup', function(e){
+	if(game.screen == "play") {
+		switch(e.keyCode) {
+			case 17:
+				game.screen = "play";
+				break;
+			default:
+				break;
+		}
+		key_enable = true;
+	}
+});
 
 canvas.on('mouse:down', function(options) {
 	if(game.screen === "title") {
@@ -2030,7 +2092,20 @@ function renderNextLine(callback) {
 		});
 
 	}
-	else if(line[current.sequence].fk_linetype_id == 3) {
+	else if(line[current.sequence].fk_linetype_id == 4) {
+		game.screen = "stall";
+		$('.text-area').fadeOut(2000);
+		whiteIn(2000, function() {
+			canvas.clear();
+			stopBgm();
+			setTimeout(function() {
+				renderTitleScreen();
+				// whiteIn(500, function() {
+				// 	whiteOut(2000);
+				// 	renderTitleScreen();
+				// });
+			}, 5000);
+		});
 	}
 
 	// keep white transition in top
