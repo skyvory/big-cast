@@ -59,40 +59,40 @@ class Editor extends CI_Controller {
 		return $string;
 	}
 	
-	public function loadLinePagination() {
-		$this->load->helper('url');
-		$this->load->library('pagination');
-		$proj = $this->session->userdata('active_project');
-		// pagination
-		$config['page_query_string'] = TRUE;
-		$page = 0;
-		$config['base_url'] = base_url() . 'editor/loadLineData';
-		$config['total_rows'] = $this->common->getTotalLine($proj['id']);
-		// $this->fb->log($config['total_rows']);
+	// public function loadLinePagination() {
+	// 	$this->load->helper('url');
+	// 	$this->load->library('pagination');
+	// 	$proj = $this->session->userdata('active_project');
+	// 	// pagination
+	// 	$config['page_query_string'] = TRUE;
+	// 	$page = 0;
+	// 	$config['base_url'] = base_url() . 'editor/loadLineData';
+	// 	$config['total_rows'] = $this->common->getTotalLine($proj['id']);
+	// 	// $this->fb->log($config['total_rows']);
 
-		$config['per_page'] = 3; //20
-		$config['num_links'] = 8;
-		$config['use_page_numbers'] = FALSE;
-		// $config['first_tag_open'] = '<li class="first">';
-		// $config['first_link'] = '<i class="icon-first-2"></i> First';
-		// $config['first_tag_close'] = '</li>';
-		// $config['prev_tag_open'] = ' <li class="prev">';
-		// $config['prev_link'] = '<i class="icon-previous"></i> Prev';
-		// $config['prev_tag_close'] = '</li>';
-		// $config['cur_tag_open'] = '<li class="active"><a>';
-		// $config['cur_tag_close'] = '</a></li>';
-		// $config['num_tag_open'] = '<li>';
-		// $config['num_tag_close'] = '</li>';
-		// $config['next_tag_open'] = '<li class="next">';
-		// $config['next_link'] = 'Next  <i class="icon-next"></i>';
-		// $config['next_tag_close'] = '</li>';
-		// $config['last_tag_open'] = '<li class="last">';
-		// $config['last_link'] = 'Last <i class="icon-last-2"></i>';
-		// $config['last_tag_close'] = '</li>';
-		$this->pagination->initialize($config);
-		$page = $this->pagination->create_links();
-		echo $page;
-	}
+	// 	$config['per_page'] = 3; //20
+	// 	$config['num_links'] = 8;
+	// 	$config['use_page_numbers'] = FALSE;
+	// 	// $config['first_tag_open'] = '<li class="first">';
+	// 	// $config['first_link'] = '<i class="icon-first-2"></i> First';
+	// 	// $config['first_tag_close'] = '</li>';
+	// 	// $config['prev_tag_open'] = ' <li class="prev">';
+	// 	// $config['prev_link'] = '<i class="icon-previous"></i> Prev';
+	// 	// $config['prev_tag_close'] = '</li>';
+	// 	// $config['cur_tag_open'] = '<li class="active"><a>';
+	// 	// $config['cur_tag_close'] = '</a></li>';
+	// 	// $config['num_tag_open'] = '<li>';
+	// 	// $config['num_tag_close'] = '</li>';
+	// 	// $config['next_tag_open'] = '<li class="next">';
+	// 	// $config['next_link'] = 'Next  <i class="icon-next"></i>';
+	// 	// $config['next_tag_close'] = '</li>';
+	// 	// $config['last_tag_open'] = '<li class="last">';
+	// 	// $config['last_link'] = 'Last <i class="icon-last-2"></i>';
+	// 	// $config['last_tag_close'] = '</li>';
+	// 	$this->pagination->initialize($config);
+	// 	$page = $this->pagination->create_links();
+	// 	echo $page;
+	// }
 	public function loadLineData() {
 		$sess = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
@@ -210,7 +210,6 @@ class Editor extends CI_Controller {
 					'label' => utf8_encode($value['label']),
 					'speaker' => utf8_encode($value['speaker']),
 					'content' => utf8_encode($value['content']),
-					'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 					'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
 					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
 					'background_resource_id' => utf8_encode($background['background_resource_id']),
@@ -236,6 +235,7 @@ class Editor extends CI_Controller {
 							'position_x' => utf8_encode($value['position_x']),
 							'position_y' => utf8_encode($value['position_y']),
 							'position_z' => utf8_encode($value['position_z']),
+							'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 							'sprite_resource_id' => utf8_encode($value['fk_resource_id']),
 							'sprite_name' => utf8_encode($value['name']),
 							'sprite_file_name' => utf8_encode($value['file_name']),
@@ -550,9 +550,6 @@ class Editor extends CI_Controller {
 				if(empty($value['content'])) {
 					$line[$key]['content'] = null;
 				}
-				if(empty($value['fk_effect_id'])) {
-					$line[$key]['fk_effect_id'] = null;
-				}
 				if(empty($value['jumpto_line_id'])) {
 					$line[$key]['jumpto_line_id'] = null;
 				}
@@ -593,7 +590,6 @@ class Editor extends CI_Controller {
 				// add default key and value
 				$line[$key]['speaker'] = null;
 				$line[$key]['content'] = null;
-				$line[$key]['fk_effect_id'] = null;
 				$line[$key]['jumpto_line_id'] = null;
 			}
 			else if($value['fk_linetype_id'] == 3) {
@@ -606,7 +602,6 @@ class Editor extends CI_Controller {
 				// add default key and value
 				$line[$key]['speaker'] = null;
 				$line[$key]['content'] = null;
-				$line[$key]['fk_effect_id'] = null;
 				// append video data to lineres
 				if(!empty($value['video_resource_id'])) {
 					$lineres[] = array(
@@ -620,7 +615,6 @@ class Editor extends CI_Controller {
 				$line[$key]['label'] = null;
 				$line[$key]['speaker'] = null;
 				$line[$key]['content'] = null;
-				$line[$key]['fk_effect_id'] = null;
 				$line[$key]['jumpto_line_id'] = null;
 			}
 			// change var type
@@ -653,6 +647,7 @@ class Editor extends CI_Controller {
 						'position_x' => $value['position_x'],
 						'position_y' => $value['position_y'],
 						'position_z' => $value['position_z'],
+						'fk_effect_id' => $value['fk_effect_id'],
 						'fk_line_id' => $value['fk_line_id'],
 						// used to return assigned id back on view
 						'sprite_temp_index' => $value['sprite_temp_index']
@@ -665,6 +660,7 @@ class Editor extends CI_Controller {
 						'position_x' => $value['position_x'],
 						'position_y' => $value['position_y'],
 						'position_z' => $value['position_z'],
+						'fk_effect_id' => $value['fk_effect_id'],
 						'fk_line_id' => $value['fk_line_id']
 					);
 				}

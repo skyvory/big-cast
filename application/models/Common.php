@@ -260,7 +260,7 @@ Class Common extends CI_Model {
 	}
 */
 	function getLine($project_id, $limit, $offset) {
-		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
+		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.jumpto_line_id, line.fk_linetype_id');
 		$this->db->from('line');
 		$this->db->where('line.fk_project_id', $project_id);
 		$this->db->order_by('sequence', 'ASC');
@@ -329,7 +329,7 @@ Class Common extends CI_Model {
 		return $result;
 	}
 	function getSprite($line_id) {
-		$this->db->select('sprite_id, fk_resource_id, position_x, position_y, position_z');
+		$this->db->select('sprite_id, fk_resource_id, position_x, position_y, position_z, fk_effect_id');
 		$this->db->select('name, file_name, character_name, figure_name, expression_name');
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
@@ -504,7 +504,6 @@ Class Common extends CI_Model {
 				'label' => $value['label'],
 				'speaker' => $value['speaker'],
 				'content' => $value['content'],
-				'fk_effect_id' => $value['fk_effect_id'],
 				'jumpto_line_id' => $value['jumpto_line_id']
 			);
 			$this->db->where('line_id', $value['line_id']);
@@ -528,6 +527,7 @@ Class Common extends CI_Model {
 				'position_x' => $value['position_x'],
 				'position_y' => $value['position_y'],
 				'position_z' => $value['position_z'],
+				'fk_effect_id' => $value['fk_effect_id'],
 				'fk_line_id' => $value['fk_line_id'],
 			);
 			$exec = $this->db->insert('sprite', $data);
@@ -558,6 +558,7 @@ Class Common extends CI_Model {
 				'position_x' => $value['position_x'],
 				'position_y' => $value['position_y'],
 				'position_z' => $value['position_z'],
+				'fk_effect_id' => $value['fk_effect_id'],
 				'fk_line_id' => $value['fk_line_id'],
 			);
 			$this->db->where('sprite_id', $value['sprite_id']);

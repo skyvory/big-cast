@@ -632,7 +632,7 @@
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
 						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
-						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" />
+						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="'+value.fk_effectid+'" />
 							<input type="hidden" name="effect_id" value="" />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
 					</div>

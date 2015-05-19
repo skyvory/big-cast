@@ -40,6 +40,7 @@ function getLastLineObjectBySequence(seq) {
 				position_x: value.position_x,
 				position_y: value.position_y,
 				position_z: value.position_z,
+				fk_effect_id: value.fk_effect_id,
 				sprite_resource_id: value.sprite_resource_id,
 				sprite_name: value.sprite_name,
 				sprite_file_name: value.sprite_file_name,
@@ -55,7 +56,7 @@ function getLastLineObjectBySequence(seq) {
 			background: line_obj[select_index].background_name,
 			bgm_resource_id: line_obj[select_index].bgm_resource_id,
 			bgm: line_obj[select_index].bgm_name,
-			sprite: line_obj[select_index].sprite
+			sprite: sprite_duplicate
 		}
 	}
 	else {
@@ -245,7 +246,6 @@ $('#addtextlinebutton').click(function() {
 						label: "",
 						speaker: last.speaker,
 						content: "",
-						fk_effect_id: "",
 						jumpto_line_id: "",
 						fk_linetype_id: "1",
 						background_resource_id: last.background_resource_id,
@@ -323,7 +323,6 @@ $('#addtextlinebutton').click(function() {
 					label: "",
 					speaker: last.speaker,
 					content: "",
-					fk_effect_id: "",
 					jumpto_line_id: "",
 					fk_linetype_id: "1",
 					background_resource_id: last.background_resource_id,
@@ -749,7 +748,14 @@ $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function()
 		// append sprite data to sprite area
 		$.each(select_line_obj[0].sprite, function (index, value) {
 			count++;
-			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_name+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> <input type="hidden" name="sprite_temp_index" value="'+(count-1)+'" /> </form> </td> </tr>';
+			var index_to_write = getObjectIndex(effect_list, 'effect_id', value.fk_effect_id);
+			if(index_to_write) {
+				var eff = effect_list[index_to_write].name;
+			}
+			else {
+				var eff = "";
+			}
+			var block = '<tr> <td> <form class="form-inline sprite-form"> <div class="row"> <div class="col-md-1"> <span class="sprite-index">'+count+'</span> </div> <div class="col-md-9"> <div class="form-group"> <input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_name+'" /> <input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> <input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" /> <input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="'+eff+'" /> <input type="hidden" name="effect_id" value="" /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button> </div> </div> <input type="hidden" name="sprite_id" value="'+value.sprite_id+'" /> <input type="hidden" name="sprite_temp_index" value="'+(count-1)+'" /> </form> </td> </tr>';
 			// append nothing if line has no sprite
 			if(value.sprite_id != "") {
 				$(block).appendTo('.sprite-list');
@@ -810,7 +816,6 @@ function saveLine() {
 				label: value.label,
 				speaker: value.speaker,
 				content: value.content,
-				fk_effect_id: value.fk_effect_id,
 				jumpto_line_id: value.jumpto_line_id,
 				fk_linetype_id: value.fk_linetype_id,
 				background_resource_id: value.background_resource_id,
@@ -828,6 +833,7 @@ function saveLine() {
 						position_x: value.position_x,
 						position_y: value.position_y,
 						position_z: value.position_z,
+						fk_effect_id: value.fk_effect_id,
 						fk_line_id: i_line_id,
 						sprite_temp_index: value.sprite_temp_index
 					})
@@ -839,6 +845,7 @@ function saveLine() {
 						position_x: value.position_x,
 						position_y: value.position_y,
 						position_z: value.position_z,
+						fk_effect_id: value.fk_effect_id,
 						fk_line_id: i_line_id
 					});
 				}
@@ -1231,12 +1238,12 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 				}
 			});
 			if(verify == 1) {
-				line_obj[line_index_to_write].sprite[index_to_write] = input_id;
+				line_obj[line_index_to_write].sprite[index_to_write].fk_effect_id = input_id;
 				$(this).css("color", "");
 				console.log("OK");
 			}
 			else {
-				line_obj[line_index_to_write].sprite[index_to_write] = "";
+				line_obj[line_index_to_write].sprite[index_to_write].fk_effect_id = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("transition isn't supported!");
 			}
@@ -1309,6 +1316,7 @@ $('.sprite-command-area').on('click', '#addspritebutton', function() {
 				position_x: "0",
 				position_y: "0",
 				position_z: "0",
+				fk_effect_id: "",
 				sprite_resource_id: "",
 				sprite_name: "",
 				sprite_file_name: "",
