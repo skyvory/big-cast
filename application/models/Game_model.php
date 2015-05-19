@@ -22,7 +22,7 @@ Class Game_model extends CI_Model {
 		return $result;
 	}
 	function getLine($project_id, $limit, $offset) {
-		$this->db->select('line_id, sequence, speaker, content, fk_effect_id, jumpto_line_id, fk_linetype_id');
+		$this->db->select('line_id, sequence, speaker, content, jumpto_line_id, fk_linetype_id');
 		$this->db->from('line');
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->order_by('sequence', 'ASC');
@@ -72,7 +72,7 @@ Class Game_model extends CI_Model {
 		return $result;
 	}
 	function getSprite($line_id) {
-		$this->db->select('sprite_id, character_name, position_x, position_y, position_z');
+		$this->db->select('sprite_id, character_name, position_x, position_y, position_z, fk_effect_id');
 		$this->db->select('resource_id, file_name, character_name, figure_name, expression_name');
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');

@@ -7,10 +7,11 @@
 		<?php if(isset($error)) echo($error); ?>
 		<?php echo form_open_multipart('home/do_upload'); ?>
 		<!--input type="file" multiple name="userfile[]"/-->
-
+		<h3>Drop files anywhere on this page.</h3>
+		<p>Or use browse button below.</p>
 		<input type="file" id="fileupload" name="userfile" multiple />
 		<input type="hidden" id="resourcetype" name="resourcetype" value="1" />
-		<input type="submit" id="upload" value="upload" />
+		<!-- <input type="submit" id="upload" value="upload" /> -->
 		</form>
 		
 		<div id="progress">
@@ -604,7 +605,7 @@
 		});
 		//append additional form for sprite upload
 		if(type == 1) {
-			var html2append = '<div class="row"><div class="col-md-10 sprite-input-append"><form class="form-inline"><label for="charactername">Character name</label> <input type="text" id="charactername" name="character_name" value="akio" /> <label for="figurename">Pose name</label> <input type="text" id="figurename" name="figure_name" value="standing" /></form></div></div>';
+			var html2append = '<div class="row"><div class="col-md-10 sprite-input-append"><form class="form-inline"><label for="charactername">Character name</label> <input type="text" id="charactername" name="character_name" value="" /> <label for="figurename">Pose name</label> <input type="text" id="figurename" name="figure_name" value="" /></form></div></div>';
 			// $(html2append).appendTo('.resource-preinput');
 			$('.resource-preinput').html(html2append);
 		}

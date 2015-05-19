@@ -2120,12 +2120,20 @@ $('.sprite-list').on('mouseover', 'input[name=effect]', function() {
 });
 
 
+
+var canvasdisplay = document.getElementsByTagName('canvas')[0];
+canvasdisplay.width = 240;
+canvasdisplay.height = 180;
+canvasdisplay.style.width  = '800px';
+canvasdisplay.style.height = '600px';
+
 var canvas = new fabric.Canvas('preview');
 canvas.selection = false;
 
-var canvasdisplay = document.getElementsByTagName('canvas')[0];
-canvasdisplay.width = 800;
-canvasdisplay.height = 600;
-canvasdisplay.style.width  = '240px';
-canvasdisplay.style.height = '180px';
-
+$('.line-list').on('click', '.line-project-button', function(e) {
+	e.preventDefault();
+	var seq = $(this.form).find('input[name=sequence]').val();
+	index_to_read = getObjectIndex(line_obj, 'sequence', seq);
+	//>>>
+	console.log(this.form);
+})

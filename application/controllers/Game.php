@@ -159,7 +159,6 @@ class Game extends CI_Controller {
 					'sequence' => utf8_encode($value['sequence']),
 					'speaker' => utf8_encode($value['speaker']),
 					'content' => utf8_encode($value['content']),
-					'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 					'jumpto_line_id' => utf8_encode($value['jumpto_line_id']),
 					'fk_linetype_id' => utf8_encode($value['fk_linetype_id']),
 					'background_resource_id' => utf8_encode($background['background_resource_id']),
@@ -184,7 +183,6 @@ class Game extends CI_Controller {
 							'sequence' => utf8_encode($j_value['sequence']),
 							'speaker' => utf8_encode($j_value['speaker']),
 							'content' => utf8_encode($j_value['content']),
-							'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
 							'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
 							'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
 						);
@@ -199,6 +197,7 @@ class Game extends CI_Controller {
 							'position_x' => utf8_encode($value['position_x']),
 							'position_y' => utf8_encode($value['position_y']),
 							'position_z' => utf8_encode($value['position_z']),
+							'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 							'sprite_resource_id' => utf8_encode($value['resource_id']),
 							'sprite_file_name' => utf8_encode($value['file_name'])
 						);
@@ -226,7 +225,6 @@ class Game extends CI_Controller {
 									'sequence' => utf8_encode($j_value['sequence']),
 									'speaker' => utf8_encode($j_value['speaker']),
 									'content' => utf8_encode($j_value['content']),
-									'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
 									'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
 									'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
 								);
@@ -276,7 +274,6 @@ class Game extends CI_Controller {
 							'sequence' => utf8_encode($j_value['sequence']),
 							'speaker' => utf8_encode($j_value['speaker']),
 							'content' => utf8_encode($j_value['content']),
-							'fk_effect_id' => utf8_encode($j_value['fk_effect_id']),
 							'jumpto_line_id' => utf8_encode($j_value['jumpto_line_id']),
 							'fk_linetype_id' => utf8_encode($j_value['fk_linetype_id'])
 						);
