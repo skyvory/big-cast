@@ -473,7 +473,7 @@ function getObjectIndex(array, attr, value) {
 			return i;
 		}
 	}
-	return -1;
+	return false;
 }
 
 
@@ -611,19 +611,87 @@ function renderTitleMenu() {
 	});
 }
 
-// $(document).keypress(function(e){
-// 	if(game.screen == play) {
-// 		switch(e.which){
-// 			case 13:
-// 				renderNextLine();
-// 				maintainCurrent();
-// 				maintainCache();
-// 				break;
-// 			case 
+// var key_enable = true;
+// $(document).bind('keydown', function(e){
+// 	if(key_enable == true) {
+// 		if(game.screen == "play") {
+// 			switch(e.which) {
+// 				// enter key
+// 				case 13:
+// 						key_enable = false;
+// 						renderNextLine();
+// 						maintainCurrent();
+// 						maintainCache();
+// 					break;
+// 				// ctrl key
+// 				case 17:
+// 					game.screen = "skip";
+// 					playSkip();
+// 					break;
+// 				// a key
+// 				case 65:
+// 					// toggle
+// 					game.screen = "auto";
+// 					playAuto();
+// 					break;
+// 				// f key
+// 				case 70:
+// 					// toggle skip
+// 					game.screen = "skip";
+// 					playSkip();
+// 					break;
+// 				// s key
+// 				case 83:
+// 					// open save
+// 					game.screen = "save";
+// 					$('.text-area').fadeOut(1000);
+// 					renderSaveScreen();
+// 					break;
+// 				// l key
+// 				case 76:
+// 					// open load
+// 					game.screen = "load";
+// 					renderLoadScreen();
+// 					break;
+// 				// r key
+// 				case 82:
+// 					playVoice();
+// 					// repeat voice
+					
+// 				default:
+// 					break;
+// 			}
 // 		}
-		
+// 		else if(game.screen == "auto") {
+// 			switch(e.which) {
+// 				// return to normal play
+// 				case 13:
+// 					game.screen = "play";
+// 					break;
+// 				// toggle auto
+// 				case 65:
+// 					game.screen = "play";
+// 					break
+// 				default:
+// 					break;
+// 			}
+// 		}
 // 	}
 // });
+// $(document).bind('keyup', function(e){
+// 	if(game.screen == "play") {
+// 		switch(e.keyCode) {
+// 			// toggle skip
+// 			case 17:
+// 				game.screen = "play";
+// 				break;
+// 			default:
+// 				break;
+// 		}
+// 		key_enable = true;
+// 	}
+// });
+
 var key_enable = true;
 $(document).bind('keydown', function(e){
 	if(key_enable == true) {
@@ -631,46 +699,11 @@ $(document).bind('keydown', function(e){
 			switch(e.which) {
 				// enter key
 				case 13:
-						key_enable = false;
-						renderNextLine();
-						maintainCurrent();
-						maintainCache();
+					key_enable = false;
+					renderNextLine();
+					maintainCurrent();
+					maintainCache();
 					break;
-				// ctrl key
-				case 17:
-					game.screen = "skip";
-					playSkip();
-					break;
-				// a key
-				case 65:
-					// toggle
-					game.screen = "auto";
-					playAuto();
-					break;
-				// f key
-				case 70:
-					// toggle skip
-					game.screen = "skip";
-					playSkip();
-					break;
-				// s key
-				case 83:
-					// open save
-					game.screen = "save";
-					$('.text-area').fadeOut(1000);
-					renderSaveScreen();
-					break;
-				// l key
-				case 76:
-					// open load
-					game.screen = "load";
-					renderLoadScreen();
-					break;
-				// r key
-				case 82:
-					playVoice();
-					// repeat voice
-					
 				default:
 					break;
 			}
@@ -694,14 +727,12 @@ $(document).bind('keydown', function(e){
 $(document).bind('keyup', function(e){
 	if(game.screen == "play") {
 		switch(e.keyCode) {
-			// toggle skip
-			case 17:
-				game.screen = "play";
+			case 13:
+				key_enable = true;
 				break;
 			default:
 				break;
 		}
-		key_enable = true;
 	}
 });
 
@@ -842,7 +873,7 @@ canvas.on('mouse:down', function(options) {
 		}
 	}
 	else if(game.screen == "play") {
-		if(options.target != undefined) {
+		// if(options.target != undefined) {
 			switch(options.target.id) {
 				case "quickload_button":
 					quickLoad();
@@ -881,18 +912,20 @@ canvas.on('mouse:down', function(options) {
 				case "log_button":
 					break;
 				default:
-					renderNextLine();
-					maintainCurrent();
-					maintainCache();
+					if(game.status.text != "busy") {
+						renderNextLine();
+						maintainCurrent();
+						maintainCache();
+					}
 					break;
 			}
-		}
-		else {
-			// canvas background has no target (undefined)
-			renderNextLine();
-			maintainCurrent();
-			maintainCache();
-		}
+		// }
+		// else {
+		// 	// canvas background has no target (undefined)
+		// 	renderNextLine();
+		// 	maintainCurrent();
+		// 	maintainCache();
+		// }
 
 	}
 	else if(game.screen == "save" || game.screen == "on_choice_save") {
@@ -1151,9 +1184,11 @@ function loadGame(save_data_line_id) {
 		stopBgm();
 		line = [];
 		canvas.clear();
+		clearText();
+		$('.text-area').show();
 		current.sequence = -1;
 		current.head = -1;
-		callSequentialLineData(msg-2, function() {
+		callSequentialLineData(msg-1, function() {
 			processSequentialResource();
 			setTimeout(function() {
 				game.screen = "play";
@@ -2457,10 +2492,11 @@ function compareSpriteIndex(a, b) {
 }
 
 function renderNextLine(callback) {
+	context.clearRect (0 ,0 ,text_display.width,text_display.height );
 	//if before same or something whatever
 	current.sequence++;
-console.log("current seq", current.sequence);
-console.log("current sprite", line[current.sequence].sprite);
+// console.log("current seq", current.sequence);
+// console.log("current sprite", line[current.sequence].sprite);
 	// for line jump
 	if(line[current.sequence].fk_linetype_id != 2 && line[current.sequence].fk_linetype_id != 4) {
 		if(line[current.sequence].jumpto_line_id.length > 0) {
@@ -2533,19 +2569,25 @@ console.log("current sprite", line[current.sequence].sprite);
 							});
 							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 							console.log("err ", canvas_index);
-							var bg_bottom = canvas.item(canvas_index);
-							if(game.screen == "skip") {
-								canvas.remove(canvas.item(canvas_index));
+							if(canvas_index > -1) {
+								var bg_bottom = canvas.item(canvas_index);
+								console.log("bg bottom err canvas index", canvas_index);
+								if(game.screen == "skip") {
+									canvas.remove(canvas.item(canvas_index));
+								}
+								else {
+									bg_bottom.animate('opacity', '0', {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 500,
+										onComplete: function() {
+											canvas.remove(canvas.item(canvas_index));
+											// console.log("bg removed at index", canvas_index);
+										}
+									});
+								}
 							}
 							else {
-								bg_bottom.animate('opacity', '0', {
-									onChange: canvas.renderAll.bind(canvas),
-									duration: 500,
-									onComplete: function() {
-										canvas.remove(canvas.item(canvas_index));
-										// console.log("bg removed at index", canvas_index);
-									}
-								});
+								canvas.remove(canvas.item(0));
 							}
 						}
 					}
@@ -2667,7 +2709,6 @@ console.log("current sprite", line[current.sequence].sprite);
 							}
 						});
 						if(same == false) {
-							console.log("false",line[prev_index_to_read].sprite[i] );
 							sprite_to_remove.push(line[prev_index_to_read].sprite[i]);
 						}
 						i++;
@@ -3103,7 +3144,6 @@ console.log("current sprite", line[current.sequence].sprite);
 		}
 
 		// console.log(line[current.sequence].content);
-		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		renderLineText(line[current.sequence].content);
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 
@@ -3219,10 +3259,7 @@ console.log("current sprite", line[current.sequence].sprite);
 			stopBgm();
 			setTimeout(function() {
 				renderTitleScreen();
-				// whiteIn(500, function() {
-				// 	whiteOut(2000);
-				// 	renderTitleScreen();
-				// });
+				game.screen = "title";
 			}, 5000);
 		});
 	}
@@ -3501,6 +3538,7 @@ function playVoice(source) {
 // font_size, point_x, start_y, line_height, right_padding
 // 18px, 100, 490, 25, 100 = 390 chars
 // 21. 100. 490. 31. 100 = 160 chars
+var inter;
 context.font = '21px sans-serif';
 function renderLineText(line_content) {
 	var interval_speed = (parseInt(configuration.text_speed) * 10);
