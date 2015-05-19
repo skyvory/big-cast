@@ -1,6 +1,7 @@
 ﻿range of position x is -8 to 8 position y -6 to 6
 max line content is 160
 
+0.7.1-deprecate
 - initial load page
 - working configuration page
 - update database 0.9: remove Arial Unicode MS from fonttype table
