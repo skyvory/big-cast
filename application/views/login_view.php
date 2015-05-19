@@ -4,9 +4,9 @@
 
 
 		<div class="jumbotron">
-			<h3>Visual Novel Authoring Tool<span style="font-size: 0.6em;"> on web</span></h3>
-			<p>Be a creator, create your own visual novel without complication over learning scripting language.</p>
-			<p>Or, play some creations by others.</p>
+			<h2>Visual Novel Authoring Tool<span style="font-size: 0.6em;"> on web</span></h2>
+			<p>Be a creator, Create your own visual novel.</p>
+			<p>Publishing visual novel made easy.</p>
 			<p><a href="#" class="btn btn-info btn-sm">Learn more</a></p>
 		</div>
 

@@ -995,7 +995,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			break;
 
 		case "background":
-			console.log("OK");
 			var input_id = $(select_form).find('input[name=background_resource_id]').val();
 			var input_value = $(this).val();
 			var verify = 0;
@@ -1004,13 +1003,10 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 					verify++;
 				}
 			};
-			console.log(input_id);
-			console.log(input_value);
 			if(verify == 1) {
 				line_obj[index_to_write].background_resource_id = input_id;
 				line_obj[index_to_write].background_name = input_value;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1022,7 +1018,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 		case "bgm":
 			var input_id = $(select_form).find('input[name=bgm_resource_id]').val();
 			var input_value = $(this).val();
-			console.log(input_value);
 			var verify = 0;
 			$.each(bgm_list, function(index, value) {
 				if(input_id == value.resource_id && input_value == value.name) {
@@ -1033,7 +1028,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				line_obj[index_to_write].bgm_resource_id = input_id;
 				line_obj[index_to_write].bgm_name = input_value;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else {
 				line_obj[index_to_write].bgm_resource_id = "";

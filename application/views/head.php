@@ -26,7 +26,7 @@
 		};
 		</script>
 
-		<link rel="stylesheet" href="<?= base_url() ?>assets/restyle.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
 
 		<script type="text/javascript" src="<?= base_url() ?>assets/rescript.js"></script>
