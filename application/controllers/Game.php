@@ -325,7 +325,6 @@ class Game extends CI_Controller {
 		else {
 			$pass = $this->game_model->updateSaveData($save_data_id, $line_id, $user['id'], 1, $game['id']);
 		}
-		$this->fb->log($pass);
 		if($pass) {
 			echo "1";
 		}
@@ -333,10 +332,37 @@ class Game extends CI_Controller {
 	public function getSequenceById() {
 		$game = $this->session->userdata('active_game');
 		$line_id = $this->input->post('lineid');
-		$pass = $this->game_model->getLineSequence($line_id);
-		if($pass) {
-			echo $pass;
+		$sequence = $this->game_model->getLineSequence($line_id);
+		if($sequence) {
+			echo $sequence;
 		}
+	}
+	public function quickSave() {
+		$user = $this->session->userdata('user_auth');
+		$game = $this->session->userdata('active_game');
+		$line_id = $this->input->post('lineid');
+		$check = $this->game_model->isQuickSaveDataExist($user['id'], $game['id']);
+		if($check) {
+			$pass = $this->game_model->updateQuickSaveData($line_id, $user['id'], $game['id']);
+		}
+		else {
+			$pass = $this->game_model->createQuickSaveData($line_id, $user['id'], $game['id']);
+		}
+		if($pass) {
+			echo "1";
+		}
+	}
+	public function quickLoad() {
+		$user = $this->session->userdata('user_auth');
+		$game = $this->session->userdata('active_game');
+		$pass = $this->game_model->getQuickSaveData($user['id'], $game['id']);
+		if($pass) {
+			$sequence = $this->game_model->getLineSequence($pass['fk_line_id']);
+			if($sequence) {
+				echo $sequence;
+			}
+		}
+		
 	}
 
 }

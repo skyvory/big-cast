@@ -162,5 +162,39 @@ Class Game_model extends CI_Model {
 		$exec = $this->db->update('savedata', $data);
 		return $exec;
 	}
+	function isQuickSaveDataExist($user_id, $project_id) {
+		$this->db->from('savedata');
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$query = $this->db->get();
+		if($query->num_rows() > 0) {
+			return TRUE;
+		}
+		else {
+			return FALSE;
+		}
+	}
+	function createQuickSaveData($line_id, $user_id, $project_id) {
+		$now = date("Y-m-d H:i:s");
+		$data = array('save_date' => $now, 'fk_line_id' => $line_id, 'fk_user_id' => $user_id, 'fk_savedatatype_id' => "2",'fk_project_id'  => $project_id);
+		$exec = $this->db->insert('savedata', $data);
+		return $exec;
+	}
+	function updateQuickSaveData($line_id, $user_id, $project_id) {
+		$now = date("Y-m-d H:i:s");
+		$data = array('save_date' => $now, 'fk_line_id' => $line_id);
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$exec = $this->db->update('savedata', $data);
+		return $exec;
+	}
+	function getQuickSaveData($user_id, $project_id) {
+		$this->db->from('savedata');
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
 }
 ?>

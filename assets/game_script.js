@@ -881,9 +881,7 @@ canvas.on('mouse:down', function(options) {
 					quickLoad();
 					break;
 				case "quicksave_button":
-					quickSave(function() {
-						renderNotification("saved!")
-					});
+					quickSave();
 					break;
 				case "load_button":
 					game.screen = "on_play_load";
@@ -1049,9 +1047,7 @@ canvas.on('mouse:down', function(options) {
 					quickLoad();
 					break;
 				case "quicksave_button":
-					quickSave(function() {
-						renderNotification("saved!")
-					});
+					quickSave();
 					break;
 				case "load_button":
 					game.screen = "on_choice_load";
@@ -1150,6 +1146,35 @@ canvas.on('mouse:down', function(options) {
 	// current.sequence = line[jump_index].sequence;
 // } 
 
+function renderNotification(message) {
+	var notify = new fabric.Text(message, {
+		fontFamily: 'Arial',
+		fontSize: 20,
+		fill: '#FF0000',
+		opacity: 0,
+		top: 380,
+		left: 801
+	});
+	notify.set('selectable', false);
+	canvas.add(notify);
+	notify.animate('opacity', '1', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500,
+		onComplete: function() {
+			notify.animate('opacity', '0', {
+				onChange: canvas.renderAll.bind(canvas),
+				duration: 2000
+			});
+		}
+	});
+	notify.animate('left', '500', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 2500,
+		onComplete: function() {
+			canvas.remove(notify);
+		}
+	});
+}
 function saveGame(save_data_id, callback) {
 	if(save_data_id) {
 		save_data_id = save_data_id;
@@ -1210,6 +1235,44 @@ function loadGame(save_data_line_id) {
 	});
 }
 
+function quickSave() {
+	var req = $.ajax({
+		url: config.base + 'index.php/game/quickSave',
+		type: 'POST',
+		data: { lineid: line[current.sequence].line_id },
+		dataType: 'html'
+	});
+	req.done(function(msg) {
+		if(msg == 1) {
+			renderNotification('Saved!');
+		}
+	})
+}
+function quickLoad() {
+	var req = $.ajax({
+		url: config.base + 'index.php/game/quickLoad',
+		type: 'POST',
+		dataType: 'html'
+	});
+	req.done(function(msg) {
+		game.screen = "stall";
+		whiteIn(1000);
+		stopBgm();
+		line = [];
+		canvas.clear();
+		context.clearRect (0 ,0 ,text_display.width,text_display.height );
+		$('.text-area').show();
+		current.sequence = -1;
+		current.head = -1;
+		callSequentialLineData(msg-1, function() {
+			processSequentialResource();
+			setTimeout(function() {
+				game.screen = "play";
+				renderNextLine();
+			}, 4000);
+		});
+	})
+}
 function renderSaveScreen() {
 	var req = $.ajax({
 		url: config.base + 'index.php/game/loadSaveData',
@@ -3452,7 +3515,7 @@ function renderInGameInterface(callback) {
 			id: 'quickload_button',
 			line_interface_id: 2,
 			top: 435,
-			left: 30,
+			left: 480,
 			opacity: 1
 		});
 		qld_btn.set('selectable', false);
@@ -3463,7 +3526,7 @@ function renderInGameInterface(callback) {
 			id: 'quicksave_button',
 			line_interface_id: 3,
 			top: 438,
-			left: 110,
+			left: 545,
 			opacity: 1
 		});
 		qsv_btn.set('selectable', false);
@@ -3474,7 +3537,7 @@ function renderInGameInterface(callback) {
 			id: 'load_button',
 			line_interface_id: 4,
 			top: 435,
-			left: 195,
+			left: 615,
 			opacity: 1
 		});
 		ld_btn.set('selectable', false);
@@ -3485,7 +3548,7 @@ function renderInGameInterface(callback) {
 			id: 'save_button',
 			line_interface_id: 5,
 			top: 438,
-			left: 260,
+			left: 670,
 			opacity: 1
 		});
 		sav_btn.set('selectable', false);
@@ -3496,7 +3559,7 @@ function renderInGameInterface(callback) {
 			id: 'log_button',
 			line_interface_id: 6,
 			top: 435,
-			left: 330,
+			left: 720,
 			opacity: 1
 		});
 		log_btn.set('selectable', false);
