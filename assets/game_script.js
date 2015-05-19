@@ -3179,7 +3179,7 @@ function renderNextLine(callback) {
 						}
 					});
 				}
-				console.log("spartaaaaaaaaaaaaaaaaa");
+				// mark prone
 			}
 			// }
 			// readjust game interface to original position after render
@@ -3226,18 +3226,19 @@ function renderNextLine(callback) {
 				});
 			}
 		}
-		// render bgm
-		var bgm_id = line[current.sequence].bgm_resource_id;
-		if(bgm_id.length) {
-			var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[current.sequence].bgm_file_name;
-			playBgm(path_to_bgm);
-			// }
-
-		}
-		else {
-			stopBgm();
-		}
+		
 		if(game.screen != "skip") {
+			// render bgm
+			var bgm_id = line[current.sequence].bgm_resource_id;
+			if(bgm_id.length) {
+				var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[current.sequence].bgm_file_name;
+				playBgm(path_to_bgm);
+				// }
+
+			}
+			else {
+				stopBgm();
+			}
 			// render sfx
 			var sfx_id = line[current.sequence].sfx_resource_id;
 			if(sfx_id.length) {
@@ -3262,6 +3263,7 @@ function renderNextLine(callback) {
 			}
 		}
 
+		renderSpeaker();
 		// console.log(line[current.sequence].content);
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		renderLineText(line[current.sequence].content);
@@ -3411,6 +3413,28 @@ function renderNextLine(callback) {
 	if(callback) {
 		callback();
 	}
+}
+
+// split for lighter and smoother canvas processing (maybe)
+function renderSpeaker() {
+	// remove speaker text
+	var canvas_index = getObjectIndex(canvas.getObjects(), 'id', 'speaker');
+	canvas.remove(canvas.item(canvas_index));
+	// add new speaker
+	var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
+	var speaker = new fabric.Text(line[current.sequence].speaker, {
+		id: 'speaker',
+		fontSize: 22,
+		fontFamily: font_list[font_index].name,
+		fill: '#000000',
+		opacity: 1,
+		top: 460,
+		left: 230,
+		originX: 'center',
+		originY: 'bottom'
+	});
+	speaker.set('selectable', false);
+	canvas.add(speaker);
 }
 
 function playAuto() {
@@ -3703,9 +3727,9 @@ function playVoice(source) {
 // 18px, 100, 490, 25, 100 = 390 chars
 // 21. 100. 490. 31. 100 = 160 chars
 // context.font = '21px sans-serif';
-var font_index = getObjectIndex(font_list, 'id', configuration.fk_fonttype_id);
-context.font = '21px '+font_list[font_index].name;
 function renderLineText(line_content) {
+	var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
+	context.font = '21px '+font_list[font_index].name;
 	var interval_speed = (parseInt(configuration.text_speed) * 10);
 	var cursor_x = 100;
 	var cursor_y = 490;
