@@ -907,11 +907,13 @@ canvas.on('mouse:down', function(options) {
 					playVoice();
 					break;
 				case "configuration_button":
+					game.screen = "on_play_configuration";
 					renderConfigurationScreen();
 					$(text_display).fadeOut(1000);
-					game.screen = "on_play_configuration";
 					break;
 				case "log_button":
+					game.screen = "log";
+					renderLogScreen();
 					break;
 				default:
 					if(game.status.text != "busy") {
@@ -939,6 +941,7 @@ canvas.on('mouse:down', function(options) {
 					// game.screen = "stall";
 					saveGame(options.target.save_data_id, function() {
 						exitSaveScreen(function() {
+							$('.text-area').fadeIn(1000);
 							if(game.screen == "on_choice_save") {
 								game.screen = "choice";
 							}
@@ -1025,8 +1028,8 @@ canvas.on('mouse:down', function(options) {
 							processSequentialResource();
 							exitChoice();
 							setTimeout(function() {
-								renderNextLine();
 								game.screen = "play";
+								renderNextLine();
 							}, 500);
 						});
 					// });
@@ -1114,6 +1117,10 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "skip") {
 		game.screen = "play";
 	}
+	else if(game.screen == "log") {
+		$('.log-area').slideUp(1000);
+		game.screen = "play";
+	}
 	// console.log(options.e.layerX, options.e.layerY);
 });
 
@@ -1198,7 +1205,7 @@ function loadGame(save_data_line_id) {
 			setTimeout(function() {
 				game.screen = "play";
 				renderNextLine();
-			}, 3000);
+			}, 4000);
 		});
 	});
 }
@@ -2988,6 +2995,127 @@ function renderNextLine(callback) {
 			}
 			// if no previous reference, this is happen after load a data
 			else {
+				if(line[current.sequence].background_resource_id > 0) {
+					line[current.sequence].background_resource_id;
+					var bg_id = line[current.sequence].background_resource_id;
+					console.log("bg added", bg_id);
+					var img = $('.image-cache').find('img[id='+bg_id+']')[0];
+					if(game.screen == "skip") {
+						var bg = new fabric.Image(img, {
+							line_background_resource_id: bg_id,
+							top: 0,
+							left: 0,
+							opacity: 1
+						});
+						bg.set('selectable', false);
+						canvas.add(bg);
+						canvas.sendToBack(bg);
+					}
+					else {
+						var bg = new fabric.Image(img, {
+							line_background_resource_id: bg_id,
+							top: 0,
+							left: 0,
+							opacity: 0
+						});
+						bg.set('selectable', false);
+						canvas.add(bg);
+						canvas.sendToBack(bg);
+						bg.animate('opacity', '1', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 500,
+							onComplete: function() {
+								//
+							}
+						});
+					}
+				}
+
+				if(line[current.sequence].sprite.length > 0) {
+					$.each(line[current.sequence].sprite, function(index, value) {
+						var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
+						if(value.fk_effect_id == 1) {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: (value.position_y * 100),
+								left: (value.position_x * 100),
+								opacity: 1
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+						}
+						else if(value.fk_effect_id == 5) {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: (value.position_y * 100),
+								left: -1000,
+								opacity: 1
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+							spr.animate('left', (value.position_x * 100), {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000
+							});
+						}
+						else if(value.fk_effect_id == 7) {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: (value.position_y * 100),
+								left: 1000,
+								opacity: 1
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+							spr.animate('left', (value.position_x * 100), {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000
+							});
+						}
+						else if(value.fk_effect_id == 9) {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: -800,
+								left: (value.position_x * 100),
+								opacity: 1
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+							spr.animate('top', (value.position_y * 100), {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000
+							});
+						}
+						else if(value.fk_effect_id == 11) {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: 800,
+								left: (value.position_x * 100),
+								opacity: 1
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+							spr.animate('top', (value.position_y * 100), {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000
+							});
+						}
+						else {
+							var spr = new fabric.Image(img, {
+								line_sprite_resource_id: value.sprite_resource_id,
+								top: (value.position_y * 100),
+								left: (value.position_x * 100),
+								opacity: 0
+							});
+							spr.set('selectable', false);
+							canvas.add(spr);
+							spr.animate('opacity', '1', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 500
+							});
+						}
+					});
+				}
 				console.log("spartaaaaaaaaaaaaaaaaa");
 			}
 			// }
@@ -3182,11 +3310,20 @@ function renderNextLine(callback) {
 	// render end line
 	else if(line[current.sequence].fk_linetype_id == 4) {
 		game.screen = "stall";
-		$('.text-area').fadeOut(2000);
+		$('.text-area').fadeOut(1000);
+		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		whiteIn(2000, function() {
-			canvas.clear();
 			stopBgm();
+			canvas.clear();
+			current.sequence = -1;
+			current.head = -1;
+			callSequentialLineData(0, function() {
+				processSequentialResource();
+			});
 			setTimeout(function() {
+				line = [];
+				$('.text-area').show();
+				
 				renderTitleScreen();
 				game.screen = "title";
 				// whiteIn(500, function() {
@@ -3237,6 +3374,35 @@ function playSkip() {
 			playSkip();
 		}, wait);
 	}
+}
+
+function renderLogScreen() {
+	var oldest_limit = current.sequence - 50;
+	var i;
+	if(oldest_limit < 0) {
+		i = 0;
+	}
+	else {
+		i = oldest_limit;
+	}
+	// for(i; i < (oldest_limit + 50), i < current.sequence; i++) {
+
+	// // for(var i = current.sequence; i > count, i>=0; i--) {
+	// 	console.log(i);
+	// 	if(line[i].fk_linetype_id == 1) {
+	// 		$("<li/>").text(line[i].content).appendTo('.log-area');
+	// 	}
+	// 	else {
+	// 		oldest_limit++;
+	// 	}
+	// }
+	for(i=0;i<50;i++){
+		$("<li/>").text("uie agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow fbv ").appendTo('.log-area');
+	}
+	var logdiv = $('.log-area')[0];
+	logdiv.scrollTop = logdiv.scrollHeight;
+	$('.log-area').slideDown(1000);
+
 }
 
 // remove choice from canv
@@ -3418,8 +3584,10 @@ function stopBgm() {
 	var bgmx = $('#bgm_play');
 	bgmx.animate({volume: 0}, 3000, function() {
 		var bgm = $('#bgm_play')[0];
-		bgm.pause();
-		bgm.currentTime = 0;
+		if(!bgm.paused) {
+			bgm.pause();
+			bgm.currentTime = 0;
+		}
 	});
 }
 

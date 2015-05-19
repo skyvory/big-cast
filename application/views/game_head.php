@@ -13,6 +13,7 @@
 
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/game_style.css"/>
 
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>

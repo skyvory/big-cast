@@ -11,15 +11,16 @@
 				</span>
 			</div>
 			<div style="width: 800px; margin: 0 auto;">
+				<div class="log-area" style="display: none;"><button class="btn btn-danger log-close">X</button>
+				</div>
 				<div class="game-area" style="display: none; position: fixed;">
-					<!-- <center> --><canvas id="visual" style="border:1px solid #6AE5FF;"></canvas><!-- </center> -->
+					<!-- <center> --><canvas id="visual"></canvas><!-- </center> -->
 				</div>
 				<div class="text-area" style="display: block; position: fixed; pointer-events: none;">
 					<!-- <center> --><canvas id="text" style="border: none;"></canvas><!-- </center> -->
 				</div>
 				<div class="video-area" style="display: none; position: fixed; background-color: black; pointer-events: none;"></div>
 			</div>
-			<!-- <img src="../resources/a.jpg" id="my-image" style="display:none;"> -->
 			<button id="test">test</button>
 			<audio id="bgm_play"></audio>
 			<audio id="voice_play"></audio>
