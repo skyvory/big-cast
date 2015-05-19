@@ -3703,7 +3703,8 @@ function playVoice(source) {
 // 18px, 100, 490, 25, 100 = 390 chars
 // 21. 100. 490. 31. 100 = 160 chars
 // context.font = '21px sans-serif';
-context.font = '21px '+configuration.fk_fonttype_id;
+var font_index = getObjectIndex(font_list, 'id', configuration.fk_fonttype_id);
+context.font = '21px '+font_list[font_index].name;
 function renderLineText(line_content) {
 	var interval_speed = (parseInt(configuration.text_speed) * 10);
 	var cursor_x = 100;
