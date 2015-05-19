@@ -894,14 +894,19 @@ canvas.on('mouse:down', function(options) {
 		}
 
 	}
-	else if(game.screen == "save") {
+	else if(game.screen == "save" || game.screen == "save_on_choice") {
 		switch(options.target.id) {
 			case "save_slot":
 				if(options.target.save_data_line_id) {
-					game.screen = "stall";
+					// game.screen = "stall";
 					saveGame(options.target.save_data_id, function() {
 						exitSaveScreen(function() {
-							game.screen = "play";
+							if(game.screen == "save_on_choice") {
+								game.screen = "choice";
+							}
+							else {
+								game.screen = "play";
+							}
 						})
 					});
 				}
@@ -909,15 +914,25 @@ canvas.on('mouse:down', function(options) {
 					game.screen = "stall";
 					saveGame(options.target.save_data_id, function() {
 						exitSaveScreen(function() {
-							game.screen = "play";
-						})
+							if(game.screen == "save_on_choice") {
+								game.screen = "choice";
+							}
+							else {
+								game.screen = "play";
+							}
+						});
 					});
 				}
 				break;
 			case "exit_button":
 				$('.text-area').fadeIn(2000);
 				exitSaveScreen(function() {
-					game.screen = "play";
+					if(game.screen == "save_on_choice") {
+						game.screen = "choice";
+					}
+					else {
+						game.screen = "play";
+					}
 				});
 				break;
 			default:
@@ -984,7 +999,41 @@ canvas.on('mouse:down', function(options) {
 		}
 		else {
 			switch(options.target.id) {
-				//copy from play
+				case "quickload_button":
+					quickLoad();
+					break;
+				case "quicksave_button":
+					quickSave(function() {
+						renderNotification("saved!")
+					});
+					break;
+				case "load_button":
+					game.screen = "load";
+					renderLoadScreen();
+					break;
+				case "save_button":
+					game.screen = "save_on_choice";
+					$('.text-area').fadeOut(1000);
+					renderSaveScreen();
+					break;
+				case "auto_button":
+					game.screen = "auto";
+					playAuto();
+					break;
+				case "skip_button":
+					game.screen = "skip";
+					playSkip();
+					break;
+				case "repeat_button":
+					playVoice();
+					break;
+				case "configuration_button":
+					renderConfigurationScreen();
+					$(text_display).fadeOut(1000);
+					game.screen = "in_game_configuration";
+					break;
+				case "log_button":
+					break;
 			}
 		}
 	}
