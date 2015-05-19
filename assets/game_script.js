@@ -434,6 +434,7 @@ function preloadInterface(callback) {
 		in_text_window: "arc_000770c.png",
 		in_choice_box: "arc_001255.png",
 		save_data_box_nodata: "arc_000951.png",
+		save_data_box: "arc_000951e.png",
 		text_button: "arc_000573.png",
 		sound_button: "arc_000572.png",
 		exit_button: "arc_001273.png",
@@ -656,6 +657,7 @@ $(document).bind('keydown', function(e){
 				case 83:
 					// open save
 					game.screen = "save";
+					$('.text-area').fadeOut(1000);
 					renderSaveScreen();
 					break;
 				// l key
@@ -727,21 +729,6 @@ canvas.on('mouse:down', function(options) {
 				// 	onChange: canvas.renderAll.bind(canvas),
 				// 	duration: 1000
 				// });
-				break;
-		}
-	}
-	else if(game.screen === "load") {
-		switch(options.target.id) {
-			case "sav_1":
-				if(options.target.gamedata != "nodata") {
-					//
-				}
-				break;
-			case "exit_button":
-				exitLoadScreen();
-				game.screen = "title";
-				break;
-			default:
 				break;
 		}
 	}
@@ -858,12 +845,21 @@ canvas.on('mouse:down', function(options) {
 		if(options.target != undefined) {
 			switch(options.target.id) {
 				case "quickload_button":
+					quickLoad();
 					break;
 				case "quicksave_button":
+					quickSave(function() {
+						renderNotification("saved!")
+					});
 					break;
 				case "load_button":
+					game.screen = "load";
+					renderLoadScreen();
 					break;
 				case "save_button":
+					game.screen = "save";
+					$('.text-area').fadeOut(1000);
+					renderSaveScreen();
 					break;
 				case "auto_button":
 					game.screen = "auto";
@@ -891,7 +887,7 @@ canvas.on('mouse:down', function(options) {
 			}
 		}
 		else {
-			console.log("GODDAMN");
+			// canvas background has no target (undefined)
 			renderNextLine();
 			maintainCurrent();
 			maintainCache();
@@ -899,7 +895,56 @@ canvas.on('mouse:down', function(options) {
 
 	}
 	else if(game.screen == "save") {
-
+		switch(options.target.id) {
+			case "save_slot":
+				if(options.target.save_data_line_id) {
+					game.screen = "stall";
+					saveGame(options.target.save_data_id, function() {
+						exitSaveScreen(function() {
+							game.screen = "play";
+						})
+					});
+				}
+				else  {
+					game.screen = "stall";
+					saveGame(options.target.save_data_id, function() {
+						exitSaveScreen(function() {
+							game.screen = "play";
+						})
+					});
+				}
+				break;
+			case "exit_button":
+				$('.text-area').fadeIn(2000);
+				exitSaveScreen(function() {
+					game.screen = "play";
+				});
+				break;
+			default:
+				break;
+		}
+		
+	}
+	else if(game.screen == "load") {
+		switch(options.target.id) {
+			case "load_slot":
+				if(options.target.save_data_line_id) {
+					game.screen = "stall";
+					loadGame(options.target.save_data_line_id);//>>>
+				}
+				break;
+			case "sav_1":
+				if(options.target.gamedata != "nodata") {
+					//
+				}
+				break;
+			case "exit_button":
+				exitLoadScreen();
+				game.screen = "title";
+				break;
+			default:
+				break;
+		}
 	}
 	else if(game.screen == "choice") {
 		if(options.target.line_choice_id) {
@@ -982,7 +1027,7 @@ canvas.on('mouse:down', function(options) {
 // });
 
 
-function shiftCurrent(choice_index, callback) {
+// function shiftCurrent(choice_index, callback) {
 
 	// get index of next line
 	// var index_to_remove = current.sequence + 1;
@@ -1001,8 +1046,30 @@ function shiftCurrent(choice_index, callback) {
 
 	// change current sequence
 	// current.sequence = line[jump_index].sequence;
-} 
+// } 
 
+function saveGame(save_data_id, callback) {
+	if(save_data_id) {
+		save_data_id = save_data_id;
+	}
+	else {
+		save_data_id = "new";
+	}
+	var req = $.ajax({
+		url: config.base + 'index.php/game/saveGame',
+		data: {
+			saveid: save_data_id,
+			lineid: line[current.sequence].line_id
+		},
+		type: "POST",
+		dataType: 'html'
+	});
+	req.done(function(msg) {
+		if(callback) {
+			callback();
+		}
+	})
+}
 
 function callSaveConfiguration() {
 	var configuration_json = JSON.stringify(configuration);
@@ -1014,7 +1081,186 @@ function callSaveConfiguration() {
 		}
 	});
 }
-function renderLoadScreen() {
+
+function loadGame() {
+
+}
+
+function renderSaveScreen() {
+	var req = $.ajax({
+		url: config.base + 'index.php/game/loadSaveData',
+		type: 'POST',
+		dataType: 'json'
+	});
+	req.done(function(msg) {
+		var dat = msg;
+		var img = $('#configuration_background')[0];
+		var cfg_bg = new fabric.Image(img, {
+			id: 'configuration_background',
+			top: -600,
+			left: 0,
+			opacity: 1,
+			angle: 0
+		});
+		cfg_bg.set('selectable', false);
+		canvas.add(cfg_bg);
+		cfg_bg.animate('top', '0', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 1000,
+			easing:fabric.util.ease.easeInOutBack
+		});
+		// render text
+		var load_txt = new fabric.Text("Save Data", {
+			id: 'save_head',
+			fontFamily: 'Arial',
+			fontSize: 40,
+			top: -60,
+			left: 100,
+			opacity: 1
+		});
+		load_txt.set('selectable', false);
+		canvas.add(load_txt);
+		load_txt.animate('top', '40', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 1000,
+			easing:fabric.util.ease.easeInOutBack
+		});
+		var img_nodata = $('#save_data_box_nodata')[0];
+		var img = $('#save_data_box')[0];
+		if(dat.length){
+			var i = 0;
+			var top_after, left_after;
+			$.each(dat, function(index, value) {
+				top_after = 130 + (90 * (i % 5));
+				left_after = 30;
+				if(i >= 5) {
+					left_after = 420;
+				}
+				var sav_img = new fabric.Image(img, {
+					// originX: 'center',
+					// originY: 'center',
+					opacity: 1,
+					angle: 0
+				});
+				var sav_txt_1 = new fabric.Text((i+1).toString(), {
+					fontSize: 35,
+					fontWeight: 'bold',
+					fontFamily: 'Arial',
+					fill: '#0000FF',
+					stroke: '#333333',
+					strokewidth: 3,
+					opacity: 1,
+					top: 18,
+					left: 50
+				});
+				var sav_txt_2 = new fabric.Text((value.save_date).toString(), {
+					fontSize: 20,
+					fontFamily: 'Arial',
+					opacity: 1,
+					top: 40,
+					left: 140
+				});
+				var sav_obj = new fabric.Group([ sav_img, sav_txt_1, sav_txt_2 ], {
+					id: 'save_slot',
+					save_slot_id: (i+1),
+					save_data_id: value.savedata_id,
+					save_data_line_id: value.fk_line_id,
+					top: -200,
+					left: left_after
+				});
+				sav_obj.set('selectable', false);
+				canvas.add(sav_obj);
+				sav_obj.animate('top', top_after, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 1000,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				i++;
+			});
+			for(i = i ;i < 10; i++) {
+				top_after = 130 + (90 * (i % 5));
+				left_after = 30;
+				if(i >= 5) {
+					left_after = 420;
+				}
+				var sav_obj = new fabric.Image(img_nodata, {
+					id: 'save_slot',
+					save_slot_id: (i+1),
+					top: -200,
+					left: left_after,
+					opacity: 1,
+					angle: 0
+				});
+				sav_obj.set('selectable', false);
+				canvas.add(sav_obj);
+				sav_obj.animate('top', top_after, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 1000,
+					easing:fabric.util.ease.easeInOutBack
+				});
+			}
+		}
+		else {
+			// render save data group
+			var top_after = 130;
+			for(var i = 0; i < 5; i++) {
+				var ld_dat = new fabric.Image(img_nodata, {
+					id: 'save_slot',
+					save_slot_id: (i+1),
+					top: -200,
+					left: 30,
+					opacity: 0.8,
+					angle: 0
+				});
+				ld_dat.set('selectable', false);
+				canvas.add(ld_dat);
+				ld_dat.animate('top', top_after, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 1000,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				top_after+=90;
+			}
+			var top_after = 130;
+			for(i = i; i < 10; i++) {
+				var ld_dat = new fabric.Image(img_nodata, {
+					id: 'save_slot',
+					save_slot_id: (i+1),
+					top: -200,
+					left: 420,
+					opacity: 0.8,
+					angle: 0
+				});
+				ld_dat.set('selectable', false);
+				canvas.add(ld_dat);
+				ld_dat.animate('top', top_after, {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 1000,
+					easing:fabric.util.ease.easeInOutBack
+				});
+				top_after+=90;
+			}
+		}
+		// render exit button
+		var img = $('#exit_button')[0];
+		var ext_btn = new fabric.Image(img, {
+			id: 'exit_button',
+			top: -600,
+			left: 730,
+			opacity: 1,
+			angle: 0
+		});
+		ext_btn.set('selectable', false);
+		canvas.add(ext_btn);
+		ext_btn.animate('top', '10', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 1000,
+			easing:fabric.util.ease.easeInOutBack
+		});
+	});
+	
+}
+function renderLoadScreen(callback) {
 	// render background
 	var img = $('#configuration_background')[0];
 	var cfg_bg = new fabric.Image(img, {
@@ -1054,21 +1300,21 @@ function renderLoadScreen() {
 	// var img_data = "<<<";
 	// var data_details = "array of data details here";
 	// render quickload slot
-	var qld_dat = new fabric.Image(img_nodata, {
-		id: 'quickload_slot',
-		qsve_slot_id: (i+1),
-		top: -200,
-		left: 350,
-		opacity: 0.8,
-		angle: 0
-	});
-	qld_dat.set('selectable', false);
-	canvas.add(qld_dat);
-	qld_dat.animate('top', 30, {
-		onChange: canvas.renderAll.bind(canvas),
-		duration: 1000,
-		easing:fabric.util.ease.easeInOutBack
-	});
+	// var qld_dat = new fabric.Image(img_nodata, {
+	// 	id: 'quickload_slot',
+	// 	qsve_slot_id: (i+1),
+	// 	top: -200,
+	// 	left: 350,
+	// 	opacity: 0.8,
+	// 	angle: 0
+	// });
+	// qld_dat.set('selectable', false);
+	// canvas.add(qld_dat);
+	// qld_dat.animate('top', 30, {
+	// 	onChange: canvas.renderAll.bind(canvas),
+	// 	duration: 1000,
+	// 	easing:fabric.util.ease.easeInOutBack
+	// });
 	// render save data group
 	var top_after = 130;
 	for(var i = 0; i < 5; i++) {
@@ -1171,16 +1417,73 @@ function exitLoadScreen() {
 			canvas.remove(canvas.item(index_to_read));
 		}
 	});
-	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
+	setTimeout(function() {
+		if(callback) {
+			callback();
+		}
+	}, 1000);
+	// index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
+	// canvas.item(index_to_read).animate('top', '-600', {
+	// 	onChange: canvas.renderAll.bind(canvas),
+	// 	duration: 1000,
+	// 	easing: fabric.util.ease.easeInOutBack,
+	// 	onComplete: function() {
+	// 		index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
+	// 		canvas.remove(canvas.item(index_to_read));
+	// 	}
+	// });
+}
+
+function exitSaveScreen(callback) {
+	for(var i = 0; i < 10; i++) {
+		var index_to_read = getObjectIndex(canvas.getObjects(), 'save_slot_id', (i+1));
+		canvas.item(index_to_read).animate('top', '-200', {
+			onChange: canvas.renderAll.bind(canvas),
+			duration: 1000,
+			easing: fabric.util.ease.easeInOutBack,
+			onComplete: function() {
+				for(i = 0; i < 10; i++) {
+					var index_to_read = getObjectIndex(canvas.getObjects(), 'save_slot_id', (i+1));
+					canvas.remove(canvas.item(index_to_read));
+				}
+			}
+		});
+	}
+	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'save_head');
+	canvas.item(index_to_read).animate('top', '-200', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 1000,
+		easing: fabric.util.ease.easeInOutBack,
+		onComplete: function() {
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'save_head');
+			canvas.remove(canvas.item(index_to_read));
+		}
+	});
+	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
 	canvas.item(index_to_read).animate('top', '-600', {
 		onChange: canvas.renderAll.bind(canvas),
 		duration: 1000,
 		easing: fabric.util.ease.easeInOutBack,
 		onComplete: function() {
-			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
 			canvas.remove(canvas.item(index_to_read));
 		}
 	});
+	index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
+	canvas.item(index_to_read).animate('top', '-600', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 1000,
+		easing: fabric.util.ease.easeInOutBack,
+		onComplete: function() {
+			index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_background');
+			canvas.remove(canvas.item(index_to_read));
+		}
+	});
+	setTimeout(function() {
+		if(callback) {
+			callback();
+		}
+	}, 1000);
 }
 
 function renderConfigurationScreen(callback) {

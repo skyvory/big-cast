@@ -296,13 +296,38 @@ class Game extends CI_Controller {
 		$user = $this->session->userdata('user_auth');
 		$configuration_json = $this->input->post('configdata');
 		$configuration = json_decode($configuration_json, TRUE);
-		$this->fb->log($configuration);
 		$config_exist = $this->game_model->isExistUserConfiguration($user['id'], $configuration['game_id']);
 		if($config_exist) {
 			$pass = $this->game_model->updateConfiguration($configuration['fk_fonttype_id'], $configuration['text_speed'], $configuration['bgm_volume'], $configuration['voice_volume'], $configuration['sfx_volume'], $user['id'], $configuration['game_id']);
 		}
 		else {
 			$pass = $this->game_model->createConfiguration($configuration['fk_fonttype_id'], $configuration['text_speed'], $configuration['bgm_volume'], $configuration['voice_volume'], $configuration['sfx_volume'], $user['id'], $configuration['game_id']);
+		}
+	}
+	public function loadSaveData() {
+		$user = $this->session->userdata('user_auth');
+		$game = $this->session->userdata('active_game');
+		$pass = $this->game_model->getSaveData($user['id'], $game['id']);
+		$this->fb->log($pass);
+		if($pass) {
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
+		}
+	}
+	public function saveGame() {
+		$user = $this->session->userdata('user_auth');
+		$game = $this->session->userdata('active_game');
+		$line_id = $this->input->post('lineid');
+		$save_data_id = $this->input->post('saveid');
+		if($save_data_id == "new") {
+			$pass = $this->game_model->createSaveData($line_id, $user['id'], 1, $game['id']);
+		}
+		else {
+			$pass = $this->game_model->updateSaveData($save_data_id, $line_id, $user['id'], 1, $game['id']);
+		}
+		$this->fb->log($pass);
+		if($pass) {
+			echo "1";
 		}
 	}
 

@@ -161,3 +161,4 @@ To Do:
 - preload audio video only metadata on resource
 - sfx loop feature
 - use index for sequencing on gameplay
+- error handling when loading deleted line data

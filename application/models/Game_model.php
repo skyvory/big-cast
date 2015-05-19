@@ -138,5 +138,29 @@ Class Game_model extends CI_Model {
 		$exec = $this->db->update('configuration', $data);
 		return $exec;
 	}
+	function getSaveData($user_id, $project_id) {
+		$this->db->select('savedata_id, save_date, fk_line_id, fk_savedatatype_id');
+		$this->db->from('savedata');
+		$this->db->where('fk_savedatatype_id', 1);
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$this->db->limit(10);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function createSaveData($line_id, $user_id, $save_data_type_id, $project_id) {
+		$now = date("Y-m-d H:i:s");
+		$data = array('save_date' => $now, 'fk_line_id' => $line_id, 'fk_user_id' => $user_id, 'fk_savedatatype_id' => $save_data_type_id, 'fk_project_id' => $project_id);
+		$exec = $this->db->insert('savedata', $data);
+		return $exec;
+	}
+	function updateSaveData($save_data_id, $line_id, $user_id, $save_data_type_id, $project_id) {
+		$now = date("Y-m-d H:i:s");
+		$data = array('save_date' => $now, 'fk_line_id' => $line_id, 'fk_user_id' => $user_id, 'fk_savedatatype_id' => $save_data_type_id, 'fk_project_id' => $project_id);
+		$this->db->where('savedata_id', $save_data_id);
+		$exec = $this->db->update('savedata', $data);
+		return $exec;
+	}
 }
 ?>
