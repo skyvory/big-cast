@@ -259,8 +259,8 @@ class Resource extends CI_Controller {
 				$data = $this->upload->data();
 				$base_file_name = $this->trimExtension($data['orig_name']);
 				//get post data for character name, input to database only for recognition
-				$character_name = $this->input->post('charname');
-				$pass = $this->common->createVoiceResource($base_file_name, $data['file_name'], $character_name, '5', $proj['id']);
+				// $character_name = $this->input->post('charname');
+				$pass = $this->common->createVoiceResource($base_file_name, $data['file_name'], '5', $proj['id']);
 				if($pass != NULL) {
 					$info = new StdClass;
 					$info->id = $pass;
@@ -270,7 +270,7 @@ class Resource extends CI_Controller {
 					$info->url = $upload_path_url . $data['file_name'];
 					$info->error = null;
 					$info->resource_type = $resource_type;
-					$info->character_name = $character_name;
+					// $info->character_name = $character_name;
 					$files[] = $info;
 					if($this->input->is_ajax_request()){
 						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
@@ -504,10 +504,6 @@ class Resource extends CI_Controller {
 										<label for="voicename_<?php echo $value['resource_id']; ?>">Name &nbsp;</label>
 										<input type="text" id="voicename_<?php echo $value['resource_id']; ?>" name="voice_name" class="form-control input-xs" value="<?php echo $value['name']; ?>" />
 									</div>
-									<div class="form-group">
-										<label for="voicecharactername_<?php echo $value['resource_id']; ?>">Character Name &nbsp;</label>
-										<input type="text" id="voicecharactername_<?php echo $value['resource_id']; ?>" name="voice_character" class="form-control input-xs" value="<?php echo $value['character_name']; ?>" />
-									</div>
 									<input type="hidden" id="voiceid_<?php echo $value['resource_id']; ?>" name="voice_id" value="<?php echo $value['resource_id']; ?>" />
 									<button type="button" class="btn btn-primary voice-form-submit-button">Change</button>
 									<button type="button" class="btn btn-danger voice-form-delete-button">Delete</button>
@@ -520,6 +516,12 @@ class Resource extends CI_Controller {
 			}
 			echo '</tbody></table>';
 		}
+								 /*
+									<div class="form-group">
+										<label for="voicecharactername_<?php echo $value['resource_id']; ?>">Character Name &nbsp;</label>
+										<input type="text" id="voicecharactername_<?php echo $value['resource_id']; ?>" name="voice_character" class="form-control input-xs" value="<?php echo $value['character_name']; ?>" />
+									</div>
+*/
 		else if($resource_type_request == 6) {
 			$resource_data = $this->common->getVideoResource($sess['id'], $proj['id'], '6');
 			echo '<table class="table"><tbody>';
@@ -631,8 +633,8 @@ class Resource extends CI_Controller {
 	public function changeVoiceProperty() {
 		$resource_id = $this->input->post('id');
 		$name = $this->input->post('name');
-		$character_name = $this->input->post('character');
-		$pass = $this->common->updateVoiceResource($resource_id, $name, $character_name);
+		// $character_name = $this->input->post('character');
+		$pass = $this->common->updateVoiceResource($resource_id, $name);
 		if($pass) {
 			echo "1";
 		}

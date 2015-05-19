@@ -19,6 +19,6 @@
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
 		<!--script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/jquery.iframe-transport.js"></script-->
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/jquery.fileupload.js"></script>
-		<!--script type="text/javascript" src="<?= base_url() ?>assets/fabric/dist/fabric.js"></script-->
+		<!-- <script type="text/javascript" src="<?= base_url() ?>assets/fabric/dist/fabric.js"></script> -->
 	</head>
 	<body>

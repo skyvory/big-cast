@@ -105,7 +105,7 @@
 	<div class="media-body">
 		<div class="resource-property">
 			<div class="audio-player-area">
-				<audio controls>
+				<audio controls preload="none">
 					<source src="'+file.url+'">
 				</audio>
 			</div>
@@ -246,19 +246,19 @@
 						$(res).appendTo('.resource-list');
 					}
 					else if(file.resource_type == 3) {
-						var res = '<tr><td> <div class="media bgm-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/musical_note-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group bgm-form"> <label for="bgmname_'+file.id+'">Name &nbsp;</label> <input type="text" id="bgmname_'+file.id+'" name="bgm_name" class="form-control input-xs" value="'+file.name+'" /> </div> <input type="hidden" id="bgmid_'+file.id+'" name="bgm_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary bgm-form-submit-button">Change</button> <button type="button" class="btn btn-danger bgm-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
+						var res = '<tr><td> <div class="media bgm-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/musical_note-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls preload="none"> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group bgm-form"> <label for="bgmname_'+file.id+'">Name &nbsp;</label> <input type="text" id="bgmname_'+file.id+'" name="bgm_name" class="form-control input-xs" value="'+file.name+'" /> </div> <input type="hidden" id="bgmid_'+file.id+'" name="bgm_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary bgm-form-submit-button">Change</button> <button type="button" class="btn btn-danger bgm-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
 						$(res).appendTo('.resource-list table tbody');
 					}
 					else if(file.resource_type == 4) {
-						var res = '<div class="media sfx-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/Audio-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group sfx-form"> <label for="sfxname_'+file.id+'">Name &nbsp;</label> <input type="text" id="sfxname_'+file.id+'" name="sfx_name" class="form-control input-xs" value="'+file.name+'" /> </div> <input type="hidden" id="sfxid_'+file.id+'" name="sfx_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary sfx-form-submit-button">Change</button> <button type="button" class="btn btn-danger sfx-form-delete-button">Delete</button> </form> </div> </div> </div>'
+						var res = '<div class="media sfx-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/Audio-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls preload="none"> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group sfx-form"> <label for="sfxname_'+file.id+'">Name &nbsp;</label> <input type="text" id="sfxname_'+file.id+'" name="sfx_name" class="form-control input-xs" value="'+file.name+'" /> </div> <input type="hidden" id="sfxid_'+file.id+'" name="sfx_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary sfx-form-submit-button">Change</button> <button type="button" class="btn btn-danger sfx-form-delete-button">Delete</button> </form> </div> </div> </div>'
 						$(res).appendTo('.resource-list table tbody');
 					}
 					else if(file.resource_type == 5) {
-						var res = '<tr><td> <div class="media voice-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/microphone-2-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls class="audio-player"> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group"> <label for="voicename_'+file.id+'">Name &nbsp;</label> <input type="text" id="voicename_'+file.id+'" name="voice_name" class="form-control input-xs" value="'+file.name+'" /> </div> <div class="form-group"> <label for="voicecharactername_'+file.id+'">Character Name &nbsp;</label> <input type="text" id="voicecharactername_'+file.id+'" name="voicecharacter_name" class="form-control input-xs" value="'+file.character_name+'" /> </div> <input type="hidden" id="voiceid_'+file.id+'" name="voice_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary voice-form-submit-button">Change</button> <button type="button" class="btn btn-danger voice-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
+						var res = '<tr><td> <div class="media voice-media"> <div class="media-left audio-thumbnail-area"> <img src="../../../assets/images/microphone-2-512.png" class="media-object resource-thumbnail"/> </div> <div class="media-body"> <div class="resource-property"> <div class="audio-player-area"> <audio controls preload="none" class="audio-player"> <source src="'+file.url+'"> </audio> </div> <form class="form-inline audio-inline-form"> <div class="form-group"> <label for="voicename_'+file.id+'">Name &nbsp;</label> <input type="text" id="voicename_'+file.id+'" name="voice_name" class="form-control input-xs" value="'+file.name+'" /> </div> <div class="form-group"><input type="hidden" id="voiceid_'+file.id+'" name="voice_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary voice-form-submit-button">Change</button> <button type="button" class="btn btn-danger voice-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
 						$(res).appendTo('.resource-list table tbody');
 					}
 					else if(file.resource_type == 6) {
-						var res = '<tr><td> <div class="media video-media"> <div class="media-left video-player-area"> <video controls width="300" height="225" class="video-player"> <source src="'+file.url+'"> </video> </div> <div class="media-body media-middle"> <div class="resource-property"> <form class="form-inline"> <div class="form-group"> <label for="videoname_'+file.id+'">Name &nbsp;</label> <input type="text" id="videoname_'+file.id+'" name="video_name" class="form-control input-sm" value="'+file.name+'" /> </div> <input type="hidden" id="videoid_'+file.id+'" name="video_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary video-form-submit-button">Change</button> <button type="button" class="btn btn-danger video-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
+						var res = '<tr><td> <div class="media video-media"> <div class="media-left video-player-area"> <video controls width="300" height="225" class="video-player"> <video src="'+file.url+'"> </video> </div> <div class="media-body media-middle"> <div class="resource-property"> <form class="form-inline"> <div class="form-group"> <label for="videoname_'+file.id+'">Name &nbsp;</label> <input type="text" id="videoname_'+file.id+'" name="video_name" class="form-control input-sm" value="'+file.name+'" /> </div> <input type="hidden" id="videoid_'+file.id+'" name="video_id" value="'+file.id+'" /> <button type="button" class="btn btn-primary video-form-submit-button">Change</button> <button type="button" class="btn btn-danger video-form-delete-button">Delete</button> </form> </div> </div> </div> </td></tr>'
 						$(res).appendTo('.resource-list table tbody');
 					}
 				});
@@ -285,12 +285,12 @@
 					figname: figname_input.val()
 				};
 			}
-			else if(restype_input.val() == 5) {
-				data.formData = {
-					restype: restype_input.val(),
-					charname: charname_input.val()
-				};
-			}
+			// else if(restype_input.val() == 5) {
+			// 	data.formData = {
+			// 		restype: restype_input.val(),
+			// 		charname: charname_input.val()
+			// 	};
+			// }
 			else {
 				data.formData = {restype: restype_input.val()};
 			}
@@ -521,11 +521,12 @@
 		var selectform = this.form;
 		var voi_id = $(selectform).find('[name=voice_id]').val();
 		var voi_name = $(selectform).find('[name=voice_name]').val();
-		var voi_character = $(selectform).find('[name=voice_character]').val();
+		// var voi_character = $(selectform).find('[name=voice_character]').val();
 		var req = $.ajax({
 			url: config.base+"index.php/resource/changeVoiceProperty",
 			type: "POST",
-			data: {id: voi_id, name: voi_name, character: voi_character},
+			// data: {id: voi_id, name: voi_name, character: voi_character},
+			data: {id: voi_id, name: voi_name},
 			dataType: "html",
 			beforeSend: function() {
 				//placeholder
@@ -533,8 +534,8 @@
 		});
 		req.done(function(msg) {
 			if(msg == 1) {
-				$('#voicename_' + voice_id).css("background", "#FFFFFF");
-				$('#voicecharactername_' + voice_id).css("background", "#FFFFFF");
+				$('#voicename_' + voi_id).css("background", "#FFFFFF");
+				// $('#voicecharactername_' + voice_id).css("background", "#FFFFFF");
 				var not = '<div class="alert alert-success resourcechange-notification">Change saved!</div>';
 				$('#notification').append(not).hide().fadeIn();
 				window.setTimeout(function() {
@@ -603,16 +604,16 @@
 		});
 		//append additional form for sprite upload
 		if(type == 1) {
-			var html2append = '<label for="charactername">Character name</label><input type="text" id="charactername" name="character_name" value="akio" /> <label for="figurename">Pose name</label><input type="text" id="figurename" name="figure_name" value="standing" />';
+			var html2append = '<div class="row"><div class="col-md-10 sprite-input-append"><form class="form-inline"><label for="charactername">Character name</label> <input type="text" id="charactername" name="character_name" value="akio" /> <label for="figurename">Pose name</label> <input type="text" id="figurename" name="figure_name" value="standing" /></form></div></div>';
 			// $(html2append).appendTo('.resource-preinput');
 			$('.resource-preinput').html(html2append);
 		}
 		//append additional form for voice upload
-		else if(type == 5) {
-			var html2append = '<label for="charactername">Character name</label><input type="text" id="charactername" name="character_name" value="ageha" />';
-			// $(html2append).appendTo('.resource-preinput');
-			$('.resource-preinput').html(html2append);
-		}
+		// else if(type == 5) {
+		// 	var html2append = '<label for="charactername">Character name</label><input type="text" id="charactername" name="character_name" value="ageha" />';
+		// 	// $(html2append).appendTo('.resource-preinput');
+		// 	$('.resource-preinput').html(html2append);
+		// }
 		else {
 			$('.resource-preinput').html('');
 		}
@@ -945,5 +946,8 @@
 		-o-transition: all 0.3s ease-out;
 		transition: all 0.3s ease-out;
 		opacity: 1;
+	}
+	.sprite-input-append {
+		margin: 10px;
 	}
 </style>

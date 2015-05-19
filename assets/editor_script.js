@@ -2119,8 +2119,13 @@ $('.sprite-list').on('mouseover', 'input[name=effect]', function() {
 	$(this).tooltip('show');
 });
 
+
+var canvas = new fabric.Canvas('preview');
+canvas.selection = false;
+
 var canvasdisplay = document.getElementsByTagName('canvas')[0];
 canvasdisplay.width = 800;
 canvasdisplay.height = 600;
 canvasdisplay.style.width  = '240px';
 canvasdisplay.style.height = '180px';
+

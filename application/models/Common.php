@@ -167,8 +167,8 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
-	function createVoiceResource($name, $file_name, $character_name, $resource_type_id, $project_id) {
-		$data = array('name' => $name, 'file_name' => $file_name, 'character_name' => $character_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
+	function createVoiceResource($name, $file_name, $resource_type_id, $project_id) {
+		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);
 		$exec = $this->db->insert('resource',$data);
 		$insert_id = $this->db->insert_id();
 		if($exec) {
@@ -189,8 +189,14 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
-	function updateVoiceResource($resource_id, $name, $character_name) {
-		$data = array('name' => $name, 'character_name' => $character_name);
+	// function updateVoiceResource($resource_id, $name, $character_name) {
+	// 	$data = array('name' => $name, 'character_name' => $character_name);
+	// 	$this->db->where('resource_id', $resource_id);
+	// 	$exec = $this->db->update('resource', $data);
+	// 	return $exec;
+	// }
+	function updateVoiceResource($resource_id, $name) {
+		$data = array('name' => $name);
 		$this->db->where('resource_id', $resource_id);
 		$exec = $this->db->update('resource', $data);
 		return $exec;
