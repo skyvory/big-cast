@@ -938,7 +938,7 @@ canvas.on('mouse:down', function(options) {
 			}
 		}
 		else {
-			switch(options.targer.id) {
+			switch(options.target.id) {
 				//copy from play
 			}
 		}
@@ -2208,6 +2208,158 @@ function renderNextLine(callback) {
 								else {
 									// if new sprite
 									var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
+									if(value.fk_effect_id == 1) {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: (value.position_y * 100),
+											left: (value.position_x * 100),
+											opacity: 1
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+									}
+									else if(value.fk_effect_id == 5) {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: (value.position_y * 100),
+											left: -1000,
+											opacity: 1
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+										spr.animate('left', (value.position_x * 100), {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 1000
+										});
+									}
+									else if(value.fk_effect_id == 7) {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: (value.position_y * 100),
+											left: 1000,
+											opacity: 1
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+										spr.animate('left', (value.position_x * 100), {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 1000
+										});
+									}
+									else if(value.fk_effect_id == 9) {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: -800,
+											left: (value.position_x * 100),
+											opacity: 1
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+										spr.animate('top', (value.position_y * 100), {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 1000
+										});
+									}
+									else if(value.fk_effect_id == 11) {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: 800,
+											left: (value.position_x * 100),
+											opacity: 1
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+										spr.animate('top', (value.position_y * 100), {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 1000
+										});
+									}
+									else {
+										var spr = new fabric.Image(img, {
+											line_sprite_resource_id: value.sprite_resource_id,
+											top: (value.position_y * 100),
+											left: (value.position_x * 100),
+											opacity: 0
+										});
+										spr.set('selectable', false);
+										canvas.add(spr);
+										spr.animate('opacity', '1', {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 500
+										});
+									}
+								}
+							}
+							// if prev text line has NO sprite
+							else {
+								var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
+								if(value.fk_effect_id == 1) {
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: (value.position_y * 100),
+										left: (value.position_x * 100),
+										opacity: 1
+									});
+									spr.set('selectable', false);
+									canvas.add(spr);
+								}
+								else if(value.fk_effect_id == 5) {
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: (value.position_y * 100),
+										left: -1000,
+										opacity: 1
+									});
+									spr.set('selectable', false);
+									canvas.add(spr);
+									spr.animate('left', (value.position_x * 100), {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 1000
+									});
+								}
+								else if(value.fk_effect_id == 7) {
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: (value.position_y * 100),
+										left: 1000,
+										opacity: 1
+									});
+									spr.set('selectable', false);
+									canvas.add(spr);
+									spr.animate('left', (value.position_x * 100), {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 1000
+									});
+								}
+								else if(value.fk_effect_id == 9) {
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: -800,
+										left: (value.position_x * 100),
+										opacity: 1
+									});
+									spr.set('selectable', false);
+									canvas.add(spr);
+									spr.animate('top', (value.position_y * 100), {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 1000
+									});
+								}
+								else if(value.fk_effect_id == 11) {
+									var spr = new fabric.Image(img, {
+										line_sprite_resource_id: value.sprite_resource_id,
+										top: 800,
+										left: (value.position_x * 100),
+										opacity: 1
+									});
+									spr.set('selectable', false);
+									canvas.add(spr);
+									spr.animate('top', (value.position_y * 100), {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 1000
+									});
+								}
+								else {
 									var spr = new fabric.Image(img, {
 										line_sprite_resource_id: value.sprite_resource_id,
 										top: (value.position_y * 100),
@@ -2215,7 +2367,6 @@ function renderNextLine(callback) {
 										opacity: 0
 									});
 									spr.set('selectable', false);
-									// get 
 									canvas.add(spr);
 									spr.animate('opacity', '1', {
 										onChange: canvas.renderAll.bind(canvas),
@@ -2223,56 +2374,132 @@ function renderNextLine(callback) {
 									});
 								}
 							}
-							// if prev text line has NO sprite
-							else {
-								var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
-								var spr = new fabric.Image(img, {
-									line_sprite_resource_id: value.sprite_resource_id,
-									top: (value.position_y * 100),
-									left: (value.position_x * 100),
-									opacity: 0
-								});
-								spr.set('selectable', false);
-								canvas.add(spr);
-								spr.animate('opacity', '1', {
-									onChange: canvas.renderAll.bind(canvas),
-									duration: 500
-								});
-							}
 						});
 						// remove previous unneeded sprites
 						$.each(sprite_to_remove, function(index, value) {
 							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 							var spr = canvas.item(canvas_index);
-							spr.animate('opacity', '0', {
-								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
-								onComplete: function() {
-									$.each(sprite_to_remove, function(j_index, j_value) {
-										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', j_value.sprite_resource_id);
-										canvas.remove(canvas.item(canvas_index));
-									});
-								}
-							});
+							if(value.fk_effect_id == 1) {
+								var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+								canvas.remove(canvas.item(canvas_index));
+							}
+							else if(value.fk_effect_id == 6) {
+								spr.animate('left', '-1000', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 1000,
+									onComplete: function() {
+											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											canvas.remove(canvas.item(canvas_index));
+									}
+								});
+							}
+							else if(value.fk_effect_id == 8) {
+								spr.animate('left', '1000', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 1000,
+									onComplete: function() {
+											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											canvas.remove(canvas.item(canvas_index));
+									}
+								});
+							}
+							else if(value.fk_effect_id == 10) {
+								spr.animate('top', '-800', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 1000,
+									onComplete: function() {
+											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											canvas.remove(canvas.item(canvas_index));
+									}
+								});
+							}
+							else if(value.fk_effect_id == 12) {
+								spr.animate('top', '800', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 1000,
+									onComplete: function() {
+											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											canvas.remove(canvas.item(canvas_index));
+									}
+								});
+							}
+							else {
+								spr.animate('opacity', '0', {
+									onChange: canvas.renderAll.bind(canvas),
+									duration: 500,
+									onComplete: function() {
+										// $.each(sprite_to_remove, function(j_index, j_value) {
+											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+											canvas.remove(canvas.item(canvas_index));
+										// });
+									}
+								});
+							}
 						});
 					}
 					
 				}
+				// if no sprite on current line
 				else {
 					$.each(line[prev_index_to_read].sprite, function(index, value) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 						var spr = canvas.item(canvas_index);
-						spr.animate('opacity', '0', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 500,
-							onComplete: function() {
-								// repeat get index because canvas index value would change after each and result in wrong index, since function is executed after completion of transition
-								canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
-								canvas.remove(canvas.item(canvas_index));
-							}
-						});
+						if(value.fk_effect_id == 1) {
+							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+							canvas.remove(canvas.item(canvas_index));
+						}
+						else if(value.fk_effect_id == 6) {
+							spr.animate('left', '-1000', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000,
+								onComplete: function() {
+										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+										canvas.remove(canvas.item(canvas_index));
+								}
+							});
+						}
+						else if(value.fk_effect_id == 8) {
+							spr.animate('left', '1000', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000,
+								onComplete: function() {
+										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+										canvas.remove(canvas.item(canvas_index));
+								}
+							});
+						}
+						else if(value.fk_effect_id == 10) {
+							spr.animate('top', '-800', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000,
+								onComplete: function() {
+										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+										canvas.remove(canvas.item(canvas_index));
+								}
+							});
+						}
+						else if(value.fk_effect_id == 12) {
+							spr.animate('top', '800', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 1000,
+								onComplete: function() {
+										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+										canvas.remove(canvas.item(canvas_index));
+								}
+							});
+						}
+						else {
+							spr.animate('opacity', '0', {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 500,
+								onComplete: function() {
+									// repeat get index because canvas index value would change after each and result in wrong index, since function is executed after completion of transition
+									canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+									canvas.remove(canvas.item(canvas_index));
+								}
+							});
+						}
 					});
-
 				}
 			// }
 			// readjust game interface to original position after render

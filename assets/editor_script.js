@@ -2114,7 +2114,8 @@ $('.sprite-list').on('mouseover', 'input[name=position_z]', function() {
 
 $('.sprite-list').on('mouseover', 'input[name=effect]', function() {
 	$(this).tooltip({
-		title: "transition effect"
+		title: "transition default to fade in/out and crossfade",
+		html: true
 	});
 	$(this).tooltip('show');
 });
@@ -2134,6 +2135,5 @@ $('.line-list').on('click', '.line-project-button', function(e) {
 	e.preventDefault();
 	var seq = $(this.form).find('input[name=sequence]').val();
 	index_to_read = getObjectIndex(line_obj, 'sequence', seq);
-	//>>>
 	console.log(this.form);
 })
