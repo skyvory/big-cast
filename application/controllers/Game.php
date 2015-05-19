@@ -330,6 +330,14 @@ class Game extends CI_Controller {
 			echo "1";
 		}
 	}
+	public function getSequenceById() {
+		$game = $this->session->userdata('active_game');
+		$line_id = $this->input->post('lineid');
+		$pass = $this->game_model->getLineSequence($line_id);
+		if($pass) {
+			echo $pass;
+		}
+	}
 
 }
 
