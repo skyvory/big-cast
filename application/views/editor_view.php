@@ -18,7 +18,7 @@
 						<div class="radio">
 							<label>
 								<input type="radio" name="line_insert_position" value="after" />
-									<span title="you can select line by pointing you mouse on that line" />after selected line</span>
+									<span title="you can select line by pointing your mouse on that line" />after selected line</span>
 							</label>
 							<label>
 								<input type="radio" name="line_insert_position" value="end" checked  />
@@ -61,7 +61,7 @@
 					</div>
 				</div>
 			</div> -->
-			<div class="row" style="position:fixed; z-index: 10; margin: 0 auto; width: 50%;">
+			<div class="row draggable" style="position:fixed; z-index: 10; margin: 0 auto; width: 50%;">
 				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;">
 					<div class="pagination-area">
 							<div class="btn-group">
@@ -83,6 +83,7 @@
 								<button id="nextpagebutton" class="btn btn-default">next <span class="glyphicon glyphicon-forward"></span></button>
 								<button id="lastpagebutton" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="go to last page"><span class="glyphicon glyphicon-step-forward"></span> </button>
 							</div>
+							<button type="button" class="btn btn-default collapse-all-button" data-toggle="tooltip" data-placement="bottom" title="collapse all details"><span class="glyphicon glyphicon-menu-hamburger"></span> </button>
 							<form class="form-inline pull-right" style="display:inline-block; width:30%;">
 								<div class="form-group">
 									<div class="input-group" data-toggle="tooltip" data-placement="bottom" title="load lines by label">

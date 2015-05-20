@@ -226,3 +226,6 @@ table td {
 .no-line {
 	padding: 10px 20px;
 }
+.collapse-all-button {
+	margin: 0 10px 0 30px;
+}

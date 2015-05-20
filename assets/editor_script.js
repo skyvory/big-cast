@@ -730,6 +730,11 @@ $('.line-list').on('click', '.line-collapse-button', function(e) {
 	var element = $(this.form).find('.collapse');
 	element.collapse('toggle');
 });
+$('.pagination-area').on('click', '.collapse-all-button', function(e) {
+	e.preventDefault();
+	var element = $('.line-list .collapse');
+	element.collapse('toggle');
+});
 
 //show sprite management area on text line hover
 $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function() {
