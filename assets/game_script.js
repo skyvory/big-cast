@@ -3245,7 +3245,7 @@ function renderNextLine(callback) {
 				playSfx(path_to_sfx);
 			}
 			else{
-				stopVoice();
+				stopSfx();
 			}
 			var voice_id = line[current.sequence].voice_resource_id;
 			if(voice_id.length) {
@@ -3262,10 +3262,10 @@ function renderNextLine(callback) {
 			}
 		}
 
-		renderSpeaker();
 		// console.log(line[current.sequence].content);
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		renderLineText(line[current.sequence].content);
+		renderSpeaker();
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 
 	}
@@ -3679,12 +3679,20 @@ function stopBgm() {
 
 function stopVoice() {
 	var voice = $('#voice_play')[0];
-	voice.pause();
-	voice.currentTime = 0;
-	game.status.voice = "idle";
+	if(voice.pused) {
+		voice.pause();
+		voice.currentTime = 0;
+		game.status.voice = "idle";
+	}
 }
 
-
+function stopSfx() {
+	var sfx = $('#sfx_play')[0];
+	if(sfx.pused) {
+		sfx.pause();
+		sfx.currentTime = 0;
+	}
+}
 
 function playSfx(source) {
 	var sfx = $('#sfx_play')[0];
