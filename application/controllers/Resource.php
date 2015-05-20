@@ -19,7 +19,7 @@ class Resource extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
-		$data['sess'] = $this->session->userdata('user_auth');
+		$data['user'] = $this->session->userdata('user_auth');
 		$head['title'] = "Resource";
 
 		$this->load->vars($data);
@@ -32,7 +32,7 @@ class Resource extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
-		$data['sess'] = $this->session->userdata('user_auth');
+		$data['user'] = $this->session->userdata('user_auth');
 		$head['title'] = "Resource";
 
 		$this->load->vars($data);
@@ -126,9 +126,11 @@ class Resource extends CI_Controller {
 				$this->fb->log($this->upload->display_errors());
 			}
 			else{
+				$this->fb->log($sess['id']);
+				$this->fb->log($proj['id']);
 				$data = $this->upload->data();
 				//config for image resize
-				$config['image_library'] = 'ImageMagick';
+				// $config['image_library'] = 'ImageMagick';
 				$config['source_image'] = $data['full_path'];
 				$config['new_image'] =  FCPATH . $path_to_project . 'background/thumbs/';
 				$config['maintain_ratio'] = TRUE;
