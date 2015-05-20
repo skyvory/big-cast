@@ -42,12 +42,14 @@ Class Common extends CI_Model {
 		$data = array('title' => $title, 'created_date' => $now, 'fk_user_id' => $user_id, 'fk_projectstatus_id' => 1);
 		$exec =  $this->db->insert('project', $data);
 		$insert_id = $this->db->insert_id();
-		if($exec) {
-			return $insert_id;
-		}
-		else {
-			return FALSE;
-		}
+
+		$this->db->select('*, projectstatus.name as status');
+		$this->db->from('project');
+		$this->db->where('project_id', $insert_id);
+		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
 	}
 	function getUserProject($user_id) {
 		$this->db->select('*, projectstatus.name as status');

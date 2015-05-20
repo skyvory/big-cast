@@ -17,19 +17,15 @@
 				<li class=""><a href="<?php echo base_url(); ?>index.php/home">Home <span class="sr-only">(current)</span></a></li>
 				<li><a href="<?php echo base_url(); ?>index.php/project">Project</a></li>
 				<li><a href="<?php echo base_url(); ?>index.php/release">Release</a></li>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" area-expanded="false">Other <span class="caret"></span></a>
+				
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown pull-right">
+					<a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown" role="button" area-expanded="false"><?php echo $sess['user']; ?>&nbsp; &nbsp;<span class="glyphicon glyphicon-user"></span> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="<?php echo base_url(); ?>index.php/resource">Resource Control</a></li>
-						<li><a href="#">Magic</a></li>
+						<li><a href="<?php echo base_url(); ?>index.php/login/logout">Log Out</a></li>
 					</ul>
 				</li>
-			</ul>
-			<ul class="navbar-right navi" >
-				<a class="navi-main"><?php echo $sess['user']; ?></a>
-				<li class="n1"><a href="<?php echo base_url(); ?>index.php/profile">Profile</a></li>
-				<li class="n2"><a href="<?php echo base_url(); ?>index.php/setting">Setting</a></li>
-				<li class="n3"><a href="<?php echo base_url(); ?>index.php/login/logout">Log Out</a></li>
 			</ul>
 		</div>
 	</div>
@@ -58,7 +54,7 @@
 		opacity: 0.5;
 	}
 
-	.n1 a, .n2 a, .n3 a {
+	/*.n1 a, .n2 a, .n3 a {
 		display: block;
 		text-decoration: none;
 		width: 100%;
@@ -162,5 +158,9 @@
 		-webkit-transition-delay: 0.8s;
 		-o-transition-delay: 0.8s;
 		transition-delay: 0.8s;
+	}*/
+	.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus{
+	    /*color: rgba(255, 255, 255, 0.1);*/
+	    background-color: rgba(255, 255, 255, 0.2);
 	}
 </style>

@@ -32,100 +32,78 @@ class Project extends CI_Controller {
 	}
 
 	public function newProject() {
-		if($this->input->is_ajax_request()) {
-			$sess = $this->session->userdata('user_auth');
-			$title = $this->input->post('title');
-			if(!empty($title)) {
-				$new = $this->common->createProject($title, $sess['id']);
-				//new would hold project_id if success
-				if($new != NULL) {
-					$path_to_resource = './resources/';
-					$new_directory = $path_to_resource . '/' . $sess['id'] . '/' . $new . '/';
-					if(!is_dir($new_directory)) {
-						mkdir($new_directory, 777);
-						//make each type of resource and their thumbs directory
-						mkdir($new_directory . 'background/', 777);
-						mkdir($new_directory . 'background/thumbs/', 777);
-						mkdir($new_directory . 'sprite/', 777);
-						mkdir($new_directory . 'sprite/thumbs/', 777);
-						mkdir($new_directory . 'bgm/', 777);
-						mkdir($new_directory . 'voice/', 777);
-						mkdir($new_directory . 'sfx/', 777);
-						mkdir($new_directory . 'video/', 777);
-					}
-					echo "success";
+		$user = $this->session->userdata('user_auth');
+		$title = $this->input->post('title');
+		$description = $this->input->post('description');
+		if(!empty($title)) {
+			$pass = $this->common->createProject($title, $user['id']);
+			if($pass) {
+				$path_to_resource = './resources/';
+				$new_directory = $path_to_resource . '/' . $user['id'] . '/' . $pass['project_id'] . '/';
+				if(!is_dir($new_directory)) {
+					mkdir($new_directory, 777);
+					//make each type of resource and their thumbs directory
+					mkdir($new_directory . 'background/', 777);
+					mkdir($new_directory . 'background/thumbs/', 777);
+					mkdir($new_directory . 'sprite/', 777);
+					mkdir($new_directory . 'sprite/thumbs/', 777);
+					mkdir($new_directory . 'bgm/', 777);
+					mkdir($new_directory . 'voice/', 777);
+					mkdir($new_directory . 'sfx/', 777);
+					mkdir($new_directory . 'video/', 777);
 				}
+				$project = array(
+					'project_id' =>utf8_encode($pass['project_id']),
+					'title' =>utf8_encode($pass['title']),
+					'description' =>utf8_encode($pass['description']),
+					'cover' =>utf8_encode($pass['cover']),
+					'created_date' =>utf8_encode($pass['created_date']),
+					'updated_date' =>utf8_encode($pass['updated_date']),
+					'fk_user_id' =>utf8_encode($pass['fk_user_id']),
+					'ststus' =>utf8_encode($pass['ststus'])
+				);
+				$this->set_content_type('application/json');
+				$this->output->set_output(json_encode($project, JSON_PRETTY_PRINT));
 			}
-		}
-		else {
-			exit('No direct script access allowed');
 		}
 	}
 
-	// for function testing!
-	public function alpha() {
-		$sess = $this->session->userdata('user_auth');
+	// // for function testing!
+	// public function alpha() {
+	// 	$sess = $this->session->userdata('user_auth');
 		
-		$new = 1;
-		//new would hold project_id if success
-		if($new != NULL) {
-			$path_to_resource = './resources/';
-			$new_directory = $path_to_resource . '/' . $sess['id'] . '/' . $new . '/';
-			if(is_dir($new_directory)) {
-				mkdir($new_directory, 777);
-				mkdir($new_directory . 'background/', 777);
-				mkdir($new_directory . 'background/thumbs/', 777);
-				mkdir($new_directory . 'sprite/', 777);
-				mkdir($new_directory . 'sprite/thumbs/', 777);
-				mkdir($new_directory . 'bgm/', 777);
-				mkdir($new_directory . 'bgm/thumbs/', 777);
-				mkdir($new_directory . 'voice/', 777);
-				mkdir($new_directory . 'voice/thumbs/', 777);
-				mkdir($new_directory . 'sfx/', 777);
-				mkdir($new_directory . 'sfx/thumbs/', 777);
-				mkdir($new_directory . 'video/', 777);
-				mkdir($new_directory . 'video/thumbs/', 777);
-			}
-			echo "success";
-		}
+	// 	$new = 1;
+	// 	//new would hold project_id if success
+	// 	if($new != NULL) {
+	// 		$path_to_resource = './resources/';
+	// 		$new_directory = $path_to_resource . '/' . $sess['id'] . '/' . $new . '/';
+	// 		if(is_dir($new_directory)) {
+	// 			mkdir($new_directory, 777);
+	// 			mkdir($new_directory . 'background/', 777);
+	// 			mkdir($new_directory . 'background/thumbs/', 777);
+	// 			mkdir($new_directory . 'sprite/', 777);
+	// 			mkdir($new_directory . 'sprite/thumbs/', 777);
+	// 			mkdir($new_directory . 'bgm/', 777);
+	// 			mkdir($new_directory . 'bgm/thumbs/', 777);
+	// 			mkdir($new_directory . 'voice/', 777);
+	// 			mkdir($new_directory . 'voice/thumbs/', 777);
+	// 			mkdir($new_directory . 'sfx/', 777);
+	// 			mkdir($new_directory . 'sfx/thumbs/', 777);
+	// 			mkdir($new_directory . 'video/', 777);
+	// 			mkdir($new_directory . 'video/thumbs/', 777);
+	// 		}
+	// 		echo "success";
+	// 	}
 	
-	}
+	// }
 
 	public function loadProject() {
 		$this->load->helper('url');
 		$sess = $this->session->userdata('user_auth');
 		$project_data = $this->common->getUserProject($sess['id']);
-		foreach ($project_data as $value) {
-			?>
-				<div class="media" style="background-color: #ddd; margin: 10px 20px; padding: 10px;">
-					<div class="media-left">
-					<!-- directory: reource/(user id)/(project id)/(filename) -->
-						<img src="../resources/<?php echo $sess['id']; ?>/<?php echo $value['project_id']; ?>/<?php echo $value['cover']; ?>" class="media-object project-cover" />
-					</div>
-					<div class="media-body" style="margin: 15px;">
-						<div class="project-title">
-							<h3 class="media-heading"><?php echo $value['title']; ?></h3>
-						</div>
-						<div>
-							<dl class="dl-horizontal" style="margin-left:-50px;">
-							<dt>Description: </dt>
-							<dd><?php echo $value['description']; ?></dd>
-							<dt>Created: </dt>
-							<dd><?php echo $value['created_date']; ?></dd>
-							<dt>Last update: </dt>
-							<dd><?php echo $value['updated_date']; ?></dd>
-							<dt>Status: </dt>
-							<dd><?php echo $value['status']; ?></dd>
-							</dl>
-						</div>
-						<div class="project-action pull-right">
-							<a href="<?php echo base_url(); ?>index.php/project/resource/<?php echo $value['project_id']; ?>" class="btn btn-warning">Resource Editor</a>
-							<a href="<?php echo base_url(); ?>index.php/project/editor/<?php echo $value['project_id']; ?>" class="btn btn-warning">VN Editor</a>
-							<a href="<?php echo base_url(); ?>index.php/game/play/<?php echo $value['project_id']; ?>" class="btn btn-default <?php if($value['fk_projectstatus_id']!=2) echo "disabled"; ?>">Play</a>
-						</div>
-					</div>
-				</div>
-			<?php
+		if($project_data) {
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($project_data, JSON_PRETTY_PRINT));
 		}
 	}
 

@@ -1,4 +1,7 @@
-<div class="container-fluid" style="margin: 30px 10px 20px">
+<div class="container-fluid">
+	<div class="page-header">
+		<h2>My Project</h2>
+	</div>
 	<div id="notification">
 	</div>
 	<div class="row">
@@ -19,6 +22,10 @@
 									<label for="title" class="control-label">Title</label>
 									<input type="text" id="title" name="title" class="form-control">
 								</div>
+								<div class="form-group">
+									<label for="description" class="control-label">Description</label>
+									<input type="text" id="description" name="description" class="form-control">
+								</div>
 							</form>
 						</div>
 						<div class="modal-footer">
@@ -34,115 +41,53 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="row" style="margin-top: 15px;">
 		<div class="col-md-9">
 			<span class="request-loading request-loading-projectlist" style="">
 				<img src="../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
 			</span>
 			<div class="project-list">
-				
+
+
+
+<!-- 			
+ <div class="media" style="background-color: #ddd; margin: 10px 20px; padding: 10px;">
+	<div class="media-left">
+		<img src="../resources/'+value.fk_user_id+'/'+value.project_id+'/'+value.cover+'" class="media-object project-cover" />
+	</div>
+	<div class="media-body" style="margin: 15px;">
+		<div class="project-title">
+			<h3 class="media-heading">'+value.title+'</h3>
+		</div>
+		<div>
+			<dl class="dl-horizontal" style="margin-left:-50px;">
+			<dt>Description: </dt>
+			<dd>'+value.description+'</dd>
+			<dt>Created: </dt>
+			<dd>'+value.created_date+'</dd>
+			<dt>Last update: </dt>
+			<dd>'+value.updated_date+'</dd>
+			<dt>Status: </dt>
+			<dd>'+value.status+'</dd>
+			</dl>
+		</div>
+		<div class="project-action pull-right">
+			<a href="'+config.base+'index.php/project/setting/'+value.project_id+'" class="btn btn-default">Setting</a>
+			<a href="'+config.base+'index.php/project/resource/'+value.project_id+'" class="btn btn-warning">Resource Editor</a>
+			<a href="'+bconfig.base+'index.php/project/editor/'+value.project_id+'" class="btn btn-warning">VN Editor</a>
+			<a href="'+bconfig.base+'index.php/game/play/'+value.project_id+'" class="btn btn-info ?>">Play</a>
+		</div>
+	</div>
+</div>
+ -->
+
+
+
+
 			</div>
 		</div>
 	</div>
 						
 </div>
 
-<style type="text/css">
-	.request-loading {
-		display:none;
-		position: relative;
-		opacity: 0.8;
-		color: #333;
-	}
-	.project-cover {
-		width: 200px;
-		height: 150px;
-	}
-	.newproject-notification {
-		position: fixed;
-		z-index: 3;
-		top: 15%;
-		right: 5%;
-	}
-</style>
-
-<script type="text/javascript">
-	$('#newprojectbutton').click(function() {
-		$('#newprojectmodal').modal('show');
-	})
-	$('.modal-dialog').draggable({
-		//handle: ".modal-header"
-	});
-	$('#newprojectsubmit').click(function() {
-		var ttl = $('#title').val();
-		if(ttl == '') {
-			alert("must not empty");
-		}
-		var req = $.ajax({
-			url: config.base+"index.php/project/newProject",
-			type: "POST",
-			data: {title: ttl},
-			dataType: "html",
-			beforeSend: function() {
-				$('.request-loading-newproject').show();
-			}
-		});
-		req.done(function(msg) {
-			$('.request-loading-newproject').hide();
-			if(!msg) {
-				$('#newprojectmodal').modal('hide');
-				var not = '<div class="alert alert-danger newproject-notification">Failed to create new project!</div>';
-				$('#notification').append(not).hide().fadeIn();
-				window.setTimeout(function() {
-					$('.newproject-notification').fadeTo(500, 0, function() {
-						$(this).remove();
-					});
-				}, 5000);
-			}
-			else {
-				$('#newprojectmodal').modal('hide');
-				var not = '<div class="alert alert-success newproject-notification">New project successfully created!</div>';
-				$('#notification').append(not).hide().fadeIn();
-				window.setTimeout(function() {
-					$('.newproject-notification').fadeTo(500, 0, function() {
-						$(this).remove();
-					});
-				}, 5000);
-			}
-		});
-		req.fail(function(jqXHR, textStatus, errorThrown) {
-			if (jqXHR.status === 0) {
-				console.log('Not connected.\n Verify Network.');
-			} else if (jqXHR.status == 404) {
-				console.log('Requested page not found. [404]');
-			} else if (jqXHR.status == 500) {
-				console.log('Internal Server Error [500].');
-			} else if (exception === 'parsererror') {
-				console.log('Requested JSON parse failed.');
-			} else if (exception === 'timeout') {
-				console.log('Time out error.');
-			} else if (exception === 'abort') {
-				console.log('Ajax request aborted.');
-			} else {
-				console.log('Uncaught Error.\n' + jqXHR.responseText);
-			}
-		});
-		$('#title').val('');
-	});
-	
-	function callProjectList() {
-		var req = $.ajax({
-			url: config.base + "index.php/project/loadProject",
-			type: "POST",
-			dataType: "html",
-			beforeSend: function() {
-				$('.request-loading-projectlist').show();
-			}
-		});
-		req.done(function(msg) {
-			$('.request-loading-projectlist').hide();
-			$('.project-list').html(msg);
-		})
-	}
-	$(document).ready( callProjectList );
-</script>

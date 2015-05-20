@@ -17,5 +17,24 @@
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/jquery-ui.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/project_script.js" async></script>
+		<style type="text/css">
+			.request-loading {
+				display:none;
+				position: relative;
+				opacity: 0.8;
+				color: #333;
+			}
+			.project-cover {
+				width: 200px;
+				height: 150px;
+			}
+			.newproject-notification {
+				position: fixed;
+				z-index: 3;
+				top: 15%;
+				right: 5%;
+			}
+		</style>
 	</head>
 	<body>
