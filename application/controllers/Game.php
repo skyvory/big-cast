@@ -308,11 +308,10 @@ class Game extends CI_Controller {
 		$user = $this->session->userdata('user_auth');
 		$game = $this->session->userdata('active_game');
 		$pass = $this->game_model->getSaveData($user['id'], $game['id']);
-		$this->fb->log($pass);
-		if($pass) {
+		// if($pass) {
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
-		}
+		// }
 	}
 	public function saveGame() {
 		$user = $this->session->userdata('user_auth');

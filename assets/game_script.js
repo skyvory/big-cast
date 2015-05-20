@@ -1453,171 +1453,170 @@ function renderLoadScreen(callback) {
 		type: 'POST',
 		dataType: 'json'
 	});
-	req.done(function(msg) {
-		var dat = msg;
-		var img = $('#configuration_background')[0];
-		var cfg_bg = new fabric.Image(img, {
-			id: 'configuration_background',
-			top: -600,
-			left: 0,
-			opacity: 1,
-			angle: 0
-		});
-		cfg_bg.set('selectable', false);
-		canvas.add(cfg_bg);
-		cfg_bg.animate('top', '0', {
-			onChange: canvas.renderAll.bind(canvas),
-			duration: 1000,
-			easing:fabric.util.ease.easeInOutBack
-		});
-		// render text
-		var load_txt = new fabric.Text("Load Data", {
-			id: 'load_head',
-			fontFamily: 'Arial',
-			fontSize: 40,
-			top: -60,
-			left: 100,
-			opacity: 1
-		});
-		load_txt.set('selectable', false);
-		canvas.add(load_txt);
-		load_txt.animate('top', '40', {
-			onChange: canvas.renderAll.bind(canvas),
-			duration: 1000,
-			easing:fabric.util.ease.easeInOutBack
-		});
-		var img_nodata = $('#save_data_box_nodata')[0];
-		var img = $('#save_data_box')[0];
-		if(dat.length){
-			var i = 0;
-			var top_after, left_after;
-			$.each(dat, function(index, value) {
-				top_after = 130 + (90 * (i % 5));
-				left_after = 30;
-				if(i >= 5) {
-					left_after = 420;
-				}
-				var sav_img = new fabric.Image(img, {
-					// originX: 'center',
-					// originY: 'center',
-					opacity: 1,
-					angle: 0
-				});
-				var sav_txt_1 = new fabric.Text((i+1).toString(), {
-					fontSize: 35,
-					fontWeight: 'bold',
-					fontFamily: 'Arial',
-					fill: '#0000FF',
-					stroke: '#333333',
-					strokewidth: 3,
-					opacity: 1,
-					top: 18,
-					left: 50
-				});
-				var sav_txt_2 = new fabric.Text((value.save_date).toString(), {
-					fontSize: 20,
-					fontFamily: 'Arial',
-					opacity: 1,
-					top: 40,
-					left: 140
-				});
-				var sav_obj = new fabric.Group([ sav_img, sav_txt_1, sav_txt_2 ], {
-					id: 'save_slot',
-					save_slot_id: (i+1),
-					save_data_id: value.savedata_id,
-					save_data_line_id: value.fk_line_id,
-					top: -200,
-					left: left_after
-				});
-				sav_obj.set('selectable', false);
-				canvas.add(sav_obj);
-				sav_obj.animate('top', top_after, {
-					onChange: canvas.renderAll.bind(canvas),
-					duration: 1000,
-					easing:fabric.util.ease.easeInOutBack
-				});
-				i++;
+	req.done(function(dat) {
+			var img = $('#configuration_background')[0];
+			var cfg_bg = new fabric.Image(img, {
+				id: 'configuration_background',
+				top: -600,
+				left: 0,
+				opacity: 1,
+				angle: 0
 			});
-			for(i = i ;i < 10; i++) {
-				top_after = 130 + (90 * (i % 5));
-				left_after = 30;
-				if(i >= 5) {
-					left_after = 420;
+			cfg_bg.set('selectable', false);
+			canvas.add(cfg_bg);
+			cfg_bg.animate('top', '0', {
+				onChange: canvas.renderAll.bind(canvas),
+				duration: 1000,
+				easing:fabric.util.ease.easeInOutBack
+			});
+			// render text
+			var load_txt = new fabric.Text("Load Data", {
+				id: 'load_head',
+				fontFamily: 'Arial',
+				fontSize: 40,
+				top: -60,
+				left: 100,
+				opacity: 1
+			});
+			load_txt.set('selectable', false);
+			canvas.add(load_txt);
+			load_txt.animate('top', '40', {
+				onChange: canvas.renderAll.bind(canvas),
+				duration: 1000,
+				easing:fabric.util.ease.easeInOutBack
+			});
+			var img_nodata = $('#save_data_box_nodata')[0];
+			var img = $('#save_data_box')[0];
+			if(dat.length){
+				var i = 0;
+				var top_after, left_after;
+				$.each(dat, function(index, value) {
+					top_after = 130 + (90 * (i % 5));
+					left_after = 30;
+					if(i >= 5) {
+						left_after = 420;
+					}
+					var sav_img = new fabric.Image(img, {
+						// originX: 'center',
+						// originY: 'center',
+						opacity: 1,
+						angle: 0
+					});
+					var sav_txt_1 = new fabric.Text((i+1).toString(), {
+						fontSize: 35,
+						fontWeight: 'bold',
+						fontFamily: 'Arial',
+						fill: '#0000FF',
+						stroke: '#333333',
+						strokewidth: 3,
+						opacity: 1,
+						top: 18,
+						left: 50
+					});
+					var sav_txt_2 = new fabric.Text((value.save_date).toString(), {
+						fontSize: 20,
+						fontFamily: 'Arial',
+						opacity: 1,
+						top: 40,
+						left: 140
+					});
+					var sav_obj = new fabric.Group([ sav_img, sav_txt_1, sav_txt_2 ], {
+						id: 'save_slot',
+						save_slot_id: (i+1),
+						save_data_id: value.savedata_id,
+						save_data_line_id: value.fk_line_id,
+						top: -200,
+						left: left_after
+					});
+					sav_obj.set('selectable', false);
+					canvas.add(sav_obj);
+					sav_obj.animate('top', top_after, {
+						onChange: canvas.renderAll.bind(canvas),
+						duration: 1000,
+						easing:fabric.util.ease.easeInOutBack
+					});
+					i++;
+				});
+				for(i = i ;i < 10; i++) {
+					top_after = 130 + (90 * (i % 5));
+					left_after = 30;
+					if(i >= 5) {
+						left_after = 420;
+					}
+					var sav_obj = new fabric.Image(img_nodata, {
+						id: 'save_slot',
+						save_slot_id: (i+1),
+						top: -200,
+						left: left_after,
+						opacity: 0.7,
+						angle: 0
+					});
+					sav_obj.set('selectable', false);
+					canvas.add(sav_obj);
+					sav_obj.animate('top', top_after, {
+						onChange: canvas.renderAll.bind(canvas),
+						duration: 1000,
+						easing:fabric.util.ease.easeInOutBack
+					});
 				}
-				var sav_obj = new fabric.Image(img_nodata, {
-					id: 'save_slot',
-					save_slot_id: (i+1),
-					top: -200,
-					left: left_after,
-					opacity: 0.7,
-					angle: 0
-				});
-				sav_obj.set('selectable', false);
-				canvas.add(sav_obj);
-				sav_obj.animate('top', top_after, {
-					onChange: canvas.renderAll.bind(canvas),
-					duration: 1000,
-					easing:fabric.util.ease.easeInOutBack
-				});
 			}
-		}
-		else {
-			// render save data group
-			var top_after = 130;
-			for(var i = 0; i < 5; i++) {
-				var ld_dat = new fabric.Image(img_nodata, {
-					id: 'save_slot',
-					save_slot_id: (i+1),
-					top: -200,
-					left: 30,
-					opacity: 0.8,
-					angle: 0
-				});
-				ld_dat.set('selectable', false);
-				canvas.add(ld_dat);
-				ld_dat.animate('top', top_after, {
-					onChange: canvas.renderAll.bind(canvas),
-					duration: 1000,
-					easing:fabric.util.ease.easeInOutBack
-				});
-				top_after+=90;
+			else {
+				// render save data group
+				var top_after = 130;
+				for(var i = 0; i < 5; i++) {
+					var ld_dat = new fabric.Image(img_nodata, {
+						id: 'save_slot',
+						save_slot_id: (i+1),
+						top: -200,
+						left: 30,
+						opacity: 0.8,
+						angle: 0
+					});
+					ld_dat.set('selectable', false);
+					canvas.add(ld_dat);
+					ld_dat.animate('top', top_after, {
+						onChange: canvas.renderAll.bind(canvas),
+						duration: 1000,
+						easing:fabric.util.ease.easeInOutBack
+					});
+					top_after+=90;
+				}
+				var top_after = 130;
+				for(i = i; i < 10; i++) {
+					var ld_dat = new fabric.Image(img_nodata, {
+						id: 'save_slot',
+						save_slot_id: (i+1),
+						top: -200,
+						left: 420,
+						opacity: 0.8,
+						angle: 0
+					});
+					ld_dat.set('selectable', false);
+					canvas.add(ld_dat);
+					ld_dat.animate('top', top_after, {
+						onChange: canvas.renderAll.bind(canvas),
+						duration: 1000,
+						easing:fabric.util.ease.easeInOutBack
+					});
+					top_after+=90;
+				}
 			}
-			var top_after = 130;
-			for(i = i; i < 10; i++) {
-				var ld_dat = new fabric.Image(img_nodata, {
-					id: 'save_slot',
-					save_slot_id: (i+1),
-					top: -200,
-					left: 420,
-					opacity: 0.8,
-					angle: 0
-				});
-				ld_dat.set('selectable', false);
-				canvas.add(ld_dat);
-				ld_dat.animate('top', top_after, {
-					onChange: canvas.renderAll.bind(canvas),
-					duration: 1000,
-					easing:fabric.util.ease.easeInOutBack
-				});
-				top_after+=90;
-			}
-		}
-		// render exit button
-		var img = $('#exit_button')[0];
-		var ext_btn = new fabric.Image(img, {
-			id: 'exit_button',
-			top: -600,
-			left: 730,
-			opacity: 1,
-			angle: 0
-		});
-		ext_btn.set('selectable', false);
-		canvas.add(ext_btn);
-		ext_btn.animate('top', '10', {
-			onChange: canvas.renderAll.bind(canvas),
-			duration: 1000,
-			easing:fabric.util.ease.easeInOutBack
-		});
+			// render exit button
+			var img = $('#exit_button')[0];
+			var ext_btn = new fabric.Image(img, {
+				id: 'exit_button',
+				top: -600,
+				left: 730,
+				opacity: 1,
+				angle: 0
+			});
+			ext_btn.set('selectable', false);
+			canvas.add(ext_btn);
+			ext_btn.animate('top', '10', {
+				onChange: canvas.renderAll.bind(canvas),
+				duration: 1000,
+				easing:fabric.util.ease.easeInOutBack
+			});
 	});
 }
 // exit and remove object of load screen
