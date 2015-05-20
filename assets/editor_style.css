@@ -223,3 +223,6 @@ table td {
 .total-page {
 	text-align: right;
 }
+.no-line {
+	padding: 10px 20px;
+}

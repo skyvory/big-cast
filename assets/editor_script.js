@@ -136,7 +136,7 @@ function callLineData(page, by) {
 			else {
 				head = 0;
 				tail = 0;
-				$('.line-list').html('<p>No line to display.</p><p>You can add lines by using add line buttons.</p>');
+				$('.line-list').html('<p class="no-line">No line to display.</p><p class="no-line">You can add lines by using add line buttons.</p>');
 				console.log("no result fetched");
 			}
 		}
@@ -289,7 +289,10 @@ $('#addtextlinebutton').click(function() {
 	// add text line at end section
 	else if(insert_position == "end") {
 		var index_to_write = getObjectIndex(line_obj, 'sequence', tail);
-		var form_line_type = line_obj[index_to_write].fk_linetype_id;
+		var form_line_type = -1;
+		if(line_obj.length) {
+			var form_line_type = line_obj[index_to_write].fk_linetype_id;
+		}
 		if(form_line_type != 1) {
 			var last = getLastLineObjectBySequence(0);
 		}
