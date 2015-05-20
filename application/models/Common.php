@@ -37,28 +37,26 @@ Class Common extends CI_Model {
 		}
 	}
 	// PROJECT FUNCTION
-	function createProject($title, $user_id) {
+	function createProject($title, $description, $user_id) {
 		$now = date('Y-m-d H:i:s');
-		$data = array('title' => $title, 'created_date' => $now, 'fk_user_id' => $user_id, 'fk_projectstatus_id' => 1);
+		$data = array('title' => $title, 'description' => $description, 'created_date' => $now, 'fk_user_id' => $user_id, 'fk_projectstatus_id' => 1);
 		$exec =  $this->db->insert('project', $data);
 		$insert_id = $this->db->insert_id();
-
-		$this->db->select('*, projectstatus.name as status');
-		$this->db->from('project');
-		$this->db->where('project_id', $insert_id);
-		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
-		$query = $this->db->get();
-		$result = $query->row_array();
-		return $result;
+		if($exec) {
+			return $insert_id;
+		}
+		else {
+			return FALSE;
+		}
 	}
-	function getUserProject($user_id) {
+	function getUserProject($user_id, $limit, $offset) {
 		$this->db->select('*, projectstatus.name as status');
 		$this->db->from('project');
 		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
 		$this->db->where('fk_user_id', $user_id);
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 		$result = $query->result_array();
-		//$result[] = $this->db->get()->row_array();
 		return $result;
 	}
 	function getProject($project_id) {
@@ -69,6 +67,46 @@ Class Common extends CI_Model {
 		$result = $query->row_array();
 		return $result;
 	}
+	function countUserProject($user_id) {
+		$this->db->from('project');
+		$this->db->where('fk_user_id', $user_id);
+		$count = $this->db->count_all_results();
+		return $count;
+	}
+	function updateProject($title, $description, $status, $project_id) {
+		$data = array('title' => $title, 'description' => $description, 'fk_projectstatus_id' => $status);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project', $data);
+		return $exec;
+	}
+	function updateCover($cover, $project_id) {
+		$this->db->set('cover', $cover);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
+	}
+	function getLineForChecking($project_id) {
+		$this->db->select('line_id, sequence, jumpto_line_id, fk_linetype_id');
+		$this->db->from('line');
+		$this->db->where('line.fk_project_id', $project_id);
+		$this->db->order_by('sequence', 'ASC');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getChoiceForChecking($line_id) {
+		$this->db->select('choice_id, choice.jumpto_line_id');
+		$this->db->from('choice');
+		$this->db->where('fk_line_id', $line_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+
+
+
+
+
 	// RESOURCE FUNCTION
 	function createBackgroundResource($name, $file_name, $resource_type_id, $project_id) {
 		$data = array('name' => $name, 'file_name' => $file_name, 'fk_resourcetype_id' => $resource_type_id, 'fk_project_id' => $project_id);

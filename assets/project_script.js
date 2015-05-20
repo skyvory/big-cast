@@ -86,4 +86,4 @@ function callProjectList() {
 		});
 	})
 }
-$(document).ready( callProjectList );
+// $(document).ready( callProjectList );

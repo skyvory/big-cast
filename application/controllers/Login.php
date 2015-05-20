@@ -6,14 +6,15 @@ class Login extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('common','',true);
-/*
-		if($this->session->user_auth) {
-			$sess = $this->session->user_auth;
-			if($sess['perm']==1)
-				redirect('admin', 'refresh');
-			else if($sess['perm']==2)
-				redirect('home', 'refresh');
-		}*/
+
+		// if($this->session->user_auth) {
+		// 	$user = $this->session->user_auth;
+		// 	if($user['perm']==1)
+		// 		redirect('admin', 'location');
+		// }
+		// else {
+		// 	redirect('login', 'location');
+		// }
 	}
 	public function index() {
 		$this->load->helper('form');
@@ -37,7 +38,7 @@ class Login extends CI_Controller {
 			if($auth){
 				if($auth['status'] == "ok"){
 					$sess_array = array();
-					$sess_array = array('id' => $auth['user_id'], 'user' => $auth['username'], 'perm' => $auth['fk_permission_id']);
+					$sess_array = array('id' => $auth['user_id'], 'name' => $auth['username'], 'perm' => $auth['fk_permission_id']);
 					$this->session->set_userdata('user_auth', $sess_array);
 					redirect('project', 'location');
 				}

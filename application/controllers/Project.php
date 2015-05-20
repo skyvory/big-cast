@@ -16,30 +16,84 @@ class Project extends CI_Controller {
 		*/
 	}
 
-	function index() {
-		$this->load->helper('form');
-		$this->load->helper('url');
-		
-		$data['sess'] = $this->session->userdata('user_auth');
-		$head['title'] = "Project";
+	function index() {}
 
-		$this->load->vars($data);
+	function main() {
+		// $this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->library('pagination');
 		
+		$user = $this->session->userdata('user_auth');
+		$head['title'] = "Project";
+		$self['user'] = $user;
+		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		$config['base_url'] = base_url() . 'index.php/project/main';
+		$config['total_rows'] = $this->common->countUserProject($user['id']);
+		if($page === 'all')
+			$config['per_page'] = $config['total_rows'];
+		else
+			$config['per_page'] = 10;
+		$config['uri_segment'] = 3;
+		$config['num_links'] = 5;
+		$config['use_page_numbers'] = false;
+		$config['full_tag_open'] = '<nav><ul class="pagination">';
+		$config['full_tag_close'] = ' </ul></nav>';
+		$config['first_tag_open'] = '<li>';
+		$config['first_link'] = '&laquo; First';
+		$config['first_tag_close'] = '</li>';
+		$config['prev_tag_open'] = ' <li>';
+		$config['prev_link'] = '&larr; Prev';
+		$config['prev_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_link'] = 'Next &rarr;';
+		$config['next_tag_close'] = '</li>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_link'] = 'Last &raquo;';
+		$config['last_tag_close'] = '</li>';
+		$this->pagination->initialize($config);
+		$data['page'] = $this->pagination->create_links();
+
+		$data['project'] = $this->common->getUserProject($user['id'], $config['per_page'], $page);
+
+		$this->load->vars($self);
 		$this->load->view('project_head', $head);
 		$this->load->view('menu_view');
-		$this->load->view('project_view');
+		$this->load->view('project_view', $data);
 		$this->load->view('foot');
 	}
 
 	public function newProject() {
+		$this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->library('form_validation');
 		$user = $this->session->userdata('user_auth');
-		$title = $this->input->post('title');
-		$description = $this->input->post('description');
-		if(!empty($title)) {
-			$pass = $this->common->createProject($title, $user['id']);
+		$self['user'] = $user;
+		$this->load->vars($self);
+		$head['title'] = "Project";
+		// $config['upload_path'] = './resources/';
+		// $config['allowed_types'] = 'jpg|png';
+		// $config['overwrite']  = 'true';
+		// $config['max_size'] = '16000';
+		// $this->load->library('upload', $config);
+		$this->form_validation->set_rules('title', 'Title', 'required');
+		if ($this->form_validation->run() == false) {
+			$this->load->view('project_head', $head);
+			$this->load->view('menu_view');
+			$this->load->view('project_new_view');
+			$this->load->view('foot');
+		}
+		else {
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			$user = $this->session->userdata('user_auth');
+			$pass = $this->common->createProject($title, $description, $user['id']);
 			if($pass) {
 				$path_to_resource = './resources/';
-				$new_directory = $path_to_resource . '/' . $user['id'] . '/' . $pass['project_id'] . '/';
+				$new_directory = $path_to_resource . '/' . $user['id'] . '/' . $pass . '/';
 				if(!is_dir($new_directory)) {
 					mkdir($new_directory, 777);
 					//make each type of resource and their thumbs directory
@@ -52,60 +106,208 @@ class Project extends CI_Controller {
 					mkdir($new_directory . 'sfx/', 777);
 					mkdir($new_directory . 'video/', 777);
 				}
-				$project = array(
-					'project_id' =>utf8_encode($pass['project_id']),
-					'title' =>utf8_encode($pass['title']),
-					'description' =>utf8_encode($pass['description']),
-					'cover' =>utf8_encode($pass['cover']),
-					'created_date' =>utf8_encode($pass['created_date']),
-					'updated_date' =>utf8_encode($pass['updated_date']),
-					'fk_user_id' =>utf8_encode($pass['fk_user_id']),
-					'ststus' =>utf8_encode($pass['ststus'])
-				);
-				$this->set_content_type('application/json');
-				$this->output->set_output(json_encode($project, JSON_PRETTY_PRINT));
+				redirect('project', 'refresh');
+			}
+			else {
+				$data['error'] = array('error' => "Failed to create new project!");
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view');
+				$this->load->view('project_new_view', $data);
+				$this->load->view('foot');
+			}
+		}
+	}
+	
+	public function setting() {
+		$this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->library('form_validation');
+		
+		$user = $this->session->userdata('user_auth');
+		$project_id = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		$this->session->set_userdata('active', $project_id);
+
+		$head['title'] = "Project";
+		$self['user'] = $user;
+		$data['project'] = $this->common->getProject($project_id);
+		
+		$this->load->vars($self);
+		$this->load->view('project_head', $head);
+		$this->load->view('menu_view');
+		$this->load->view('project_setting_view', $data);
+		$this->load->view('foot');
+		
+
+	}
+	public function changeSetting() {
+		$this->load->helper('form');
+		$this->load->helper('url');
+
+		$this->load->library('form_validation');
+		$user = $this->session->userdata('user_auth');
+		$project_id = $this->session->userdata('active');
+		// $this->fb->log($project_id);
+
+		$self['user'] = $user;
+		$head['title'] = "Project";
+
+		// if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+		if(isset($_FILES['userfile']['tmp_name']) && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
+			$config['upload_path'] = './resources/' . $user['id'] . '/' . $project_id . '/';
+			$config['allowed_types'] = 'jpg';
+			$config['file_name']  = 'cover.jpg';
+			$config['overwrite']  = 'true';
+			$config['max_size'] = '16000';
+			$this->load->library('upload', $config);
+			$cover_file = true;
+		}
+		else {
+			$cover_file = false;
+			// $this->fb->log($project_id);
+		}
+
+		if($this->input->post('status') == true) {
+			$publish_check = true;
+		}
+		else {
+			$publish_check = false;
+		}
+
+		$this->load->vars($self);
+		$this->form_validation->set_rules('title', 'Title', 'required');
+
+		if($this->form_validation->run() == false) {
+			$data['project'] = $this->common->getProject($project_id);
+			$this->load->view('project_head', $head);
+			$this->load->view('menu_view');
+			$this->load->view('project_setting_view', $data);
+			$this->load->view('foot');
+		}
+		else if($publish_check == true && $this->checkPublishability($project_id) == false) {
+			$publishability = $this->checkPublishability($project_id);
+			if($publishability == false) {
+				$data['error'] = array('error' => "Your project is not suitable for publishing yet!");
+				$data['project'] = $this->common->getProject($project_id);
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view');
+				$this->load->view('project_setting_view', $data);
+				$this->load->view('foot');
+			}
+		}
+		else if($cover_file == true && $this->upload->do_upload() == false) {
+			$data['project'] = $this->common->getProject($project_id);
+			$data['error'] = array('error' => $this->upload->display_errors());
+			$this->load->view('project_head', $head);
+			$this->load->view('menu_view');
+			$this->load->view('project_setting_view', $data);
+			$this->load->view('foot');
+		}
+		else {
+			$title = $this->input->post('title');
+			$description = $this->input->post('description');
+			$publish = $this->input->post('status');
+			if($publish_check == true) {
+				$status = 2;
+			}
+			else {
+				$status = 1;
+			}
+			if($cover_file == true) {
+				$cover = 1;
+				$this->common->updateCover($cover, $project_id);
+			}
+
+			// $this->fb->log($project_id);
+			$pass = $this->common->updateProject($title, $description, $status, $project_id);
+			if($pass) {
+				redirect('project', 'location');
+			}
+			else {
+				$data['error'] = array('error' => "error writing to database");
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view');
+				$this->load->view('project_setting_view', $data);
+				$this->load->view('foot');
 			}
 		}
 	}
 
-	// // for function testing!
-	// public function alpha() {
-	// 	$sess = $this->session->userdata('user_auth');
-		
-	// 	$new = 1;
-	// 	//new would hold project_id if success
-	// 	if($new != NULL) {
-	// 		$path_to_resource = './resources/';
-	// 		$new_directory = $path_to_resource . '/' . $sess['id'] . '/' . $new . '/';
-	// 		if(is_dir($new_directory)) {
-	// 			mkdir($new_directory, 777);
-	// 			mkdir($new_directory . 'background/', 777);
-	// 			mkdir($new_directory . 'background/thumbs/', 777);
-	// 			mkdir($new_directory . 'sprite/', 777);
-	// 			mkdir($new_directory . 'sprite/thumbs/', 777);
-	// 			mkdir($new_directory . 'bgm/', 777);
-	// 			mkdir($new_directory . 'bgm/thumbs/', 777);
-	// 			mkdir($new_directory . 'voice/', 777);
-	// 			mkdir($new_directory . 'voice/thumbs/', 777);
-	// 			mkdir($new_directory . 'sfx/', 777);
-	// 			mkdir($new_directory . 'sfx/thumbs/', 777);
-	// 			mkdir($new_directory . 'video/', 777);
-	// 			mkdir($new_directory . 'video/thumbs/', 777);
-	// 		}
-	// 		echo "success";
-	// 	}
-	
-	// }
-
-	public function loadProject() {
-		$this->load->helper('url');
-		$sess = $this->session->userdata('user_auth');
-		$project_data = $this->common->getUserProject($sess['id']);
-		if($project_data) {
-			$this->output->set_content_type('application/json');
-			$this->output->set_output(json_encode($project_data, JSON_PRETTY_PRINT));
+	private function checkPublishability($project_id) {
+		$validity = true;
+		$error = array();
+		$end_sequence = array();
+		$jump_sequence = array();
+		// list of line_id where choices jump to
+		$jump_point = array();
+		// first checking for nomral sequence, then cheking branch
+		// branch checked is considered end and valid in place of end (looping problem)
+		$line_check = $this->common->getLineForChecking($project_id);
+		// $sequential_end = false;
+		$temp_sequence = array();
+		foreach ($line_check as $key => $value) {
+			// echo $value['line_id'] . " ";
+			$temp_sequence[] = $value['line_id'];
+			// if line jump to another
+			if(!empty($value['jumpto_line_id'])) {
+				// valid sequence merge
+				$jump_sequence = array_merge($jump_sequence, $temp_sequence);
+				// clear temp
+				$temp_sequence = array();
+				// if not a duplicate, add for chekcing later
+				if(!in_array($value['jumpto_line_id'], $jump_point)) {
+					$jump_point[] = $value['line_id'];
+				}
+			}
+			if($value['fk_linetype_id'] == 2) {
+				// valid sequence merge
+				$jump_sequence = array_merge($jump_sequence, $temp_sequence);
+				// clear temp
+				$temp_sequence = array();
+				//get list of choice on the line
+				$choice_check = $this->common->getChoiceForChecking($value['line_id']);
+				foreach ($choice_check as $j_key => $j_value) {
+					// if not a duplicate, add for chekcing later
+					if(!empty($j_value['jumpto_line_id']) && !in_array($j_value['jumpto_line_id'], $jump_point)) {
+						$jump_point[] = $j_value['jumpto_line_id'];
+					}
+				}
+			}
+			if($value['fk_linetype_id'] == 4) {
+				// $sequential_end = true;
+				$end_sequence = array_merge($end_sequence, $temp_sequence);
+				$temp_sequence = array();
+			}
 		}
+		// echo "<BR>";
+		// check if jump destination is in valid sequence 
+		foreach ($jump_point as $key => $value) {
+			if(!in_array($value, $end_sequence) && !in_array($value, $jump_sequence)) {
+				$seq = $this->common->getLineSequence($value);
+				$error[] = "sequence " . $seq . " jump to invalid line";
+				$validity = false;
+			}
+			// echo $value .".<br/>";
+		}
+		// check if there's actually ending
+		// if(!$end_sequence) {
+		// 	$validity = false;
+		// 	$error[] = "your visual novel has no ending";
+		// }
+
+		// debugging!
+		// foreach ($end_sequence as $key => $value) {
+		// 	echo $value . " ";
+		// }
+		// print_r($end_sequence);
+		// echo "<BR>";
+		// foreach ($jump_sequence as $key => $value) {
+		// 	echo $value . " ";
+		// }
+		// print_r($jump_sequence);
+		// echo "<BR>";
+		return $validity;
 	}
+	
 
 	public function resource($project_id = FALSE) {
 		//url helper for redirect
@@ -126,7 +328,6 @@ class Project extends CI_Controller {
 		}
 	}
 
-	//placehoder
 	public function editor($project_id = FALSE) {
 		$this->load->helper('url');
 		$proj = $this->common->getProject($project_id);
@@ -150,135 +351,6 @@ class Project extends CI_Controller {
 		$page = 1;
 		$sess = $this->session->userdata('user_auth');
 		$project_data = $this->common->getUserProject($sess['id']);
-		foreach ($project_data as $value) {
-			?>
-				<div class="media" style="background-color: #ddd; margin: 10px 20px; padding: 10px;">
-					<div class="media-left">
-						<img src="../resources/<?php echo $sess['id']; ?>/cover.jpg" class="media-object project-cover"/>
-					</div>
-					<div class="media-body" style="margin: 15px;">
-						<div class="project-title">
-							<h3 class="media-heading"><?php echo $value['title']; ?></h3>
-						</div>
-						<div class="project-date">
-							<p><?php echo $value['published_date']; ?></p>
-						</div>
-						<div class="project-description">
-							<p><?php echo $value['description']; ?></p>
-						</div>
-						<div class="project-action" style="position: absolute; right: 50px; bottom: 20px;">
-							<button type="button" class="btn btn-primary">Play</button>
-						</div>
-					</div>
-				</div>
-			<?php
-		}
-	}
-
-	function do_upload(){
-		$config['upload_path'] = '../../resources/';
-		$config['allowed_types'] = 'jpg|png';
-		$config['max_size'] = '3000';
-		$config['overwrite'] = TRUE;
-		$this->load->library('upload', $config);
-		$files = $_FILES;
-		$iserror = FALSE;
-		$filecount = count($_FILES['userfile']['name']);
-		for($i=0; $i<$filecount; $i++){
-			$_FILES['userfile']['name'] = $files['userfile']['name'][$i];
-			$_FILES['userfile']['type'] = $files['userfile']['type'][$i];
-			$_FILES['userfile']['tmp_name']= $files['userfile']['tmp_name'][$i];
-			$_FILES['userfile']['error']= $files['userfile']['error'][$i];
-			$_FILES['userfile']['size']= $files['userfile']['size'][$i];
-
-			if($this->upload->do_upload() == FALSE){
-				$iserror = TRUE;
-				$error = array('error' => $this->upload->display_errors());
-			}
-			else{
-				//sweet
-			}
-		}
-		if($isserror == TRUE){
-			$this->load->helper(array('url', 'form'));
-			$this->load->view('resource_view', $error);
-		}
-	}
-	
-	public function uploadto(){
-		$this->fb->log("accessed");
-		$resourcetype = $this->input->post('restype');
-		$this->fb->log($resourcetype);
-		$this->load->library('UploadHandler');
-		$this->load->helper('url');
-		$upload_path_url = base_url() . 'resources/';
-
-		$config['upload_path'] = FCPATH . 'resources/';
-		$config['allowed_types'] = 'jpg';
-		$config['max_size'] = '600000';
-		
-
-		$this->load->library('upload', $config);
-
-		if($this->upload->do_upload() == FALSE){
-			$error = array('error' => $this->upload->display_errors());
-			$this->load->view('home_view', $error);
-		}
-		else{
-			$data = $this->upload->data();
-			$config['source_image'] = $data['full_path'];
-			$config['new_image'] =  FCPATH . 'resources/thumbs/';
-			$config['maintain_ratio'] = TRUE;
-			$config['width'] = 80;
-			$config['height'] = 80;
-/*			$config = array(
-				'source_image' => $data['full_path'],
-				'new_image' => $upload_path_url . '/thumbs',
-				'maintain_ratio' => TRUE,
-				'width' => 80,
-				'height' => 80
-			);*/
-			$this->load->library('image_lib', $config);
-			if($this->image_lib->resize() == FALSE){
-				$this->fb->log($this->image_lib->display_errors());
-			}
-
-			$info->name = $data['file_name'];
-			$info->size = $data['file_size'];
-			$info->type = $data['file_type'];
-			$info->url = $upload_path_url . $data['file_name'];
-			$info->delete_type = 'DELETE';
-			//possible that original template only  acknowledge json object
-			/*$info['name'] = $data['file_name'];
-			$info['size'] = $data['file_size'];
-			$info['type'] = $data['file_type'];
-			$info['url'] = $upload_path_url . $data['file_name'];
-			$info['delete_type'] = 'DELETE';*/
-			//just for checking!$this->fb->log($info);
-			if($this->input->is_ajax_request()){
-				//checking!$this->fb->log(json_encode(array($info)));
-				echo json_encode(array($info));
-			}
-			else{
-				exit('No direct script access allowed');
-			}
-			//unnecessary?$this->input->is_ajax_request();
-		}
-	}
-	
-	//unnecessary?
-	public function deleteImage($file){
-		$success = unlink(FCPATH . 'resources/' . $file);
-		$info->success = $success;
-		$info->path = base_url() . 'resources/' . $file;
-		$info->file = is_file(FC_PATH . 'resources/' . $file);
-
-		if($this->input->is_ajax_request()){
-			echo json_encode(array($info));
-		}
-		else{
-			exit('No direct script access allowed');
-		}
 	}
 
 }

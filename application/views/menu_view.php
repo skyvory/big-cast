@@ -21,7 +21,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown pull-right">
-					<a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown" role="button" area-expanded="false"><?php echo $sess['user']; ?>&nbsp; &nbsp;<span class="glyphicon glyphicon-user"></span> <span class="caret"></span></a>
+					<a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown" role="button" area-expanded="false"><?php echo $user['name']; ?>&nbsp; &nbsp;<span class="glyphicon glyphicon-user"></span> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="<?php echo base_url(); ?>index.php/login/logout">Log Out</a></li>
 					</ul>

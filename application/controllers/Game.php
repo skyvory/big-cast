@@ -26,7 +26,7 @@ class Game extends CI_Controller {
 		
 		$head['title'] = "VN";
 		$user = $this->session->userdata('user_auth');
-		$data['sess'] = $user;
+		$data['user'] = $user;
 		$project_id = $this->uri->segment(3);
 		$pass = $this->game_model->getProject($project_id);
 		$this->load->vars($data);

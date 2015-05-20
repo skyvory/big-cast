@@ -24,7 +24,7 @@ class Editor extends CI_Controller {
 		$this->load->helper('url');
 		
 		$proj = $this->session->userdata('active_project');
-		$data['sess'] = $this->session->userdata('user_auth');
+		$data['user'] = $this->session->userdata('user_auth');
 		$head['title'] = "Editor";
 
 		$per_page = 50;
