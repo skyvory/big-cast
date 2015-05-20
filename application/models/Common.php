@@ -73,8 +73,8 @@ Class Common extends CI_Model {
 		$count = $this->db->count_all_results();
 		return $count;
 	}
-	function updateProject($title, $description, $status, $project_id) {
-		$data = array('title' => $title, 'description' => $description, 'fk_projectstatus_id' => $status);
+	function updateProject($title, $description, $status, $published_date, $project_id) {
+		$data = array('title' => $title, 'description' => $description, 'published_date' => $published_date'fk_projectstatus_id' => $status);
 		$this->db->where('project_id', $project_id);
 		$exec = $this->db->update('project', $data);
 		return $exec;

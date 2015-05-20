@@ -208,9 +208,11 @@ class Project extends CI_Controller {
 			$publish = $this->input->post('status');
 			if($publish_check == true) {
 				$status = 2;
+				$published_date = date('Y-m-d H:i:s');
 			}
 			else {
 				$status = 1;
+				$published_date = null;
 			}
 			if($cover_file == true) {
 				$cover = 1;
@@ -218,7 +220,7 @@ class Project extends CI_Controller {
 			}
 
 			// $this->fb->log($project_id);
-			$pass = $this->common->updateProject($title, $description, $status, $project_id);
+			$pass = $this->common->updateProject($title, $description, $status, $published_date, $project_id);
 			if($pass) {
 				redirect('project', 'location');
 			}
