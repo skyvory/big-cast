@@ -18,7 +18,7 @@
 						<div class="radio">
 							<label>
 								<input type="radio" name="line_insert_position" value="after" />
-									<span title="you can select line by pointing your mouse on that line" />after selected line</span>
+									<span data-toggle="tooltip" data-placement="left" title="you can select a line by pointing your mouse on that line" />after selected line</span>
 							</label>
 							<label>
 								<input type="radio" name="line_insert_position" value="end" checked  />
@@ -633,8 +633,8 @@
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
 						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
-						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="'+value.fk_effect_id+'" />
-							<input type="hidden" name="effect_id" value="" />
+						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="'+eff+'" />
+							<input type="hidden" name="effect_id" value="'+value.fk_effect_id+'" />
 					<span class="glyphicon glyphicon-resize-vertical"></span>
 					</div>
 				</div>

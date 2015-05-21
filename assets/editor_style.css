@@ -237,3 +237,7 @@ input::-webkit-inner-spin-button {
 input[type=number] {
 	-moz-appearance:textfield;
 }*/
+.tooltip-inner {
+	white-space:nowrap;
+	max-width:none;
+}
