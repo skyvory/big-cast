@@ -22,7 +22,7 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown pull-right">
 					<a href="#" class="dropdown-toggle pull-right" data-toggle="dropdown" role="button" area-expanded="false"><?php echo $user['name']; ?>&nbsp; &nbsp;<span class="glyphicon glyphicon-user"></span> <span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">
+					<ul class="dropdown-menu logout-button" role="menu">
 						<li><a href="<?php echo base_url(); ?>index.php/login/logout">Log Out</a></li>
 					</ul>
 				</li>
@@ -162,5 +162,8 @@
 	.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus{
 	    /*color: rgba(255, 255, 255, 0.1);*/
 	    background-color: rgba(255, 255, 255, 0.2);
+	}
+	.logout-button {
+		background-color: rgba(255, 0, 0, 0.4);
 	}
 </style>

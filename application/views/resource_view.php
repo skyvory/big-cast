@@ -1,8 +1,8 @@
 <div class="container-fluid" style="margin: 30px 10px 20px;">
 <div id="notification"></div>
-<div id="dropshade"></div>
+<!-- <div id="dropshade"></div> -->
 <div class="row">
-	<div class="col-md-10" style="background-color: rgba(0, 0, 0, 0.1); border: 0px strip #000; padding: 20px;">
+	<div class="col-md-10 resource-area">
 
 		<?php if(isset($error)) echo($error); ?>
 		<?php echo form_open_multipart('home/do_upload'); ?>
