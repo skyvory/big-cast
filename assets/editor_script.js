@@ -84,22 +84,22 @@ function callLineData(page, by) {
 			to: page,
 			by: by
 		},
-		dataType: "html",
+		dataType: "json",
 		beforeSend: function() {
 			//placehoder
 		}
 	});
 	req.done(function(msg) {
 		if(msg) {
-			var obj =  $.parseJSON(msg);
-			if(obj.length > 0) {
-				line_obj = obj;
-				head = obj[0]['sequence'];
+			// var obj =  $.parseJSON(msg);
+			if(msg.length > 0) {
+				line_obj = msg;
+				head = msg[0]['sequence'];
 				console.log(head);
 				tail = head;
 				var block = "";
 				$('.line-list').html("");
-				$.each(obj, function(index, value) {
+				$.each(msg, function(index, value) {
 					if(parseInt(value.sequence) < head) {
 						head = parseInt(value.sequence);
 					}
@@ -2172,35 +2172,38 @@ function compareSpriteIndex(a, b) {
 var canvasdisplay = document.getElementsByTagName('canvas')[0];
 canvasdisplay.width = 240;
 canvasdisplay.height = 180;
-canvasdisplay.style.width  = '800px';
-canvasdisplay.style.height = '600px';
+// canvasdisplay.style.width  = '800px';
+// canvasdisplay.style.height = '600px';
 
 var canvas = new fabric.Canvas('preview');
 canvas.selection = false;
 
 var path_to_project = '../../../resources/' + config.user + '/' + config.project + '/';
 $('.line-list').on('click', '.line-project-button', function() {
+	canvas.clear();
 	var seq = $(this.form).find('input[name=sequence]').val();
 	var index_to_read = getObjectIndex(line_obj, 'sequence', seq);
 	if(index_to_read > -1) {
 		line_obj[index_to_read].sprite.sort(compareSpriteIndex);
 		if(line_obj[index_to_read].fk_linetype_id == 1) {
 			var bg_index = getObjectIndex(background_list, 'resource_id', line_obj[index_to_read].background_resource_id);
-			fabric.Image.fromURL(path_to_project + 'background/' + background_list[bg_index].file_name, function(img){
-				var bg = img.scale(0.3).set({
-					top: 0,
-					left: 0,
-					opacity: 0,
-					angle: 0
+			if(bg_index > -1) {
+				fabric.Image.fromURL(path_to_project + 'background/' + background_list[bg_index].file_name, function(img){
+					var bg = img.scale(0.3).set({
+						top: 0,
+						left: 0,
+						opacity: 0,
+						angle: 0
+					});
+					bg.set('selectable', false);
+					canvas.add(bg);
+					bg.animate('opacity', '1', {
+						onChange: canvas.renderAll.bind(canvas),
+						duration: 1000,
+						easing: fabric.util.ease.easeOutExpo
+					});
 				});
-				bg.set('selectable', false);
-				canvas.add(bg);
-				bg.animate('opacity', '1', {
-					onChange: canvas.renderAll.bind(canvas),
-					duration: 1000,
-					easing: fabric.util.ease.easeOutExpo
-				});
-			});
+			}
 			if(line_obj[index_to_read].sprite.length > 0) {
 				$.each(line_obj[index_to_read].sprite, function(index, value) {
 					var spr_index = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
@@ -2219,8 +2222,8 @@ $('.line-list').on('click', '.line-project-button', function() {
 							easing: fabric.util.ease.easeOutExpo
 						});
 					});
-				})
+				});
 			}
 		}
 	}
-})
+});

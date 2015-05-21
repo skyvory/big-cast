@@ -141,10 +141,22 @@ function maintainCurrent(callback) {
 			cache.head--;
 		}
 	}
-	// request new lines to cache when lines ahead less than n number
-	if(current.head - current.sequence < 50) {
+	// if(current.sequence % 20 == 0) {
+	// request new lines after reach head - 20, using mod so if no more line, line won't bwe called continuously
+	if(current.sequence % current.head - 20 == 0) {
+		// var is_dead_end = true;
+		// for(var i = current.sequence; i < current.head; i++) {
+		// 	if(parseInt(line[i].fk_linetype_id) != 2 && line[i].jumpto_line_id.length > 0) {
+		// 		is_dead_end = false;
+		// 	}
+		// 	else if(parseInt(line[i].fk_linetype_id) == 2) {
+		// 		is_dead_end = false;
+		// 	}
+		// }
 		console.log("more line call");
-		callSequentialLineData(parseInt(line[current.head].sequence));
+		// if(is_dead_end == false) {
+			callSequentialLineData(parseInt(line[current.head].sequence));
+		// }
 	}
 	if(callback) {
 		callback();
@@ -407,7 +419,7 @@ function preloadAudio(source, resource_id, callback){
 		callback(true);
 	}
 	else {
-		$("<audio/>").attr("src", source).attr("id", resource_id).css("display", "none").appendTo('.audio-cache');
+		$("<audio/>").attr("src", source).attr("id", resource_id).attr("preload", "auto").css("display", "none").appendTo('.audio-cache');
 		cache.count++;
 		$('audio[id='+resource_id+']').on('canplaythrough', function() {
 			callback(true);
@@ -1225,7 +1237,8 @@ function loadGame(save_data_line_id) {
 		$('.text-area').show();
 		current.sequence = -1;
 		current.head = -1;
-		callSequentialLineData(msg-1, function() {
+		cache.head = -1;
+		callSequentialLineData((msg-1), function() {
 			processSequentialResource();
 			setTimeout(function() {
 				game.screen = "play";
@@ -2571,20 +2584,22 @@ function renderNextLine(callback) {
 	current.sequence++;
 
 	// for line jump
-	if(line[current.sequence].jumpto_line_id) {
-		game.screen = "stall";
-		console.log("has jump to");
-		if(line[current.sequence].jumpto_line_id && line[current.sequence].jumpto_line_id != line[current.sequence+1].line_id) {
-				var index_to_remove = current.sequence + 1;
-				line.splice(index_to_remove, current.head - current.sequence);
-				current.head = current.sequence;
-				var offset_jump = line[current.sequence].look_ahead[0].sequence;
-				callSequentialLineData(parseInt(offset_jump)-1, function() {
-					processSequentialResource();
-					setTimeout(function() {
-						game.screen = "play";
-					}, 1000);
-				});
+	if(line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 3) {
+		if(line[current.sequence].jumpto_line_id) {
+			game.screen = "stall";
+			console.log("has jump to");
+			if(line[current.sequence].jumpto_line_id && line[current.sequence].jumpto_line_id != line[current.sequence+1].line_id) {
+					var index_to_remove = current.sequence + 1;
+					line.splice(index_to_remove, current.head - current.sequence);
+					current.head = current.sequence;
+					var offset_jump = line[current.sequence].look_ahead[0].sequence;
+					callSequentialLineData(parseInt(offset_jump)-1, function() {
+						processSequentialResource();
+						setTimeout(function() {
+							game.screen = "play";
+						}, 1000);
+					});
+			}
 		}
 	}
 
@@ -2649,7 +2664,7 @@ function renderNextLine(callback) {
 						}
 					}
 					// console.log("prev", prev_index_to_read);
-					if(line[prev_index_to_read].background_resource_id) {
+					if(line[prev_index_to_read].background_resource_id.length > 0) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 						console.log("canvas index to delete", canvas_index);
 						var bg_bottom = canvas.item(canvas_index);
@@ -2932,7 +2947,7 @@ function renderNextLine(callback) {
 						$.each(sprite_to_remove, function(index, value) {
 							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 							var spr = canvas.item(canvas_index);
-							if(value.fk_effect_id == 1) {
+							if(value.fk_effect_id == 1 || game.screen == "skip") {
 								var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 								canvas.remove(canvas.item(canvas_index));
 							}
@@ -2997,7 +3012,7 @@ function renderNextLine(callback) {
 					$.each(line[prev_index_to_read].sprite, function(index, value) {
 						var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 						var spr = canvas.item(canvas_index);
-						if(value.fk_effect_id == 1) {
+						if(value.fk_effect_id == 1 || game.screen == "skip") {
 							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 							canvas.remove(canvas.item(canvas_index));
 						}
@@ -3188,8 +3203,9 @@ function renderNextLine(callback) {
 			}
 		}
 		else {
+			//>>>>
 			console.log("curent sequence is 0");
-			if(line[current.sequence].background_resource_id) {
+			if(line[current.sequence].background_resource_id > 0) {
 				// render background
 				var bg_id = line[current.sequence].background_resource_id;
 				var img = $('.image-cache').find('img[id='+bg_id+']')[0];
@@ -3208,6 +3224,7 @@ function renderNextLine(callback) {
 			}
 
 			if(line[current.sequence].sprite.length > 0) {
+				console.log('ren");');
 				$.each(line[current.sequence].sprite, function(index, value) {
 					var img = $('.image-cache').find('img[id='+value.sprite_resource_id+']')[0];
 					var spr = new fabric.Image(img, {
@@ -3264,13 +3281,17 @@ function renderNextLine(callback) {
 
 		// console.log(line[current.sequence].content);
 		context.clearRect (0 ,0 ,text_display.width,text_display.height );
-		renderLineText(line[current.sequence].content);
-		renderSpeaker();
+		if(line[current.sequence].content.length > 0) {
+			renderLineText(line[current.sequence].content);
+		}
+		if(line[current.sequence].speaker.length > 0) {
+			renderSpeaker();
+		}
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 
 	}
 	// render choice line
-	else if(line[current.sequence].fk_linetype_id == 2) {
+	else if(parseInt(line[current.sequence].fk_linetype_id) === 2) {
 		game.screen = "choice";
 		var top_after = 200;
 		if(line[current.sequence].choice.length == 3) {
@@ -3323,7 +3344,7 @@ function renderNextLine(callback) {
 		}
 	}
 	// render video line
-	else if(line[current.sequence].fk_linetype_id == 3) {
+	else if(parseInt(line[current.sequence].fk_linetype_id) === 3) {
 		game.screen = "stall";
 		var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
 		$('.video-area').html("");
@@ -3372,20 +3393,21 @@ function renderNextLine(callback) {
 
 	}
 	// render end line
-	else if(line[current.sequence].fk_linetype_id == 4) {
+	else if(parseInt(line[current.sequence].fk_linetype_id) === 4) {
+		console.log("END");
 		game.screen = "stall";
 		$('.text-area').fadeOut(1000);
-		context.clearRect (0 ,0 ,text_display.width,text_display.height );
 		whiteIn(2000, function() {
+			context.clearRect (0 ,0 ,text_display.width,text_display.height );
 			stopBgm();
 			canvas.clear();
 			current.sequence = -1;
 			current.head = -1;
+				line = [];
 			callSequentialLineData(0, function() {
 				processSequentialResource();
 			});
 			setTimeout(function() {
-				line = [];
 				$('.text-area').show();
 				
 				renderTitleScreen();
@@ -3399,16 +3421,18 @@ function renderNextLine(callback) {
 	}
 
 	// keep white transition in top
-	var is_white = getObjectIndex(canvas.getObjects(), 'id', 'white');
-	if(is_white) {
-		var keep = canvas.item(is_white);
-		keep.bringToFront();
-	}
+	// var is_white = getObjectIndex(canvas.getObjects(), 'id', 'white');
+	// if(is_white) {
+	// 	var keep = canvas.item(is_white);
+	// 	keep.bringToFront();
+	// }
 
 
 
 	// render interface
-	renderInGameInterface();
+	if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
+		renderInGameInterface();
+	}
 	if(callback) {
 		callback();
 	}
@@ -3471,20 +3495,21 @@ function renderLogScreen() {
 	else {
 		i = oldest_limit;
 	}
-	// for(i; i < (oldest_limit + 50), i < current.sequence; i++) {
+	$('.log-area').html("<h2>Backlog</h2>");
+	for(i; i < (oldest_limit + 50), i < current.sequence; i++) {
 
-	// // for(var i = current.sequence; i > count, i>=0; i--) {
-	// 	console.log(i);
-	// 	if(line[i].fk_linetype_id == 1) {
-	// 		$("<li/>").text(line[i].content).appendTo('.log-area');
-	// 	}
-	// 	else {
-	// 		oldest_limit++;
-	// 	}
-	// }
-	for(i=0;i<50;i++){
-		$("<li/>").text("uie agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow fbv ").appendTo('.log-area');
+	// for(var i = current.sequence; i > count, i>=0; i--) {
+		// console.log(i);
+		if(line[i].fk_linetype_id == 1) {
+			$("<li/>").text(line[i].content).appendTo('.log-area');
+		}
+		else {
+			oldest_limit++;
+		}
 	}
+	// for(i=0;i<50;i++){
+	// 	$("<li/>").text("uie agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow agioga dfuigf oagdfiagf doae fdea egwsdkfj fdkj df fjsd fajk fdaj kfsd feiow fbv ").appendTo('.log-area');
+	// }
 	var logdiv = $('.log-area')[0];
 	logdiv.scrollTop = logdiv.scrollHeight;
 	$('.log-area').slideDown(1000);
@@ -3519,7 +3544,7 @@ function exitChoice(callback) {
 
 
 function renderInGameInterface(callback) {
-	if(current.sequence == 0) {
+	// if(current.sequence == 0) {
 		// line interface id for looping through the interface
 		// text box
 		var img = $('.interface').find('img[id=in_text_window]')[0];
@@ -3631,7 +3656,7 @@ function renderInGameInterface(callback) {
 		});
 		configuration_btn.set('selectable', false);
 		canvas.add(configuration_btn);
-	}
+	// }
 	if(callback) {
 		callback();
 	}

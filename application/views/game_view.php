@@ -11,7 +11,9 @@
 				</span>
 			</div>
 			<div style="width: 800px; margin: 0 auto;">
-				<div class="log-area" style="display: none;"><button class="btn btn-danger log-close">X</button>
+				<div class="log-outer">
+					<div class="log-area" style="display: none;">
+					</div>
 				</div>
 				<div class="game-area" style="display: none; position: fixed;">
 					<!-- <center> --><canvas id="visual"></canvas><!-- </center> -->

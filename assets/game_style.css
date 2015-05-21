@@ -1,6 +1,9 @@
 .game-area {
 	border:1px solid #6AE5FF;
 }
+.log-outer {
+	overflow: hidden;
+}
 .log-area {
 	width: 800px;
 	height: 430px;
@@ -23,3 +26,19 @@
 	top:3%;
 	left: 3%;
 }*/
+
+::-webkit-scrollbar
+{
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track
+{
+	background: rgba(141, 222, 213, 0.09803921568627451);
+}
+
+::-webkit-scrollbar-thumb
+{
+	background: rgba(141, 222, 213, 0.09803921568627451);
+}

@@ -134,7 +134,12 @@ class Editor extends CI_Controller {
 		}
 		else if($by == "label") {
 			$pass = $this->common->getLineSequenceByLabel($proj['id'], $page);
-			$offset = $pass - 1;
+			if($pass) {
+				$offset = $pass - 1;
+			}
+			else {
+				$offset = 0;
+			}
 		}
 
 		
