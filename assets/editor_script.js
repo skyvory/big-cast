@@ -2182,34 +2182,18 @@ var path_to_project = '../../../resources/' + config.user + '/' + config.project
 $('.line-list').on('click', '.line-project-button', function() {
 	var seq = $(this.form).find('input[name=sequence]').val();
 	var index_to_read = getObjectIndex(line_obj, 'sequence', seq);
-	line_obj[index_to_read].sprite.sort(compareSpriteIndex);
-	if(line_obj[index_to_read].fk_linetype_id == 1) {
-		var bg_index = getObjectIndex(background_list, 'resource_id', line_obj[index_to_read].background_resource_id);
-		fabric.Image.fromURL(path_to_project + 'background/' + background_list[bg_index].file_name, function(img){
-			var bg = img.scale(0.3).set({
-				top: 0,
-				left: 0,
-				opacity: 0,
-				angle: 0
-			});
-			bg.set('selectable', false);
-			canvas.add(bg);
-			bg.animate('opacity', '1', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 1000,
-				easing: fabric.util.ease.easeOutExpo
-			});
-		});
-		$.each(line_obj[index_to_read].sprite, function(index, value) {
-			var spr_index = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
-			fabric.Image.fromURL(path_to_project + 'sprite/' + sprite_list[spr_index].file_name, function(img){
+	if(index_to_read > -1) {
+		line_obj[index_to_read].sprite.sort(compareSpriteIndex);
+		if(line_obj[index_to_read].fk_linetype_id == 1) {
+			var bg_index = getObjectIndex(background_list, 'resource_id', line_obj[index_to_read].background_resource_id);
+			fabric.Image.fromURL(path_to_project + 'background/' + background_list[bg_index].file_name, function(img){
 				var bg = img.scale(0.3).set({
-					top: parseInt(value.position_y) * 30,
-					left: parseInt(value.position_x) * 30,
+					top: 0,
+					left: 0,
 					opacity: 0,
 					angle: 0
 				});
-				// bg.set('selectable', false);
+				bg.set('selectable', false);
 				canvas.add(bg);
 				bg.animate('opacity', '1', {
 					onChange: canvas.renderAll.bind(canvas),
@@ -2217,7 +2201,26 @@ $('.line-list').on('click', '.line-project-button', function() {
 					easing: fabric.util.ease.easeOutExpo
 				});
 			});
-		})
-		
+			if(line_obj[index_to_read].sprite.length > 0) {
+				$.each(line_obj[index_to_read].sprite, function(index, value) {
+					var spr_index = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
+					fabric.Image.fromURL(path_to_project + 'sprite/' + sprite_list[spr_index].file_name, function(img){
+						var bg = img.scale(0.3).set({
+							top: parseInt(value.position_y) * 30,
+							left: parseInt(value.position_x) * 30,
+							opacity: 0,
+							angle: 0
+						});
+						// bg.set('selectable', false);
+						canvas.add(bg);
+						bg.animate('opacity', '1', {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 1000,
+							easing: fabric.util.ease.easeOutExpo
+						});
+					});
+				})
+			}
+		}
 	}
 })

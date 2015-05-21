@@ -138,7 +138,7 @@
 						</div>
 					</div>
 					<div class="form-group" style="margin-top: -10px; margin-bottom: 5px;">
-						<textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content"></textarea>
+						<textarea name="content" class="form-control input-sm" maxlength="160" rows="1" placeholder="text content"></textarea>
 					</div>
 				
 					<div class="row">
@@ -205,7 +205,7 @@
 						</div>
 					</div>
 					<div class="form-group" style="margin-top: -10px; margin-bottom: 5px;">
-						<textarea name="content" class="form-control input-sm" maxlength="256" rows="1" placeholder="text content">'+value.content+'</textarea>
+						<textarea name="content" class="form-control input-sm" maxlength="160" rows="1" placeholder="text content">'+value.content+'</textarea>
 					</div>
 				
 					<div class="row">
