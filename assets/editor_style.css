@@ -229,3 +229,11 @@ table td {
 .collapse-all-button {
 	margin: 0 10px 0 30px;
 }
+/*input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type=number] {
+	-moz-appearance:textfield;
+}*/

@@ -7,7 +7,9 @@
 
 		<script type="text/javascript">
 		var config = {
-			base: "<?php echo base_url(); ?>"
+			base: "<?php echo base_url(); ?>",
+			user: "<?php echo $uid; ?>",
+			project: "<?php echo $proj; ?>"
 		};
 		</script>
 

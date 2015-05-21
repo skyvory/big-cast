@@ -15,17 +15,16 @@ class Editor extends CI_Controller {
 		}
 		*/
 	}
-	function index() {
-		//no direct access
-		// ! REDIRECT TO MANAGE URL !
-	}
 	function manage($project_id = FALSE) {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
+		$user = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
-		$data['user'] = $this->session->userdata('user_auth');
+		$data['user'] = $user;
 		$head['title'] = "Editor";
+		$head['uid'] = $user['id'];
+		$head['proj'] = $proj['id'];
 
 		$per_page = 50;
 		$total_line = $this->common->getTotalLine($proj['id']);
@@ -429,7 +428,12 @@ class Editor extends CI_Controller {
 		$list = array();
 		foreach ($pass as $key => $value) {
 			$thumb_name = $this->trimExtension($value['file_name']) . '_thumb' . $this->extractExtension($value['file_name']);
-			$list[] = array('resource_id' => $value['resource_id'], 'name' => $value['name'], 'thumb_name' => $thumb_name);
+			$list[] = array(
+				'resource_id' => $value['resource_id'],
+				'name' => $value['name'],
+				'thumb_name' => $thumb_name,
+				'file_name' => $value['file_name']
+			);
 		}
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($list, JSON_PRETTY_PRINT));
@@ -469,7 +473,15 @@ class Editor extends CI_Controller {
 		$list = array();
 		foreach ($pass as $key => $value) {
 			$thumb_name = $this->trimExtension($value['file_name']) . '_thumb' . $this->extractExtension($value['file_name']);
-			$list[] = array('resource_id' => $value['resource_id'], 'name' => $value['name'], 'thumb_name' => $thumb_name, 'character_name' => $value['character_name'], 'figure_name' => $value['figure_name'], 'expression_name' => $value['expression_name']);
+			$list[] = array(
+				'resource_id' => $value['resource_id'],
+				'name' => $value['name'],
+				'thumb_name' => $thumb_name,
+				'character_name' => $value['character_name'],
+				'figure_name' => $value['figure_name'],
+				'expression_name' => $value['expression_name'],
+				'file_name' => $value['file_name'],
+			);
 		}
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
