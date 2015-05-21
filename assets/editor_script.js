@@ -355,7 +355,7 @@ $('#addchoicelinebutton').click(function() {
 	var select_form = $('.select-line');
 	// get value of which radio is selected for line insertion position
 	var insert_position = $('.line-command-area').find('input:radio[name=line_insert_position]:checked').val();
-	// add new line in the middle
+	// add new choice in the middle
 	if(insert_position == "after") {
 		// get sequence value of selected line
 		var form_sequence = $(select_form).find('input[name=sequence]').val();
@@ -447,9 +447,8 @@ $('#addchoicelinebutton').click(function() {
 			});
 		}
 	}
-	// add line at end section
+	// add choice at end section
 	else if(insert_position == "end") {
-		var last = getLastLineObjectBySequence(tail);
 		var temp_tail = tail+1;
 		var req = $.ajax({
 			url: config.base + 'index.php/editor/newLine',
