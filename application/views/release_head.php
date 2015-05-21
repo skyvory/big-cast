@@ -23,7 +23,6 @@
 			text-align: center;
 			overflow: hidden;
 			max-height: 400px;
-			background-color: #000;
 		}
 		.release-cover {
 			max-width: 100%;
@@ -35,7 +34,7 @@
 			padding: auto;
 		}
 		.thumbnail {
-			/*min-height: 500px;*/
+			min-height: 500px;
 			/*height: auto;*/
 		}
 		dt {

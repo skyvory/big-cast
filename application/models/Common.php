@@ -528,6 +528,7 @@ Class Common extends CI_Model {
 		$this->db->trans_begin();
 		$this->db->set('sequence', 'sequence+1', FALSE);
 		$this->db->where('sequence >=', $sequence);
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->update('line');
 
 		$data = array('fk_project_id' => $project_id, 'sequence' => $sequence, 'fk_linetype_id' => $line_type);
@@ -542,7 +543,7 @@ Class Common extends CI_Model {
 			return $insert_id;
 		}
 	}
-	function deleteLine($line_id) {
+	function deleteLine($line_id, $project_id) {
 		$this->db->trans_begin();
 		$this->db->select('sequence');
 		$this->db->from('line');
@@ -556,6 +557,7 @@ Class Common extends CI_Model {
 
 		$this->db->set('sequence', 'sequence-1', FALSE);
 		$this->db->where('sequence >', $line_sequence);
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->update('line');
 		if($this->db->trans_status() === FALSE) {
 			$this->db->trans_rollback();

@@ -498,8 +498,9 @@ class Editor extends CI_Controller {
 		}
 	}
 	public function removeLine() {
+		$proj = $this->session->userdata('active_project');
 		$line_id = $this->input->post('lineid');
-		$pass = $this->common->deleteLine($line_id);
+		$pass = $this->common->deleteLine($line_id, $proj['id']);
 		if($pass) {
 			echo "1";
 		}
