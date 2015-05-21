@@ -60,7 +60,6 @@ Class Common extends CI_Model {
 		return $result;
 	}
 	function getProject($project_id) {
-		$this->db->select('*');
 		$this->db->from('project');
 		$this->db->where('project_id', $project_id);
 		$query = $this->db->get();
@@ -98,6 +97,31 @@ Class Common extends CI_Model {
 		$this->db->select('choice_id, choice.jumpto_line_id');
 		$this->db->from('choice');
 		$this->db->where('fk_line_id', $line_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+
+
+
+	// RELEASE
+	function getPublishedProjectLatest($limit, $offset) {
+		$this->db->from('project');
+		$this->db->join('user', 'user_id = fk_user_id');
+		$this->db->where('fk_projectstatus_id', 2);
+		$this->db->limit($limit, $offset);
+		$this->db->order_by('published_date', 'DESC');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+
+	function getPublishedProjectAlphabetical($limit, $offset) {
+		$this->db->from('project');
+		$this->db->join('user', 'user_id = fk_user_id');
+		$this->db->where('fk_projectstatus_id', 2);
+		$this->db->limit($limit, $offset);
+		$this->db->order_by('title', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;

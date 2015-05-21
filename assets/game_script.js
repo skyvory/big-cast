@@ -7,7 +7,7 @@ var current = {
 	head: -1,
 	// tail: 0,
 	// branch: 0,
-	limit: 60
+	limit: 100
 };
 var cache = {
 	head: -1,
@@ -85,7 +85,7 @@ function callConfigurationData(callback) {
 function callSequentialLineData(offset, callback) {
 	// current.head + current.limit would result line with total number of limit cached ahead
 	//var process_limit = current.head + current.limit;
-	var process_limit = 10;
+	var process_limit = 30;
 	// var offset = 0;
 	// if(current.head > 0) {
 	// 	offset = parseInt(line[current.head].sequence) + 1;
@@ -133,7 +133,7 @@ function maintainCurrent(callback) {
 	if(current.head > current.limit) {
 		console.log("current removed");
 		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
-		for(var i = 0; i < current.sequence - 15; i++) {
+		for(var i = 0; i < current.sequence - 10; i++) {
 			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
 			line.splice(0, 1);
 			current.head--;
@@ -142,7 +142,7 @@ function maintainCurrent(callback) {
 		}
 	}
 	// request new lines to cache when lines ahead less than n number
-	if(current.head - current.sequence < 10) {
+	if(current.head - current.sequence < 50) {
 		console.log("more line call");
 		callSequentialLineData(parseInt(line[current.head].sequence));
 	}
@@ -3451,7 +3451,7 @@ function playAuto() {
 }
 
 function playSkip() {
-	var wait = 100;
+	var wait = 300;
 	if(game.screen == "skip") {
 		renderNextLine();
 		maintainCurrent();

@@ -54,10 +54,11 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['register'] = 'login/register';
-$route['resource'] = 'reseource';
+$route['resource'] = 'resource';
 $route['resource/do_upload'] = 'resource/do_upload';
 $route['project'] = 'project/main';
 $route['project/new'] = 'project/newProject';
+$route['release'] = 'release/latest';
 /*
 $route['home/(:any)/(:any)'] = 'home/$2';
 $route['home'] = 'home/overview';

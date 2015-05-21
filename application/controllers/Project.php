@@ -29,10 +29,7 @@ class Project extends CI_Controller {
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		$config['base_url'] = base_url() . 'index.php/project/main';
 		$config['total_rows'] = $this->common->countUserProject($user['id']);
-		if($page === 'all')
-			$config['per_page'] = $config['total_rows'];
-		else
-			$config['per_page'] = 10;
+		$config['per_page'] = 10;
 		$config['uri_segment'] = 3;
 		$config['num_links'] = 5;
 		$config['use_page_numbers'] = false;
