@@ -26,6 +26,7 @@
 					</label>
 					</div>
 				 </div>
+				 <input type="button" class="btn btn-default" onclick="history.back();" value="Back">
 				<input type="submit" name="submitchange" class="btn btn-primary" value="submit" />
 			</form>
 		</div>

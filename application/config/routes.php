@@ -59,12 +59,8 @@ $route['resource/do_upload'] = 'resource/do_upload';
 $route['project'] = 'project/main';
 $route['project/new'] = 'project/newProject';
 $route['release'] = 'release/latest';
-/*
-$route['home/(:any)/(:any)'] = 'home/$2';
-$route['home'] = 'home/overview';
-$route['admin'] = 'admin/datata01';
-$route['admin/openta01'] = 'admin/datata01';
-$route['datata01'] = 'admin/datata01';
-$route['default_controller'] = "login";
-$route['404_override'] = 'notice';
-*/
+
+$route['admin'] = 'admin/userList';
+$route['admin/user'] = 'admin/userList';
+$route['admin/project'] = 'admin/projectList';
+$route['admin/register'] = 'admin/register';

@@ -3,6 +3,7 @@ Class Common extends CI_Model {
 	function __construct() {
 		$this->load->database();
 	}
+
 	// LOGIN FUNCTION
 	function createUser($username, $password_hash, $salt) {
 		$now = date('Y-m-d H:i:s');
@@ -17,7 +18,6 @@ Class Common extends CI_Model {
 		}
 	}
 	function getUser($username) {
-		$this->db->select('*');
 		$this->db->from('user');
 		$this->db->where('username', $username);
 		$query = $this->db->get();
@@ -39,7 +39,75 @@ Class Common extends CI_Model {
 
 
 
-	// HOME
+
+	// ADMIN FUNCTION
+	function getUserAll($limit, $offset) {
+		$this->db->from('user');
+		$this->db->limit($limit, $offset);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function countUserAll() {
+		$this->db->from('user');
+		$this->db->join('permission', 'permission_id = fk_permission_id');
+		$count = $this->db->count_all_results();
+		return $count;
+	}
+	function getProjectAll($limit, $offset) {
+		$this->db->from('project');
+		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
+		$this->db->join('user', 'user_id = fk_user_id');
+		$this->db->limit($limit, $offset);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getProjectDetails($project_id) {
+		$this->db->from('project');
+		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
+		$this->db->join('user', 'user_id = fk_user_id');
+		$this->db->where('project_id', $project_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function countProjectAll() {
+		$this->db->from('project');
+		$count = $this->db->count_all_results();
+		return $count;
+	}
+	function getUserById($user_id) {
+		$this->db->from('user');
+		$this->db->where('user_id', $user_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
+	function updateUserName($user_id, $username) {
+		$this->db->set('username', $username);
+		$this->db->where('user_id', $user_id);
+		$exec = $this->db->update('user');
+		return $exec;
+	}
+	function updateUser($user_id, $username, $password_hash, $salt) {
+		$data = array('username' => $username, 'password' => $password_hash, 'salt' => $salt);
+		$this->db->where('user_id', $user_id);
+		$exec = $this->db->update('user', $data);
+		return $exec;
+	}
+	function deleteUser($user_id) {
+		$this->db->where('user_id', $user_id);
+		$exec = $this->db->delete('user');
+		return $exec;
+	}
+
+
+
+
+
+
+	// HOME FUNCTION
 	function getRecentProject($user_id) {
 		$this->db->select('*, projectstatus.name as status');
 		$this->db->from('project');
@@ -134,7 +202,9 @@ Class Common extends CI_Model {
 
 
 
-	// RELEASE
+
+
+	// RELEASE FUNCTION
 	function getPublishedProjectLatest($limit, $offset) {
 		$this->db->from('project');
 		$this->db->join('user', 'user_id = fk_user_id');
@@ -155,6 +225,12 @@ Class Common extends CI_Model {
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
+	}
+	function countPublishedProject() {
+		$this->db->from('project');
+		$this->db->where('fk_projectstatus_id', 2);
+		$count = $this->db->count_all_results();
+		return $count;
 	}
 
 

@@ -29,7 +29,7 @@ class Release extends CI_Controller {
 		$self['user'] = $user;
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		$config['base_url'] = base_url() . 'index.php/release/new';
-		$config['total_rows'] = $this->common->countUserProject($user['id']);
+		$config['total_rows'] = $this->common->countPublishedProject();
 		$config['per_page'] = 10;
 		$config['uri_segment'] = 3;
 		$config['num_links'] = 5;

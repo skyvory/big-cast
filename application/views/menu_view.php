@@ -166,4 +166,8 @@
 	.logout-button {
 		background-color: rgba(255, 0, 0, 0.4);
 	}
+	.dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
+		background-image: none;
+		background-color: rgba(250,251,206,0.3);
+	}
 </style>

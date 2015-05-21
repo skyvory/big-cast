@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Project extends CI_Controller {
+class Admin extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
@@ -8,8 +8,8 @@ class Project extends CI_Controller {
 		$this->load->helper('url');
 		if($this->session->userdata('user_auth')) {
 			$sess = $this->session->userdata('user_auth');
-			if($sess['perm'] == 1) {
-				redirect('admin', 'refresh');
+			if($sess['perm'] == 2) {
+				redirect('home', 'refresh');
 			}
 		} 
 		else {
@@ -17,18 +17,18 @@ class Project extends CI_Controller {
 		}
 	}
 
-	function main() {
-		// $this->load->helper('form');
+	function userList() {
 		$this->load->helper('url');
 		$this->load->library('pagination');
 		
 		$user = $this->session->userdata('user_auth');
 		$head['title'] = "Project";
+		
 		$self['user'] = $user;
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		$config['base_url'] = base_url() . 'index.php/project/main';
-		$config['total_rows'] = $this->common->countUserProject($user['id']);
-		$config['per_page'] = 10;
+		$config['total_rows'] = $this->common->countUserAll();
+		$config['per_page'] = 25;
 		$config['uri_segment'] = 3;
 		$config['num_links'] = 5;
 		$config['use_page_numbers'] = false;
@@ -53,66 +53,219 @@ class Project extends CI_Controller {
 		$this->pagination->initialize($config);
 		$data['page'] = $this->pagination->create_links();
 
-		$data['project'] = $this->common->getUserProject($user['id'], $config['per_page'], $page);
+		$data['user'] = $this->common->getUserAll($config['per_page'], $page);
 
-		$this->load->vars($self);
-		$this->load->view('project_head', $head);
-		$this->load->view('menu_view');
-		$this->load->view('project_view', $data);
-		$this->load->view('foot');
-	}
-
-	public function newProject() {
-		$this->load->helper('form');
-		$this->load->helper('url');
-		$this->load->library('form_validation');
 		$user = $this->session->userdata('user_auth');
 		$self['user'] = $user;
 		$this->load->vars($self);
+		$this->load->view('admin_head', $head);
+		$this->load->view('admin_menu_view');
+		$this->load->view('admin_user_view', $data);
+		$this->load->view('foot');
+	}
+
+	function projectList() {
+		$this->load->helper('url');
+		$this->load->library('pagination');
+		
+		$user = $this->session->userdata('user_auth');
 		$head['title'] = "Project";
-		// $config['upload_path'] = './resources/';
-		// $config['allowed_types'] = 'jpg|png';
-		// $config['overwrite']  = 'true';
-		// $config['max_size'] = '16000';
-		// $this->load->library('upload', $config);
-		$this->form_validation->set_rules('title', 'Title', 'required');
-		if ($this->form_validation->run() == false) {
-			$this->load->view('project_head', $head);
-			$this->load->view('menu_view');
-			$this->load->view('project_new_view');
+		$self['user'] = $user;
+		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+		$config['base_url'] = base_url() . 'index.php/project/main';
+		$config['total_rows'] = $this->common->countProjectAll();
+		$config['per_page'] = 25;
+		$config['uri_segment'] = 3;
+		$config['num_links'] = 5;
+		$config['use_page_numbers'] = false;
+		$config['full_tag_open'] = '<nav><ul class="pagination">';
+		$config['full_tag_close'] = ' </ul></nav>';
+		$config['first_tag_open'] = '<li>';
+		$config['first_link'] = '&laquo; First';
+		$config['first_tag_close'] = '</li>';
+		$config['prev_tag_open'] = ' <li>';
+		$config['prev_link'] = '&larr; Prev';
+		$config['prev_tag_close'] = '</li>';
+		$config['cur_tag_open'] = '<li class="active"><a href="">';
+		$config['cur_tag_close'] = '</a></li>';
+		$config['num_tag_open'] = '<li>';
+		$config['num_tag_close'] = '</li>';
+		$config['next_tag_open'] = '<li>';
+		$config['next_link'] = 'Next &rarr;';
+		$config['next_tag_close'] = '</li>';
+		$config['last_tag_open'] = '<li>';
+		$config['last_link'] = 'Last &raquo;';
+		$config['last_tag_close'] = '</li>';
+		$this->pagination->initialize($config);
+		$data['page'] = $this->pagination->create_links();
+
+		$data['project'] = $this->common->getProjectAll($config['per_page'], $page);
+
+		$this->load->vars($self);
+		$this->load->view('admin_head', $head);
+		$this->load->view('admin_menu_view');
+		$this->load->view('admin_project_view', $data);
+		$this->load->view('foot');
+	}
+	public function viewProject() {
+		$this->load->helper('url');
+		$this->load->library('pagination');
+		
+		$user = $this->session->userdata('user_auth');
+		$head['title'] = "Project";
+		$self['user'] = $user;
+		$project_id = $this->uri->segment(3);
+		$data['project'] = $this->common->getProjectDetails($project_id);
+
+		$this->load->vars($self);
+		$this->load->view('admin_head', $head);
+		$this->load->view('admin_menu_view');
+		$this->load->view('admin_project_details_view', $data);
+		$this->load->view('foot');
+	}
+
+	public function register(){
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+
+		$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[4]|max_length[16]|alpha_numeric|trim');
+		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
+
+		$head['title'] = "New User";
+		$user = $this->session->userdata('user_auth');
+		$self['user'] = $user;
+		$this->load->vars($self);
+
+		if($this->form_validation->run() == false){
+			$this->load->view('admin_head', $head);
+			$this->load->view('admin_menu_view');
+			$this->load->view('admin_register_view');
 			$this->load->view('foot');
 		}
-		else {
-			$title = $this->input->post('title');
-			$description = $this->input->post('description');
-			$user = $this->session->userdata('user_auth');
-			$pass = $this->common->createProject($title, $description, $user['id']);
-			if($pass) {
-				$path_to_resource = './resources/';
-				$new_directory = $path_to_resource . '/' . $user['id'] . '/' . $pass . '/';
-				if(!is_dir($new_directory)) {
-					mkdir($new_directory, 777);
-					//make each type of resource and their thumbs directory
-					mkdir($new_directory . 'background/', 777);
-					mkdir($new_directory . 'background/thumbs/', 777);
-					mkdir($new_directory . 'sprite/', 777);
-					mkdir($new_directory . 'sprite/thumbs/', 777);
-					mkdir($new_directory . 'bgm/', 777);
-					mkdir($new_directory . 'voice/', 777);
-					mkdir($new_directory . 'sfx/', 777);
-					mkdir($new_directory . 'video/', 777);
-				}
-				redirect('project', 'refresh');
-			}
-			else {
-				$data['error'] = array('error' => "Failed to create new project!");
-				$this->load->view('project_head', $head);
-				$this->load->view('menu_view');
-				$this->load->view('project_new_view', $data);
+		else{
+			$username = $this->input->post('username');
+			$password = $this->input->post('password');
+			$password_repeat = $this->input->post('password_repeat');
+
+			if($password != $password_repeat){
+				$data['notification'] = "Password doesn't match. Please re-type your password!";
+				$this->load->view('admin_head', $head);
+				$this->load->view('admin_menu_view');
+				$this->load->view('admin_register_view', $data);
 				$this->load->view('foot');
+			}
+			else{
+				$reg = $this->registerUser($username, $password);
+				if($reg){
+					redirect('admin/user');
+				}
 			}
 		}
 	}
+
+	private function registerUser($username, $password){
+		$salt = $this->generateSalt($username);
+		if(CRYPT_BLOWFISH == 1){
+			$password_hash = crypt($password, $salt);
+		}
+		$pass = $this->common->createUser($username, $password_hash, $salt);
+		//pass would hold user_id if success
+		if($pass != NULL) {
+			$path_to_resource = './resources/';
+			$new_directory = $path_to_resource . $pass;
+			if(!is_dir($new_directory)){
+				$make = mkdir($new_directory, 777);
+			}
+		}
+		return $pass;
+	}
+
+	
+
+	public function editUser(){
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+
+		$this->form_validation->set_rules('username', 'Username', 'required|min_length[4]|max_length[16]|alpha_numeric|trim');
+		if(!empty($password)) {
+			$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
+		}
+
+
+		$head['title'] = "Edit User";
+		$user = $this->session->userdata('user_auth');
+		$self['user'] = $user;
+		$this->load->vars($self);
+
+		if($this->form_validation->run() == false){
+			$user_id = $this->uri->segment(3);
+			$data['userdata'] = $this->common->getUserById($user_id);
+			$this->load->view('admin_head', $head);
+			$this->load->view('admin_menu_view');
+			$this->load->view('admin_user_edit_view', $data);
+			$this->load->view('foot');
+		}
+		else{
+			$user_id = $this->input->post('user_id');
+			$username = $this->input->post('username');
+			$password = $this->input->post('password');
+			$password_repeat = $this->input->post('password_repeat');
+			if(empty($password)) {
+				$this->fb->log($user_id);
+				$pass = $this->common->updateUserName($user_id, $username);
+				if($pass) {
+					redirect('admin/user', 'location');
+				}
+				// error else
+			}
+			else {
+				if($password != $password_repeat){
+					$data['error'] = array('error' => "Password doesn't match. Please re-type your password!");
+					$data['userdata'] = $this->common->getUserById($user_id);
+					$this->load->view('admin_head', $head);
+					$this->load->view('admin_menu_view');
+					$this->load->view('admin_user_edit_view', $data);
+					$this->load->view('foot');
+				}
+				else{
+					$reg = $this->updateUser($user_id, $username, $password);
+					if($reg){
+						redirect('admin/user', 'location');
+					}
+				}
+			}
+		}
+	}
+
+	private function updateUser($user_id, $username, $password){
+		$salt = $this->generateSalt($username);
+		if(CRYPT_BLOWFISH == 1){
+			$password_hash = crypt($password, $salt);
+		}
+		$pass = $this->common->updateUser($user_id, $username, $password_hash, $salt);
+		return $pass;
+	}
+
+	private function generateSalt($username){
+		$prehash = '6f4097b653b5a46bf3e704c292f56c51d0debd834cbb87ce3c9e4d15b79c0f4bc6f99c8b294db3c8aae5aa7bdf1a0435f2ff5aceca5377f8e9c0350e53778206';
+		$presalt = $prehash.$username;
+		//use whirlpool hash for salt
+		$rawsalt = hash('whirlpool', $presalt);
+		//prefix for blowfish hash
+		$salt = '$2a$07$' . $rawsalt . '$';
+		return $salt;
+	}
+
+	public function deleteUser() {
+		$user_id = $this->uri->segment(3);
+		$pass = $this->common->deleteUser($user_id);
+		redirect('admin/user', 'location');
+	}
+
+
+
+
 	
 	public function setting() {
 		$this->load->helper('form');

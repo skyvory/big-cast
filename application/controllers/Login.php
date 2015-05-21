@@ -31,7 +31,7 @@ class Login extends CI_Controller {
 					$sess_array = array();
 					$sess_array = array('id' => $auth['user_id'], 'name' => $auth['username'], 'perm' => $auth['fk_permission_id']);
 					$this->session->set_userdata('user_auth', $sess_array);
-					redirect('project', 'location');
+					redirect('home', 'location');
 				}
 				else if($auth['status'] == "useronly"){
 					$data['notification'] = "Wrong password!";

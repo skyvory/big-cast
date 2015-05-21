@@ -15,7 +15,7 @@
 		<div class="col-md-6">
 			<div class="thumbnail">
 				<div class="cover-container">
-					<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } ?>" class="release-cover" />
+					<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } else { echo base_url() . '/assets/images/no_image.png'; } ?>" class="release-cover" />
 				</div>
 				<div class="caption">
 					<h1><?php echo $value['title']; ?></h1>

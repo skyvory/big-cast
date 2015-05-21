@@ -50,7 +50,7 @@
 			<?php foreach($project as $value): ?>
 				 <div class="media" style="background-color: #ddd; margin: 10px 20px; padding: 10px;">
 					<div class="media-left">
-						<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } ?>" class="media-object project-cover" />
+						<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } else { echo base_url() . '/assets/images/no_image.png'; } ?>" class="media-object project-cover" />
 					</div>
 					<div class="media-body" style="margin: 15px;">
 						<div class="project-title">
