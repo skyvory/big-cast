@@ -5,15 +5,16 @@ class Game extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('game_model','',TRUE);
-		/*
+		$this->load->helper('url');
 		if($this->session->userdata('user_auth')) {
 			$sess = $this->session->userdata('user_auth');
-			if($sess['serv']=='peter')
+			if($sess['perm'] == 1) {
 				redirect('admin', 'refresh');
-		} else {
+			}
+		} 
+		else {
 			redirect('login', 'refresh');
 		}
-		*/
 	}
 
 	function index() {
@@ -31,7 +32,7 @@ class Game extends CI_Controller {
 		$pass = $this->game_model->getProject($project_id);
 		$this->load->vars($data);
 		if($pass) {
-			if($pass['fk_projectstatus_id'] == 2) {
+			if($pass['fk_projectstatus_id'] == 2 || $pass['fk_user_id'] == $user['id']) {
 				$sess_array = array(
 					'id' => $project_id,
 					'creator_id' => $pass['fk_user_id']
@@ -42,12 +43,19 @@ class Game extends CI_Controller {
 				$this->load->view('game_view');
 				$this->load->view('foot');
 			}
+			else {
+				$data['message'] = "You don't have access to this page!";
+				$this->load->view('game_forbidden_head', $head);
+				$this->load->view('menu_view');
+				$this->load->view('game_forbidden', $data);
+				$this->load->view('foot');
+			}
 		}
 		else {
 			$data['message'] = "Game not found!";
-			$this->load->view('game_head', $head);
+			$this->load->view('game_forbidden_head', $head);
 			$this->load->view('menu_view');
-			$this->load->view('game_forbidden');
+			$this->load->view('game_forbidden', $data);
 			$this->load->view('foot');
 		}
 

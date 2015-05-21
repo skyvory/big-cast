@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
-			<?php if(isset($error)) { echo $error['error'] . "<br />"; foreach ($error['list'] as $value) { echo $value . "<br />" } } ?>
+			<?php if(isset($error)) { echo $error['error'] . "<br />"; foreach ($error['list'] as $value) { echo $value . "<br />"; } } ?>
 			<?php echo validation_errors(); ?>
 			<div class="page-header">
 				<h2>Project's Setting</h2>

@@ -1,20 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
 class Login extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('common','',true);
-
-		// if($this->session->user_auth) {
-		// 	$user = $this->session->user_auth;
-		// 	if($user['perm']==1)
-		// 		redirect('admin', 'location');
-		// }
-		// else {
-		// 	redirect('login', 'location');
-		// }
+		$this->load->helper('url');
 	}
 	public function index() {
 		$this->load->helper('form');

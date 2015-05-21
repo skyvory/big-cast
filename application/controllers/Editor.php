@@ -5,15 +5,16 @@ class Editor extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->model('common','',TRUE);
-		/*
+		$this->load->helper('url');
 		if($this->session->userdata('user_auth')) {
 			$sess = $this->session->userdata('user_auth');
-			if($sess['serv']=='peter')
+			if($sess['perm'] == 1) {
 				redirect('admin', 'refresh');
-		} else {
+			}
+		} 
+		else {
 			redirect('login', 'refresh');
 		}
-		*/
 	}
 	function manage($project_id = FALSE) {
 		$this->load->helper('form');
