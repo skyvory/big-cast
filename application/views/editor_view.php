@@ -61,7 +61,7 @@
 					</div>
 				</div>
 			</div> -->
-			<div class="row draggable" style="position:fixed; z-index: 10; margin: 0 auto; width: 50%;">
+			<div class="row draggable" style="position:fixed; z-index: 10; margin: 0 auto; width: 60%;">
 				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;">
 					<div class="pagination-area">
 							<div class="btn-group">

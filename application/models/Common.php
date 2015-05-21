@@ -36,6 +36,36 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
+
+
+
+	// HOME
+	function getRecentProject($user_id) {
+		$this->db->select('*, projectstatus.name as status');
+		$this->db->from('project');
+		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->limit(3);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+	function getLatestRelease() {
+		$this->db->from('project');
+		$this->db->join('user', 'user_id = fk_user_id');
+		$this->db->where('fk_projectstatus_id', 2);
+		$this->db->limit(3);
+		$this->db->order_by('published_date', 'DESC');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
+
+
+
+
+
+
 	// PROJECT FUNCTION
 	function createProject($title, $description, $user_id) {
 		$now = date('Y-m-d H:i:s');

@@ -183,7 +183,7 @@ class Project extends CI_Controller {
 		else if($publish_check == true && $this->checkPublishability($project_id) == false) {
 			$publishability = $this->checkPublishability($project_id);
 			if($publishability == false) {
-				$data['error'] = array('error' => "Your project is not suitable for publishing yet!");
+				$data['error'] = array('error' => "Your project is not suitable for publishing yet!", 'list' => $this->session->userdata('publishability_error'));
 				$data['project'] = $this->common->getProject($project_id);
 				$this->load->view('project_head', $head);
 				$this->load->view('menu_view');
@@ -287,6 +287,11 @@ class Project extends CI_Controller {
 			}
 			// echo $value .".<br/>";
 		}
+
+		if($end_sequence <= 1) {
+			$validity = false;
+			$error[] = "you do not have enough lines";
+		}
 		// check if there's actually ending
 		// if(!$end_sequence) {
 		// 	$validity = false;
@@ -304,6 +309,7 @@ class Project extends CI_Controller {
 		// }
 		// print_r($jump_sequence);
 		// echo "<BR>";
+		$this->session->set_userdata('publishability_error', $error);
 		return $validity;
 	}
 	
