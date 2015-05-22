@@ -16,6 +16,18 @@ body
 	font-family: Arial, Helvetica, sans-serif;
 	padding-top: 70px;
 }
+img {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;  
+
+	user-drag: none; 
+	-moz-user-select: none;
+	-webkit-user-drag: none;
+}
 
 .recopyright
 {
