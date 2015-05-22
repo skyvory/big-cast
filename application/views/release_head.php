@@ -17,5 +17,6 @@
 
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/release_script.js" async></script>
 	</head>
 	<body>

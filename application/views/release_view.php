@@ -12,13 +12,13 @@
 	</div>
 	<div class="row">
 	<?php foreach($release as $value): ?>
-		<div class="col-md-6">
-			<div class="thumbnail">
+		<div class="col-md-4 release-area">
+			<div class="thumbnail" style="display: none;">
 				<div class="cover-container">
-					<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } else { echo base_url() . '/assets/images/no_image.png'; } ?>" class="release-cover" />
+						<img src="<?php if(isset($value['cover']) && $value['cover'] == 1) { echo base_url() . 'resources/' . $value['fk_user_id'] . '/' . $value['project_id'] .'/cover.jpg'; } else { echo base_url() . '/assets/images/no_image.png'; } ?>" class="release-cover" />
 				</div>
 				<div class="caption">
-					<h1><?php echo $value['title']; ?></h1>
+					<h2><?php echo $value['title']; ?></h2>
 					<div class="row">
 						<div class="col-md-6">
 							<dl>
