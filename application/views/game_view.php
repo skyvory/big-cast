@@ -23,7 +23,6 @@
 				</div>
 				<div class="video-area" style="display: none; position: fixed; background-color: black; pointer-events: none;"></div>
 			</div>
-			<button id="test">test</button>
 			<audio id="bgm_play"></audio>
 			<audio id="voice_play"></audio>
 			<audio id="sfx_play"></audio>

@@ -486,7 +486,7 @@ class Resource extends CI_Controller {
 			echo '</tbody></table>';
 		}
 		else if($resource_type_request == 5) {
-			$resource_data = $this->common->getVoiceResource($sess['id'], $proj['id'], '5');
+			$resource_data = $this->common->getAudioResource($proj['id'], '5');
 			echo '<table class="table"><tbody>';
 			foreach ($resource_data as $value) {
 				?>

@@ -13,7 +13,9 @@
 						<button type="button" id="addvideolinebutton"  class="btn btn-default">video</button>
 						<button type="button" id="addendlinebutton"  class="btn btn-default">end</button>
 					</div>
-					<button type="button" id="savebutton" class="btn btn-default pull-right">Save</button>
+					<button type="button" id="savebutton" class="btn btn-success pull-right">Save</button>
+					<div class="row">
+					<div class="col-md-8">
 					<div class="btn-group btn-group-sm" role="group">
 						<div class="radio">
 							<label>
@@ -25,6 +27,12 @@
 									<span>at end of this section</span>
 							</label>
 						</div>
+					</div>
+					</div>
+					<div class="col-md-4">
+					<br />
+						<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
+					</div>
 					</div>
 			</div>
 		</div>

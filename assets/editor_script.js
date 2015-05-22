@@ -2203,6 +2203,11 @@ $('.sprite-list').on('mouseover', 'input[name=effect]', function() {
 	$(this).tooltip('show');
 });
 
+$('.play-button').click(function() {
+	var t = window.open(config.base + 'index.php/game/play/' + config.project, '_blank');
+	t.focus();
+})
+
 function compareSpriteIndex(a, b) {
 	if(a.position_z < b.position_z) {
 		return -1;
@@ -2222,6 +2227,21 @@ canvasdisplay.height = 180;
 
 var canvas = new fabric.Canvas('preview');
 canvas.selection = false;
+$(document).ready(function() {
+	var txt = new fabric.Text("Preview Pane", {
+		fontSize: 20,
+		fontFamily: 'Arial',
+		top: canvas.height / 2,
+		left: canvas.width / 2,
+		originX: 'center',
+		originY: 'center',
+		fontWeight: 'bold',
+		opacity: 1,
+		fill: '#777'
+	});
+	txt.set('selectable', false);
+	canvas.add(txt);
+})
 
 var path_to_project = '../../../resources/' + config.user + '/' + config.project + '/';
 $('.line-list').on('click', '.line-project-button', function() {
