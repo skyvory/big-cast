@@ -25,7 +25,6 @@
 									<span>at end of this section</span>
 							</label>
 						</div>
-						<button id="test">test</button>
 					</div>
 			</div>
 		</div>
@@ -161,11 +160,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -228,11 +227,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -322,11 +321,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -378,11 +377,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -447,11 +446,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -501,11 +500,11 @@
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button"><span class="glyphicon glyphicon-option-horizontal"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button>
 				</div>
 			
 			</div>
@@ -540,9 +539,9 @@
 					<p>End mark.</p>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 					<br />
-					<button type="button" class="btn btn-default btn-xs pull-right line-project-button"><span class="glyphicon glyphicon-chevron-right"></span></button>
+					<button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button>
 					<br />
 					
 				</div>

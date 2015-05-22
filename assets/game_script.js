@@ -28,6 +28,62 @@ var game = {
 }
 var font_list = [];
 
+var bgm_glob;
+var sfx_glob;
+var voice_glob;
+
+	// voice_glob = new AudioContext();
+	// var music;;
+	// var getSound = new XMLHttpRequest();
+	// getSound.open("GET", "../../../resources/~Gentle.mp3", true);
+	// getSound.responseType = "arraybuffer";
+	// getSound.onLoad = function() {
+	// 	voice_glob.decodeAudioData(getSound.response, function(buffer) {
+	// 		music = buffer;
+	// 	});
+	// }
+	// getSound.send();
+	// var playSound = voice_glob.createBufferSource();
+	// playSound.buffer = music;
+	// playSound.connect(voice_glob.destination);
+	// playSound.start(0);
+
+var electro; // Create the Sound 
+(function(){
+	
+	var context = new AudioContext(); // Create and Initialize the Audio Context
+	var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
+	getSound.open("GET", "../../../resources/~gentle.mp3", true); // Path to Audio File
+	getSound.responseType = "arraybuffer"; // Read as Binary Data
+	getSound.onload = function() {
+		context.decodeAudioData(getSound.response, function(buffer){
+			electro = buffer; // Decode the Audio Data and Store it in a Variable
+		});
+	}
+	getSound.send(); // Send the Request and Load the File
+	
+	window.addEventListener("keydown",onKeyDown); // Create Event Listener for KeyDown
+	
+	function onKeyDown(e){
+		switch (e.keyCode) {
+			// X
+			case 88:
+				var playSound = context.createBufferSource(); // Declare a New Sound
+				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
+				playSound.connect(context.destination);  // Link the Sound to the Output
+				playSound.start(0); // Play the Sound Immediately
+			break;
+			case 13:
+			var playSound = context.createBufferSource(); // Declare a New Sound
+				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
+				playSound.connect(context.destination);  
+				playSound.noteOff(0);
+				break;
+		}
+ 	}
+}());
+
+
 // canvas renderer
 // var visual_display = document.getElementsByTagName('canvas')[0];
 var visual_display = $('#visual')[0];
@@ -492,8 +548,8 @@ function getObjectIndex(array, attr, value) {
 
 
 function initializeGame() {
-	$('.request-loading').fadeOut(200, function() {
-		$('.game-area').fadeIn(100, function() { // DEFAULT 1500
+	$('.request-loading').fadeOut(500, function() {
+		$('.game-area').fadeIn(1500, function() { // DEFAULT 1500
 			renderTitleScreen();
 		});
 	});
@@ -550,7 +606,7 @@ function renderTitleScreen() {
 	// animate image
 	ttl_bg.animate('opacity', '1', {
 		onChange: canvas.renderAll.bind(canvas),
-		duration: 100, //DEFAULT 2000
+		duration: 2000, //DEFAULT 2000
 		easing: fabric.util.ease.easeInOutQuad,
 		onComplete: function() {
 			renderTitleMenu()
@@ -3284,6 +3340,10 @@ function renderNextLine(callback) {
 		if(line[current.sequence].content.length > 0) {
 			renderLineText(line[current.sequence].content);
 		}
+		// render interface
+		if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
+			renderInGameInterface();
+		}
 		if(line[current.sequence].speaker.length > 0) {
 			renderSpeaker();
 		}
@@ -3429,10 +3489,10 @@ function renderNextLine(callback) {
 
 
 
-	// render interface
-	if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
-		renderInGameInterface();
-	}
+	// // render interface
+	// if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
+	// 	renderInGameInterface();
+	// }
 	if(callback) {
 		callback();
 	}
@@ -3475,7 +3535,7 @@ function playAuto() {
 }
 
 function playSkip() {
-	var wait = 300;
+	var wait = 200;
 	if(game.screen == "skip") {
 		renderNextLine();
 		maintainCurrent();
@@ -3619,7 +3679,7 @@ function renderInGameInterface(callback) {
 			line_interface_id: 7,
 			top: 470,
 			left: 20, // original: 640
-			opacity: 0.9
+			opacity: 1
 		});
 		auto_btn.set('selectable', false);
 		canvas.add(auto_btn);
@@ -3661,7 +3721,6 @@ function renderInGameInterface(callback) {
 		callback();
 	}
 }
-
 function playBgm(source) {
 	var bgm = $('#bgm_play')[0];
 	if(current.bgm != source) {
@@ -3681,10 +3740,35 @@ function playBgm(source) {
 			bgm.play();
 			current.bgm = source;
 		}
-		// else {
-		// 	// bgm.pause();
-		// }
 	}
+
+	// HOWLER ALTERNATIVE
+	// if(current.bgm != source) {
+	// 	console.log("aa");
+	// 	// bgm_glob.stop();
+	// 	if(bgm_glob) {
+	// 		bgm_glob.stop();
+	// 		bgm_glob.unload();
+	// 		bgm_glob = new Howl({
+	// 			loop: true,
+	// 			urls: [source],
+	// 			volume: configuration.bgm_volume
+	// 		});
+	// 		// bgm_glob.urls([source]);
+	// 		bgm_glob.play();
+	// 		console.log("bb");
+	// 	}
+	// 	else {
+	// 		bgm_glob = new Howl({
+	// 			loop: true,
+	// 			urls: [source],
+	// 			volume: configuration.bgm_volume
+	// 		});
+	// 		bgm_glob.play();
+	// 	}
+	// 	current.bgm = source;
+	// }
+	
 }
 
 $('#test').click(function() {
@@ -3729,7 +3813,6 @@ function playSfx(source) {
 		// console.log("sfx played");
 	}
 }
-
 function playVoice(source) {
 	if(game.status.voice == "idle") {
 		var voice = $('#voice_play')[0];
@@ -3751,6 +3834,7 @@ function playVoice(source) {
 			}
 		}
 	}
+
 }
 
 
