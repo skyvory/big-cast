@@ -255,15 +255,12 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
-	function getBackgroundResource($user_id, $project_id) {
+	function getProjectResourceByType($project_id, $resource_type_id) {
 		$this->db->select('resource_id, name, file_name, fk_resourcetype_id, fk_project_id');
-		//unnecessary!$this->db->select('fk_user_id');
 		$this->db->from('resource');
-		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_project_id', $project_id);
-		//check user_id for resource authenticity
-		$this->db->where('fk_user_id', $user_id);
-		$this->db->where('fk_resourcetype_id', 2);
+		$this->db->where('fk_resourcetype_id', $resource_type_id);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -279,13 +276,12 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function getSpriteResource($user_id, $project_id) {
+	function getSpriteResource($project_id) {
 		$this->db->select('resource_id, name, file_name, character_name, figure_name, expression_name, fk_resourcetype_id, fk_project_id');
 		$this->db->from('resource');
-		$this->db->join('project', 'project_id = fk_project_id');
 		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_resourcetype_id', 1);
+		$this->db->order_by('character_name, figure_name, expression_name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -320,16 +316,6 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function getAudioResource($project_id, $resource_type_id) {
-		$this->db->select('resource_id, name, file_name, fk_resourcetype_id, fk_project_id');
-		$this->db->from('resource');
-		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_resourcetype_id', $resource_type_id);
-		$this->db->order_by('name', 'ASC');
-		$query = $this->db->get();
-		$result = $query->result_array();
-		return $result;
-	}
 	function updateAudioResource($resource_id, $name) {
 		$data = array('name' => $name);
 		$this->db->where('resource_id', $resource_id);
@@ -363,17 +349,6 @@ Class Common extends CI_Model {
 		else {
 			return FALSE;
 		}
-	}
-	function getVideoResource($user_id, $project_id, $resource_type_id) {
-		$this->db->select('resource_id, name, file_name, fk_resourcetype_id, fk_project_id');
-		$this->db->from('resource');
-		$this->db->join('project', 'project_id = fk_project_id');
-		$this->db->where('fk_project_id', $project_id);
-		$this->db->where('fk_resourcetype_id', $resource_type_id);
-		$this->db->where('fk_user_id', $user_id);
-		$query = $this->db->get();
-		$result = $query->result_array();
-		return $result;
 	}
 	function updateVideoResource($resource_id, $name) {
 		$data = array('name' => $name);

@@ -7,8 +7,8 @@
 		<?php if(isset($error)) echo($error); ?>
 		<?php echo form_open_multipart('home/do_upload'); ?>
 		<!--input type="file" multiple name="userfile[]"/-->
-		<h3>Drop files anywhere on this page.</h3>
-		<p>Or use browse button below.</p>
+		<h3>Select the resource type & upload.</h3>
+		<p>You can drop multiple files anywhere or use browse button below.</p>
 		<input type="file" id="fileupload" name="userfile" multiple />
 		<input type="hidden" id="resourcetype" name="resourcetype" value="1" />
 		<!-- <input type="submit" id="upload" value="upload" /> -->
@@ -18,6 +18,7 @@
 		<div class="bar" style="width: 0%;"></div>
 		</div>
 
+		<p>Select type of rsource 
 		<div>
 		<ul class="nav nav-tabs resource-navbar">
 			<li role="presentation" class="active"><a href="#" id="spritebutton">Sprites</a></li>
@@ -134,7 +135,7 @@
 	<div class="media-body">
 		<div class="resource-property">
 			<div class="audio-player-area">
-				<audio controls>
+				<audio controls preload="none">
 					<source src="'+file.url+'">
 				</audio>
 			</div>
@@ -162,7 +163,7 @@
 	<div class="media-body">
 		<div class="resource-property">
 			<div class="audio-player-area">
-				<audio controls class="audio-player">
+				<audio controls  preload="none">
 					<source src="'+file.url+'">
 				</audio>
 			</div>
@@ -189,7 +190,7 @@
 <tr><td>
 <div class="media video-media">
 	<div class="media-left video-player-area">
-		<video controls width="300" height="225" class="video-player">
+		<video controls width="300" height="225" class="video-player" preload="none">
 			<source src="'+file.url+'">
 		</video>
 	</div>

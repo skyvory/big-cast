@@ -100,7 +100,7 @@ table td {
 	border: none;
 }
 .audio-player {
-	/*width: 200px;*/
+	width: 200px;
 }
 
 .bar {
@@ -136,4 +136,7 @@ table td {
 }
 .sprite-input-append {
 	margin: 10px;
+}
+.resource-navbar {
+	margin-bottom: 5px;
 }

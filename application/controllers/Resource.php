@@ -354,7 +354,7 @@ class Resource extends CI_Controller {
 		$resource_type_request = $this->input->post('type');
 		$path_to_project = '../../../resources/' . $sess['id'] . '/' . $proj['id'] . '/';
 		if($resource_type_request == 1) {
-			$resource_data = $this->common->getSpriteResource($sess['id'], $proj['id']);
+			$resource_data = $this->common->getSpriteResource($proj['id']);
 			foreach ($resource_data as $value) {
 				?>
 					<div class="media sprite-media">
@@ -393,7 +393,7 @@ class Resource extends CI_Controller {
 			}
 		}
 		if($resource_type_request == 2) {
-			$resource_data = $this->common->getBackgroundResource($sess['id'], $proj['id']);
+			$resource_data = $this->common->getProjectResourceByType($proj['id'], 2);
 			foreach ($resource_data as $value) {
 				?>
 					<div class="media background-media">
@@ -418,7 +418,7 @@ class Resource extends CI_Controller {
 			}
 		}
 		else if($resource_type_request == 3) {
-			$resource_data = $this->common->getAudioResource($sess['id'], $proj['id'], '3');
+			$resource_data = $this->common->getProjectResourceByType($proj['id'], '3');
 			echo '<table class="table"><tbody>';
 			foreach ($resource_data as $value) {
 				?>
@@ -430,7 +430,7 @@ class Resource extends CI_Controller {
 						<div class="media-body">
 							<div class="resource-property">
 								<div class="audio-player-area">
-									<audio controls>
+									<audio controls  preload="none">
 										<source src="<?php echo $path_to_project . 'bgm/' . $value['file_name']; ?>">
 									</audio>
 								</div>
@@ -452,7 +452,7 @@ class Resource extends CI_Controller {
 			echo '</tbody></table>';
 		}
 		else if($resource_type_request == 4) {
-			$resource_data = $this->common->getAudioResource($sess['id'], $proj['id'], '4');
+			$resource_data = $this->common->getProjectResourceByType($proj['id'], '4');
 			echo '<table class="table"><tbody>';
 			foreach ($resource_data as $value) {
 				?>
@@ -464,7 +464,7 @@ class Resource extends CI_Controller {
 						<div class="media-body">
 							<div class="resource-property">
 								<div class="audio-player-area">
-									<audio controls>
+									<audio controls preload="none">
 										<source src="<?php echo $path_to_project . 'sfx/' . $value['file_name']; ?>">
 									</audio>
 								</div>
@@ -486,7 +486,7 @@ class Resource extends CI_Controller {
 			echo '</tbody></table>';
 		}
 		else if($resource_type_request == 5) {
-			$resource_data = $this->common->getAudioResource($proj['id'], '5');
+			$resource_data = $this->common->getProjectResourceByType($proj['id'], '5');
 			echo '<table class="table"><tbody>';
 			foreach ($resource_data as $value) {
 				?>
@@ -498,7 +498,7 @@ class Resource extends CI_Controller {
 						<div class="media-body">
 							<div class="resource-property">
 								<div class="audio-player-area">
-									<audio controls class="audio-player">
+									<audio controls preload="none">
 										<source src="<?php echo $path_to_project . 'voice/' . $value['file_name']; ?>">
 									</audio>
 								</div>
@@ -526,14 +526,14 @@ class Resource extends CI_Controller {
 									</div>
 */
 		else if($resource_type_request == 6) {
-			$resource_data = $this->common->getVideoResource($sess['id'], $proj['id'], '6');
+			$resource_data = $this->common->getProjectResourceByType($proj['id'], '6');
 			echo '<table class="table"><tbody>';
 			foreach ($resource_data as $value) {
 				?>
 					<tr><td>
 					<div class="media video-media">
 						<div class="media-left video-player-area">
-							<video controls width="300" height="225" class="video-player">
+							<video controls width="300" height="225" class="video-player" preload="none">
 								<source src="<?php echo $path_to_project . 'video/' . $value['file_name']; ?>">
 							</video>
 						</div>
