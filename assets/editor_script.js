@@ -518,7 +518,6 @@ $('#addvideolinebutton').click(function() {
 			callErrorNotification("select line first!");
 		}
 		else {
-			var last = getLastLineObjectBySequence(form_sequence);
 			var sequence_to_insert = form_sequence + 1;
 			var req = $.ajax({
 				url: config.base + 'index.php/editor/newLine',
@@ -580,7 +579,6 @@ $('#addvideolinebutton').click(function() {
 	}
 	// add line at end section
 	else if(insert_position == "end") {
-		var last = getLastLineObjectBySequence(tail);
 		var temp_tail = tail+1;
 		var req = $.ajax({
 			url: config.base + 'index.php/editor/newLine',
@@ -630,7 +628,6 @@ $('#addendlinebutton').click(function() {
 			callErrorNotification("select line first!");
 		}
 		else {
-			var last = getLastLineObjectBySequence(form_sequence);
 			var sequence_to_insert = form_sequence + 1;
 			var req = $.ajax({
 				url: config.base + 'index.php/editor/newLine',
@@ -688,7 +685,6 @@ $('#addendlinebutton').click(function() {
 	}
 	// add line at end section
 	else if(insert_position == "end") {
-		var last = getLastLineObjectBySequence(tail);
 		var temp_tail = tail+1;
 		var req = $.ajax({
 			url: config.base + 'index.php/editor/newLine',
