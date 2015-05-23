@@ -292,7 +292,8 @@ class Editor extends CI_Controller {
 							'choice_id' => "new",
 							'content' => "",
 							'jumpto_line_id' => "",
-							'choice_temp_index' => utf8_encode($j)
+							'choice_temp_index' => utf8_encode($j),
+							'jumpto_line_label' => ""
 						);
 					}
 				}
