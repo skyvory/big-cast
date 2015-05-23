@@ -214,7 +214,7 @@ Class Common extends CI_Model {
 	function updateProjectToPublish($project_status_id, $published_date, $project_id) {
 		$data = array('fk_projectstatus_id' => $project_status_id, 'published_date' => $published_date);
 		$this->db->where('project_id', $project_id);
-		$exec = $this->db->update('project');
+		$exec = $this->db->update('project', $data);
 		return $exec;
 	}
 
