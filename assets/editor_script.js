@@ -2292,3 +2292,13 @@ $('.line-list').on('click', '.line-project-button', function() {
 		}
 	}
 });
+
+
+window.onbeforeunload = function (e) {
+	var confirm_close = "Save your work if you haven't done it yet!"
+	e = e || window.event;
+	if (e) {
+		e.returnValue = confirm_close;
+	}
+	return confirm_close;
+};
