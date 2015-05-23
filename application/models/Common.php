@@ -170,8 +170,8 @@ Class Common extends CI_Model {
 		$count = $this->db->count_all_results();
 		return $count;
 	}
-	function updateProject($title, $description, $status, $published_date, $project_id) {
-		$data = array('title' => $title, 'description' => $description, 'published_date' => $published_date, 'fk_projectstatus_id' => $status);
+	function updateProject($title, $description, $project_id) {
+		$data = array('title' => $title, 'description' => $description);
 		$this->db->where('project_id', $project_id);
 		$exec = $this->db->update('project', $data);
 		return $exec;
@@ -209,6 +209,12 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('project_id', $project_id);
 		$exec = $this->db->delete('project');
+		return $exec;
+	}
+	function updateProjectToPublish($project_status_id, $published_date, $project_id) {
+		$data = array('fk_projectstatus_id' => $project_status_id, 'published_date' => $published_date);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
 		return $exec;
 	}
 

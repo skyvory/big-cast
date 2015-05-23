@@ -139,10 +139,12 @@ class Project extends CI_Controller {
 		$this->load->library('form_validation');
 		$user = $this->session->userdata('user_auth');
 		$project_id = $this->session->userdata('active');
+		$project = $this->common->getProject($project_id);
 		// $this->fb->log($project_id);
 
 		$self['user'] = $user;
 		$head['title'] = "Project";
+		$data['project'] = $project;
 
 		// if(is_uploaded_file($_FILES['userfile']['tmp_name'])) {
 		if(isset($_FILES['userfile']['tmp_name']) && is_uploaded_file($_FILES['userfile']['tmp_name'])) {
@@ -159,7 +161,7 @@ class Project extends CI_Controller {
 			// $this->fb->log($project_id);
 		}
 
-		if($this->input->post('status') == true) {
+		if($this->input->post('status') == true && $project['fk_projectstatus_id'] != 2) {
 			$publish_check = true;
 		}
 		else {
@@ -170,7 +172,6 @@ class Project extends CI_Controller {
 		$this->form_validation->set_rules('title', 'Title', 'required');
 
 		if($this->form_validation->run() == false) {
-			$data['project'] = $this->common->getProject($project_id);
 			$this->load->view('project_head', $head);
 			$this->load->view('menu_view');
 			$this->load->view('project_setting_view', $data);
@@ -180,7 +181,6 @@ class Project extends CI_Controller {
 			$publishability = $this->checkPublishability($project_id);
 			if($publishability == false) {
 				$data['error'] = array('error' => "Your project is not suitable for publishing yet!", 'list' => $this->session->userdata('publishability_error'));
-				$data['project'] = $this->common->getProject($project_id);
 				$this->load->view('project_head', $head);
 				$this->load->view('menu_view');
 				$this->load->view('project_setting_view', $data);
@@ -188,7 +188,6 @@ class Project extends CI_Controller {
 			}
 		}
 		else if($cover_file == true && $this->upload->do_upload() == false) {
-			$data['project'] = $this->common->getProject($project_id);
 			$data['error'] = array('error' => $this->upload->display_errors());
 			$this->load->view('project_head', $head);
 			$this->load->view('menu_view');
@@ -202,10 +201,7 @@ class Project extends CI_Controller {
 			if($publish_check == true) {
 				$status = 2;
 				$published_date = date('Y-m-d H:i:s');
-			}
-			else {
-				$status = 1;
-				$published_date = null;
+				$pass = $this->common->updateProjectToPublish($status, $published_date, $project_id);
 			}
 			if($cover_file == true) {
 				$cover = 1;
@@ -213,12 +209,11 @@ class Project extends CI_Controller {
 			}
 
 			// $this->fb->log($project_id);
-			$pass = $this->common->updateProject($title, $description, $status, $published_date, $project_id);
+			$pass = $this->common->updateProject($title, $description, $project_id);
 			if($pass) {
 				redirect('project', 'location');
 			}
 			else {
-				$data['project'] = $this->common->getProject($project_id);
 				$data['error'] = array('error' => "error writing to database");
 				$this->load->view('project_head', $head);
 				$this->load->view('menu_view');
@@ -260,11 +255,18 @@ class Project extends CI_Controller {
 				$temp_sequence = array();
 				//get list of choice on the line
 				$choice_check = $this->common->getChoiceForChecking($value['line_id']);
-				foreach ($choice_check as $j_key => $j_value) {
-					// if not a duplicate, add for chekcing later
-					if(!empty($j_value['jumpto_line_id']) && !in_array($j_value['jumpto_line_id'], $jump_point)) {
-						$jump_point[] = $j_value['jumpto_line_id'];
+				// cheking for empty choice
+				if(count($choice_check) > 0) {
+					foreach ($choice_check as $j_key => $j_value) {
+						// if not a duplicate, add for chekcing later
+						if(!empty($j_value['jumpto_line_id']) && !in_array($j_value['jumpto_line_id'], $jump_point)) {
+							$jump_point[] = $j_value['jumpto_line_id'];
+						}
 					}
+				}
+				else {
+					$validity = 0;
+					$error[] = "choice on sequence " . $value['sequence'] . " doesn't have any valid option";
 				}
 			}
 			if($value['fk_linetype_id'] == 4) {
@@ -298,12 +300,10 @@ class Project extends CI_Controller {
 		// foreach ($end_sequence as $key => $value) {
 		// 	echo $value . " ";
 		// }
-		// print_r($end_sequence);
 		// echo "<BR>";
 		// foreach ($jump_sequence as $key => $value) {
 		// 	echo $value . " ";
 		// }
-		// print_r($jump_sequence);
 		// echo "<BR>";
 		$this->session->set_userdata('publishability_error', $error);
 		return $validity;
