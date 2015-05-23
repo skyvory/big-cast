@@ -199,6 +199,12 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
+	function updateProjectStatus($project_id, $status_id) {
+		$this->db->set('fk_projectstatus_id', $status_id);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
+	}
 
 
 

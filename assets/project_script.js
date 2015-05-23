@@ -1,3 +1,5 @@
+$('.edit-published-button').click(return confirm('Are you sure?'));
+
 $('#newprojectbutton').click(function() {
 	$('#newprojectmodal').modal('show');
 })

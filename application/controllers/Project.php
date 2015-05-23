@@ -335,6 +335,9 @@ class Project extends CI_Controller {
 	public function editor($project_id = FALSE) {
 		$this->load->helper('url');
 		$proj = $this->common->getProject($project_id);
+		if($proj['fk_projectstatus_id'] == 2) {
+			$pass = $this->common->updateProjectStatus($proj['project_id'], 1);
+		}
 		if($proj) {
 			$sess_array = array(
 				'id' => $proj['project_id'],

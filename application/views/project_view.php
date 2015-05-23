@@ -71,7 +71,12 @@
 						<div class="project-action pull-right">
 							<a href="<?php echo base_url(); ?>index.php/project/setting/<?php echo $value['project_id']; ?>" class="btn btn-default">Setting</a>
 							<a href="<?php echo base_url(); ?>index.php/project/resource/<?php echo $value['project_id']; ?>" class="btn btn-warning">Resource Editor</a>
-							<a href="<?php echo base_url(); ?>index.php/project/editor/<?php echo $value['project_id']; ?>" class="btn btn-warning">VN Editor</a>
+							<a href="<?php echo base_url(); ?>index.php/project/editor/<?php echo $value['project_id']; ?>"  
+							<?php if($value['fk_projectstatus_id'] == 1) { 
+								echo 'class="btn btn-warning"'; 
+							} 
+							else if($value['fk_projectstatus_id'] == 2) {
+								echo 'class="btn btn-danger" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; } ?>">VN Editor</a>
 							<a href="<?php echo base_url(); ?>index.php/game/play/<?php echo $value['project_id']; ?>" class="btn btn-info ?>">Play</a>
 						</div>
 					</div>
