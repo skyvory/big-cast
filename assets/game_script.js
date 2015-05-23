@@ -957,8 +957,10 @@ canvas.on('mouse:down', function(options) {
 					playAuto();
 					break;
 				case "skip_button":
-					game.screen = "skip";
-					playSkip();
+					if(game.status.text != "busy") {
+						game.screen = "skip";
+						playSkip();
+					}
 					break;
 				case "repeat_button":
 					playVoice();
@@ -1119,12 +1121,8 @@ canvas.on('mouse:down', function(options) {
 					renderSaveScreen();
 					break;
 				case "auto_button":
-					game.screen = "auto";
-					playAuto();
 					break;
 				case "skip_button":
-					game.screen = "skip";
-					playSkip();
 					break;
 				case "repeat_button":
 					playVoice();
@@ -3820,6 +3818,7 @@ function playVoice(res) {
 	if(game.status.voice == "idle") {
 		if(res) {
 			var voice = $('#'+res)[0];
+			game.voice = res;
 		}
 		else {
 			var voice = $('#'+game.voice)[0];
