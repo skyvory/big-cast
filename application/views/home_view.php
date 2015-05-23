@@ -26,7 +26,13 @@
 						<div class="project-action pull-right">
 						
 							<a href="<?php echo base_url(); ?>index.php/project/resource/<?php echo $value['project_id']; ?>" class="btn btn-warning btn-xs">Resource Editor</a>
-							<a href="<?php echo base_url(); ?>index.php/project/editor/<?php echo $value['project_id']; ?>" class="btn btn-warning btn-xs">VN Editor</a>
+							<a href="<?php echo base_url(); ?>index.php/project/editor/<?php echo $value['project_id']; ?>"  
+							<?php if($value['fk_projectstatus_id'] == 1) { 
+								echo 'class="btn btn-warning btn-xs"'; 
+							} 
+							else if($value['fk_projectstatus_id'] == 2) {
+								echo 'class="btn btn-danger btn-xs" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; } ?>
+							">VN Editor</a>
 							
 						</div>
 					</div>

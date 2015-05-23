@@ -76,7 +76,8 @@
 								echo 'class="btn btn-warning"'; 
 							} 
 							else if($value['fk_projectstatus_id'] == 2) {
-								echo 'class="btn btn-danger" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; } ?>">VN Editor</a>
+								echo 'class="btn btn-danger" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; } ?>
+							">VN Editor</a>
 							<a href="<?php echo base_url(); ?>index.php/game/play/<?php echo $value['project_id']; ?>" class="btn btn-info ?>">Play</a>
 						</div>
 					</div>
