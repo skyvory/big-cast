@@ -1,0 +1,41 @@
+﻿
+#############
+Cast-WebBasedVisualNovelAuthoringTool
+#############
+
+Known Issue:
+- need change php.ini for bigger file upload
+- pagination after display line by label
+
+To Do:
+- keep login cookie
+- username slug
+- profile detail and dp
+- chunk upload
+- check active project validity with owner
+- easing progress upload with css and js
+- commit capability, delete previous result when post-processing failed
+- escape all user input on submitted data
+- disable submit button on empty input
+- finish alert on submit response success or fail
+- sortable resource without refresh
+- change sess to user
+- redesign salt and hash implementation, see http://security.stackexchange.com/questions/20541/insecure-versions-of-crypt-hashes
+- use php pathinfo to extract filename and extension
+- return ajax call in json instead of html and construct it on frontend instead of server (need more vaying info data)
+- check for undefined variable from jquery find, if undefined throw error (resource property change)
+- check if update/delete allowed for active user
+- navigation for sprite resource per character
+- last update project capability on editor change
+- use html sessionstorage for better performance
+- custom autocomplete list with thumb image
+- feature: optimized layout based on creator type: scenario writer, editor per media
+- change autoinput active verify on blur, not on change for better functionality
+- input restriction on html end
+- offline create new line using temp index line sprite
+- preload audio video only metadata on resource
+- sfx loop feature
+- use index for sequencing on gameplay
+- error handling when loading deleted line data
+- sfx loop feature
+- check http://stackoverflow.com/questions/28819199/bring-canvas-instance-to-front
