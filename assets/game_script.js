@@ -792,7 +792,7 @@ $(document).bind('keyup', function(e){
 });
 
 canvas.on('mouse:down', function(options) {
-	if(game.screen === "title") {
+	if(game.screen == "title") {
 		switch(options.target.id) {
 			case "start_button":
 				renderPlayScreen();
@@ -818,8 +818,8 @@ canvas.on('mouse:down', function(options) {
 				break;
 		}
 	}
-	else if((game.screen === "configuration") || (game.screen === "on_play_configuration")) {
-		console.log(options.target.bgmvolume_id);
+	else if((game.screen == "configuration") || (game.screen == "on_play_configuration")) {
+		// console.log(options.target.bgmvolume_id);
 		switch(options.target.id) {
 			case "font":
 				// prepare index
@@ -2298,21 +2298,21 @@ function exitConfigurationScreen() {
 	// remove font list
 	for(var i = 0; i < font_list.length; i++) {
 		var index_to_read = getObjectIndex(canvas.getObjects(), 'fonttype_id', font_list[i].fonttype_id);
-		canvas.item(index_to_read).animate('left', '-600', {
+		canvas.item(index_to_read).animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 500,
 			// easing: fabric.util.ease.easeInOutBack,
 			onComplete: function() {
-				
+
 				// remove text head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'text_head');
-				canvas.item(index_to_read).animate('top', '-300', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300
 				}); // remove text head
 				// remove sound head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sound_head');
-				canvas.item(index_to_read).animate('top', '-300', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300
 				}); // remove sound head
@@ -2325,7 +2325,7 @@ function exitConfigurationScreen() {
 	// remove voice vol
 	for(var i = 0; i <= 10; i++) {
 		var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', i);
-		canvas.item(index_to_read).animate('left', '810', {
+		canvas.item(index_to_read).animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 300,
 			// easing: fabric.util.ease.easeInOutBack,
@@ -2333,7 +2333,7 @@ function exitConfigurationScreen() {
 
 				// remove voice config
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
-				canvas.item(index_to_read).animate('top', '-60', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300
 				}); // remove voice vconfig
@@ -2345,7 +2345,7 @@ function exitConfigurationScreen() {
 	// remove sfx vol
 	for(var i = 0; i <= 10; i++) {
 		var index_to_read = getObjectIndex(canvas.getObjects(), 'sfxvolume_id', i);
-		canvas.item(index_to_read).animate('left', '810', {
+		canvas.item(index_to_read).animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 600,
 			// easing: fabric.util.ease.easeInOutBack,
@@ -2353,7 +2353,7 @@ function exitConfigurationScreen() {
 
 				// remove sfx config
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sfx_head');
-				canvas.item(index_to_read).animate('top', '-60', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300
 				}); // remove sfx end
@@ -2364,7 +2364,7 @@ function exitConfigurationScreen() {
 	// remove text speed
 	for(var i = 0; i <= 10; i++) {
 		var index_to_read = getObjectIndex(canvas.getObjects(), 'textspeed_id', i);
-		canvas.item(index_to_read).animate('left', '-400', {
+		canvas.item(index_to_read).animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 600,
 			// easing: fabric.util.ease.easeInOutBack,
@@ -2372,7 +2372,7 @@ function exitConfigurationScreen() {
 
 				// remove text head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'text_speed_head');
-				canvas.item(index_to_read).animate('left', '-400', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300
 				}); // remove text head end
@@ -2383,14 +2383,14 @@ function exitConfigurationScreen() {
 	// remove bgm vol
 	for(var i = 0; i <= 10; i++) {
 		var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', i);
-		canvas.item(index_to_read).animate('left', '810', {
+		canvas.item(index_to_read).animate('opacity', '0', {
 			onChange: canvas.renderAll.bind(canvas),
 			duration: 900,
 			// easing: fabric.util.ease.easeInOutBack,
 			onComplete: function() {
 				// remove bgm config
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'bgm_head');
-				canvas.item(index_to_read).animate('top', '-60', {
+				canvas.item(index_to_read).animate('opacity', '0', {
 					onChange: canvas.renderAll.bind(canvas),
 					duration: 300,
 					// easing: fabric.util.ease.easeInOutBack,
@@ -2398,14 +2398,14 @@ function exitConfigurationScreen() {
 						
 						// remove config head
 						index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'configuration_head');
-						canvas.item(index_to_read).animate('top', '-60', {
+						canvas.item(index_to_read).animate('opacity', '0', {
 							onChange: canvas.renderAll.bind(canvas),
 							duration: 300,
 							// easing: fabric.util.ease.easeInOutBack,
 							onComplete: function() {
 								// remove exit btn
 								index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'exit_button');
-								canvas.item(index_to_read).animate('top', '-200', {
+								canvas.item(index_to_read).animate('opacity', '0', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 300,
 									easing: fabric.util.ease.easeInOutBack,
@@ -2424,9 +2424,13 @@ function exitConfigurationScreen() {
 												canvas.remove(canvas.item(index_to_read));
 												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sound_head');
 												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'text_speed_head');
+												canvas.remove(canvas.item(index_to_read));
 												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'bgm_head');
 												canvas.remove(canvas.item(index_to_read));
 												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sfx_head');
+												canvas.remove(canvas.item(index_to_read));
+												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
 												canvas.remove(canvas.item(index_to_read));
 												for(i = 0; i <= 10; i++) {
 													var index_to_read = getObjectIndex(canvas.getObjects(), 'textspeed_id', i);
@@ -2440,8 +2444,6 @@ function exitConfigurationScreen() {
 													var index_to_read = getObjectIndex(canvas.getObjects(), 'bgmvolume_id', i);
 													canvas.remove(canvas.item(index_to_read));
 												}
-												index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
-												canvas.remove(canvas.item(index_to_read));
 												for(i = 0; i <= 10; i++) {
 													var index_to_read = getObjectIndex(canvas.getObjects(), 'voicevolume_id', i);
 													canvas.remove(canvas.item(index_to_read));
