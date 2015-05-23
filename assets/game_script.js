@@ -3271,6 +3271,7 @@ function renderNextLine(callback) {
 			var sfx_id = line[current.sequence].sfx_resource_id;
 			if(sfx_id.length) {
 				var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
+				// time out due to chrome refuses to start playing (or instanting) multiple audio (and video) simultaneously
 				setTimeout(function() {
 					playSfx(sfx_id);
 				},100);
