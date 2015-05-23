@@ -23,7 +23,7 @@
 						<div class="col-md-6">
 							<dl>
 								<dt>Published</dt>
-								<dd><?php echo $value['published_date']; ?></dd>
+								<dd><?php echo date_format(date_create($value['published_date']), 'F jS, Y'); ?></dd>
 							</dl>
 						</div>
 						<div class="col-md-6">
