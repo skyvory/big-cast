@@ -126,7 +126,7 @@ function callConfigurationData(callback) {
 function callSequentialLineData(offset, callback) {
 	// current.head + current.limit would result line with total number of limit cached ahead
 	//var process_limit = current.head + current.limit;
-	var process_limit = 30;
+	var process_limit = current.limit; // DEFAULT 60
 	// var offset = 0;
 	// if(current.head > 0) {
 	// 	offset = parseInt(line[current.head].sequence) + 1;
@@ -184,7 +184,10 @@ function maintainCurrent(callback) {
 	}
 	// if(current.sequence % 20 == 0) {
 	// request new lines after reach head - 20, using mod so if no more line, line won't bwe called continuously
-	if(current.sequence % current.head - 20 == 0) {
+	console.log("current", current.sequence);
+	console.log("head", current.head);
+	console.log("call line timing", current.sequence % (current.head - 20));
+	if(current.sequence % (current.head - 20) == 0) {
 		// var is_dead_end = true;
 		// for(var i = current.sequence; i < current.head; i++) {
 		// 	if(parseInt(line[i].fk_linetype_id) != 2 && line[i].jumpto_line_id.length > 0) {
@@ -3316,105 +3319,109 @@ function renderNextLine(callback) {
 	}
 	// render choice line
 	else if(parseInt(line[current.sequence].fk_linetype_id) === 2) {
-		game.screen = "choice";
-		var top_after = 200;
-		if(line[current.sequence].choice.length == 3) {
-			top_after = 180;
-		}
-		else if(line[current.sequence].choice.length == 4) {
-			top_after = 160;
-		}
-		for(var i = 0; i < line[current.sequence].choice.length; i++) {
-			// prepare choice box
-			var img = $('.interface').find('img[id=in_choice_box]')[0];
-			var chc_box = new fabric.Image(img, {
-				originX: 'center',
-				originY: 'center',
-				opacity: 0,
-				scaleX: 0.8
-			});
-			// prepare text
-			var txt = line[current.sequence].choice[i].content;
-			var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
-			var chc_txt = new fabric.Text(txt, {
-				fontSize: 20,
-				fontFamily: font_list[font_index].name,
-				opacity: 0,
-				originX: 'center',
-				originY: 'center'
-			});
-			// combine to group
-			var chc = new fabric.Group([ chc_box, chc_txt ], {
-				line_choice_id: line[current.sequence].choice[i].choice_id,
-				top: top_after,
-				left: 100
-			});
-			chc.set('selectable', false);
-			canvas.add(chc);
-			chc.animate('opacity', '0.9', {
-				onChange: canvas.renderAll.bind(canvas),
-				duration: 1000
-			});
-			var option = line[current.sequence].choice.length;
-			if(line[current.sequence].choice.length == 2) {
-				top_after+= 80;
-			}
-			else if(line[current.sequence].choice.length == 3) {
-				top_after+= 70;
+		if(line[current.sequence].choice.length > 0) {
+			game.screen = "choice";
+			var top_after = 200;
+			if(line[current.sequence].choice.length == 3) {
+				top_after = 180;
 			}
 			else if(line[current.sequence].choice.length == 4) {
-				top_after+= 60;
+				top_after = 160;
+			}
+			for(var i = 0; i < line[current.sequence].choice.length; i++) {
+				// prepare choice box
+				var img = $('.interface').find('img[id=in_choice_box]')[0];
+				var chc_box = new fabric.Image(img, {
+					originX: 'center',
+					originY: 'center',
+					opacity: 0,
+					scaleX: 0.8
+				});
+				// prepare text
+
+				var txt = line[current.sequence].choice[i].content;
+				var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
+				var chc_txt = new fabric.Text(txt, {
+					fontSize: 20,
+					fontFamily: font_list[font_index].name,
+					opacity: 0,
+					originX: 'center',
+					originY: 'center'
+				});
+				// combine to group
+				var chc = new fabric.Group([ chc_box, chc_txt ], {
+					line_choice_id: line[current.sequence].choice[i].choice_id,
+					top: top_after,
+					left: 100
+				});
+				chc.set('selectable', false);
+				canvas.add(chc);
+				chc.animate('opacity', '0.9', {
+					onChange: canvas.renderAll.bind(canvas),
+					duration: 1000
+				});
+				var option = line[current.sequence].choice.length;
+				if(line[current.sequence].choice.length == 2) {
+					top_after+= 80;
+				}
+				else if(line[current.sequence].choice.length == 3) {
+					top_after+= 70;
+				}
+				else if(line[current.sequence].choice.length == 4) {
+					top_after+= 60;
+				}
 			}
 		}
 	}
 	// render video line
 	else if(parseInt(line[current.sequence].fk_linetype_id) === 3) {
-		game.screen = "stall";
-		var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
-		$('.video-area').html("");
-		$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
-		stopBgm();
-		blackIn(2000, function() {
-			setTimeout(function() {
-				var op = $('#video_play')[0];
-				$('.text-area').fadeOut(1000);
-				$('.video-area').fadeIn(1000, function() {
-					game.screen = "video";
-				});
-				op.play();
-				// after video end
-				op.onended = function() {
-					$('.video-area').fadeOut(2000);
-					setTimeout(function() {
-						$('.text-area').fadeIn(1000);
-						game.screen = "play";
-					}, 1000);
-				}
-				blackOut(1000, function() {
-					// canvas.clear();
-					
-					// var vid = $('#videoclip')[0];
-					// var op = new fabric.Image(vid, {
-					// 	left: 300,
-					// 	top: 300,
-					// 	angle: 0,
-					// 	originX: 'center',
-					// 	originY: 'center'
-					// });
-					// canvas.add(op);
-					// // canvas.bringToFront(op);
-					// op.getElement().play();
-					// fabric.util.requestAnimFrame(function render() {
-					// 	canvas.renderAll();
-					// 	fabric.util.requestAnimFrame(render);
-					// });
+		if(line[current.sequence].video_resource_id > 0) {
+			game.screen = "stall";
+			var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
+			$('.video-area').html("");
+			$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+			stopBgm();
+			blackIn(2000, function() {
+				setTimeout(function() {
+					var op = $('#video_play')[0];
+					$('.text-area').fadeOut(1000);
+					$('.video-area').fadeIn(1000, function() {
+						game.screen = "video";
+					});
+					op.play();
+					// after video end
+					op.onended = function() {
+						$('.video-area').fadeOut(2000);
+						setTimeout(function() {
+							$('.text-area').fadeIn(1000);
+							game.screen = "play";
+						}, 1000);
+					}
+					blackOut(1000, function() {
+						// canvas.clear();
+						
+						// var vid = $('#videoclip')[0];
+						// var op = new fabric.Image(vid, {
+						// 	left: 300,
+						// 	top: 300,
+						// 	angle: 0,
+						// 	originX: 'center',
+						// 	originY: 'center'
+						// });
+						// canvas.add(op);
+						// // canvas.bringToFront(op);
+						// op.getElement().play();
+						// fabric.util.requestAnimFrame(function render() {
+						// 	canvas.renderAll();
+						// 	fabric.util.requestAnimFrame(render);
+						// });
 
 
-					
-				});
-			}, 3000);
-		});
-
+						
+					});
+				}, 3000);
+			});
+		}
 	}
 	// render end line
 	else if(parseInt(line[current.sequence].fk_linetype_id) === 4) {
