@@ -3773,13 +3773,15 @@ function playBgm(res) {
 	// }
 }
 function stopBgm() {
-	var bgmx = $('#'+game.bgm);
-	var bgm = bgmx[0];
-	if(!bgm.paused) {
-		bgmx.animate({volume: 0}, 3000, function() {
-			bgm.pause();
-			bgm.currentTime = 0;
-		});
+	if(game.bgm != "") {
+		var bgmx = $('#'+game.bgm);
+		var bgm = bgmx[0];
+		if(!bgm.paused) {
+			bgmx.animate({volume: 0}, 3000, function() {
+				bgm.pause();
+				bgm.currentTime = 0;
+			});
+		}
 	}
 }
 function playSfx(res) {
@@ -3799,10 +3801,12 @@ function playSfx(res) {
 	}
 }
 function stopSfx() {
-	var sfx = $('#'+game.sfx)[0];
-	if(sfx.pused) {
-		sfx.pause();
-		sfx.currentTime = 0;
+	if(game.sfx != "") {
+		var sfx = $('#'+game.sfx)[0];
+		if(sfx.pused) {
+			sfx.pause();
+			sfx.currentTime = 0;
+		}
 	}
 }
 function playVoice(res) {
