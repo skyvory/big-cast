@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-9">
+						<div class="col-md-8">
 							<dl>
 								<dt>Description</dt>
 								<dd><?php if(!empty($value['description'])) { echo $value['description']; } else { echo " - "; }?></dd>
@@ -42,10 +42,10 @@
 						</div>
 								
 								
-						<div class="col-md-3">
+						<div class="col-md-4">
 						<p>
 							<center>
-								<a href="<?php echo base_url() . 'index.php/game/play/' . $value['project_id']; ?>" class="btn btn-primary btn-lg btn-block">Play</a>
+								<a href="<?php echo base_url() . 'index.php/game/play/' . $value['project_id']; ?>" class="btn btn-primary btn-block">Play</a>
 							</center>
 						</p>
 						</div>
