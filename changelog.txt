@@ -162,3 +162,5 @@ To Do:
 - sfx loop feature
 - use index for sequencing on gameplay
 - error handling when loading deleted line data
+- sfx loop feature
+- check http://stackoverflow.com/questions/28819199/bring-canvas-instance-to-front

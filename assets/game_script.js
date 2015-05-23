@@ -19,7 +19,8 @@ var game = {
 	screen: "title", // title/play/configuration/save/load/backlog/choice
 	mode: "normal", // normal, skip, auto
 	bgm: "",
-	background: "",
+	voice: "",
+	sfx: "",
 	status: {
 		// idle | busy
 		text: "idle",
@@ -28,60 +29,44 @@ var game = {
 }
 var font_list = [];
 
-var bgm_glob;
-var sfx_glob;
-var voice_glob;
+// var bgm_glob;
+// var sfx_glob;
+// var voice_glob;
 
-	// voice_glob = new AudioContext();
-	// var music;;
-	// var getSound = new XMLHttpRequest();
-	// getSound.open("GET", "../../../resources/~Gentle.mp3", true);
-	// getSound.responseType = "arraybuffer";
-	// getSound.onLoad = function() {
-	// 	voice_glob.decodeAudioData(getSound.response, function(buffer) {
-	// 		music = buffer;
-	// 	});
-	// }
-	// getSound.send();
-	// var playSound = voice_glob.createBufferSource();
-	// playSound.buffer = music;
-	// playSound.connect(voice_glob.destination);
-	// playSound.start(0);
-
-var electro; // Create the Sound 
-(function(){
+// var electro; // Create the Sound 
+// (function(){
 	
-	var context = new AudioContext(); // Create and Initialize the Audio Context
-	var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
-	getSound.open("GET", "../../../resources/~gentle.mp3", true); // Path to Audio File
-	getSound.responseType = "arraybuffer"; // Read as Binary Data
-	getSound.onload = function() {
-		context.decodeAudioData(getSound.response, function(buffer){
-			electro = buffer; // Decode the Audio Data and Store it in a Variable
-		});
-	}
-	getSound.send(); // Send the Request and Load the File
+// 	var context = new AudioContext(); // Create and Initialize the Audio Context
+// 	var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
+// 	getSound.open("GET", "../../../resources/~gentle.mp3", true); // Path to Audio File
+// 	getSound.responseType = "arraybuffer"; // Read as Binary Data
+// 	getSound.onload = function() {
+// 		context.decodeAudioData(getSound.response, function(buffer){
+// 			electro = buffer; // Decode the Audio Data and Store it in a Variable
+// 		});
+// 	}
+// 	getSound.send(); // Send the Request and Load the File
 	
-	window.addEventListener("keydown",onKeyDown); // Create Event Listener for KeyDown
+// 	window.addEventListener("keydown",onKeyDown); // Create Event Listener for KeyDown
 	
-	function onKeyDown(e){
-		switch (e.keyCode) {
-			// X
-			case 88:
-				var playSound = context.createBufferSource(); // Declare a New Sound
-				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-				playSound.connect(context.destination);  // Link the Sound to the Output
-				playSound.start(0); // Play the Sound Immediately
-			break;
-			case 13:
-			var playSound = context.createBufferSource(); // Declare a New Sound
-				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-				playSound.connect(context.destination);  
-				playSound.noteOff(0);
-				break;
-		}
- 	}
-}());
+// 	function onKeyDown(e){
+// 		switch (e.keyCode) {
+// 			// X
+// 			case 88:
+// 				var playSound = context.createBufferSource(); // Declare a New Sound
+// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
+// 				playSound.connect(context.destination);  // Link the Sound to the Output
+// 				playSound.start(0); // Play the Sound Immediately
+// 			break;
+// 			case 13:
+// 			var playSound = context.createBufferSource(); // Declare a New Sound
+// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
+// 				playSound.connect(context.destination);  
+// 				playSound.noteOff(0);
+// 				break;
+// 		}
+//  	}
+// }());
 
 
 // canvas renderer
@@ -2318,29 +2303,18 @@ function exitConfigurationScreen() {
 			duration: 500,
 			// easing: fabric.util.ease.easeInOutBack,
 			onComplete: function() {
+				
 				// remove text head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'text_head');
 				canvas.item(index_to_read).animate('top', '-300', {
 					onChange: canvas.renderAll.bind(canvas),
-					duration: 300,
-					// easing: fabric.util.ease.easeInOutBack,
-					onComplete: function() {
-
-						
-						
-					}
+					duration: 300
 				}); // remove text head
 				// remove sound head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sound_head');
 				canvas.item(index_to_read).animate('top', '-300', {
 					onChange: canvas.renderAll.bind(canvas),
-					duration: 300,
-					// easing: fabric.util.ease.easeInOutBack,
-					onComplete: function() {
-
-						
-						
-					}
+					duration: 300
 				}); // remove sound head
 				
 			}
@@ -2356,17 +2330,12 @@ function exitConfigurationScreen() {
 			duration: 300,
 			// easing: fabric.util.ease.easeInOutBack,
 			onComplete: function() {
+
 				// remove voice config
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'voice_head');
 				canvas.item(index_to_read).animate('top', '-60', {
 					onChange: canvas.renderAll.bind(canvas),
-					duration: 300,
-					// easing: fabric.util.ease.easeInOutBack,
-					onComplete: function() {
-						
-						
-						
-					}
+					duration: 300
 				}); // remove voice vconfig
 				
 			}
@@ -2386,16 +2355,8 @@ function exitConfigurationScreen() {
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'sfx_head');
 				canvas.item(index_to_read).animate('top', '-60', {
 					onChange: canvas.renderAll.bind(canvas),
-					duration: 300,
-					// easing: fabric.util.ease.easeInOutBack,
-					onComplete: function() {
-						
-						
-						
-					}
-
+					duration: 300
 				}); // remove sfx end
-				
 				
 			}
 		});
@@ -2409,20 +2370,12 @@ function exitConfigurationScreen() {
 			// easing: fabric.util.ease.easeInOutBack,
 			onComplete: function() {
 
-				// remove sfx config
+				// remove text head
 				var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'text_speed_head');
 				canvas.item(index_to_read).animate('left', '-400', {
 					onChange: canvas.renderAll.bind(canvas),
-					duration: 300,
-					// easing: fabric.util.ease.easeInOutBack,
-					onComplete: function() {
-						
-						
-						
-					}
-
-				}); // remove sfx end
-				
+					duration: 300
+				}); // remove text head end
 				
 			}
 		});
@@ -3304,9 +3257,7 @@ function renderNextLine(callback) {
 			var bgm_id = line[current.sequence].bgm_resource_id;
 			if(bgm_id.length) {
 				var path_to_bgm = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/bgm/' + line[current.sequence].bgm_file_name;
-				playBgm(path_to_bgm);
-				// }
-
+				playBgm(bgm_id);
 			}
 			else {
 				stopBgm();
@@ -3315,17 +3266,24 @@ function renderNextLine(callback) {
 			var sfx_id = line[current.sequence].sfx_resource_id;
 			if(sfx_id.length) {
 				var path_to_sfx = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/sfx/' + line[current.sequence].sfx_file_name;
-				playSfx(path_to_sfx);
+				setTimeout(function() {
+					playSfx(sfx_id);
+				},100);
 			}
 			else{
 				stopSfx();
 			}
+
+			// render voice
 			var voice_id = line[current.sequence].voice_resource_id;
 			if(voice_id.length) {
 				var path_to_voice = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/voice/' + line[current.sequence].voice_file_name;
-				// reset voice playing status
-				game.status.voice = "idle";
-				playVoice(path_to_voice);
+				// reset voice playing status, explicitly using stopVoice function because differs from other 2, voice isn't carry-through type and has to be stopped immediately even if next line producing the same voice
+				stopVoice();
+				// game.status.voice = "idle";
+				setTimeout(function() {
+					playVoice(voice_id);
+				},200);
 			}
 			else{
 				// uncomment for "playing voice through the next line" option
@@ -3721,10 +3679,11 @@ function renderInGameInterface(callback) {
 		callback();
 	}
 }
-function playBgm(source) {
-	var bgm = $('#bgm_play')[0];
-	if(current.bgm != source) {
-		bgm.src = source;
+
+function play(res) {
+	var bgm = $('#'+res)[0];
+	if(game.bgm != res) {
+		// bgm.src = source;
 		// if paused successfully
 		if(bgm.paused) {
 			bgm.volume = configuration.bgm_volume;
@@ -3738,12 +3697,50 @@ function playBgm(source) {
 				}, false);
 			}
 			bgm.play();
-			current.bgm = source;
+			game.bgm = res;
 		}
+	}
+}
+
+function playBgm(res) {
+	// if current bgm differ from last one
+	if(game.bgm != res) {
+		var bgmx = $('#'+game.bgm);
+		// get dom direct of jquery
+		var bgm = bgmx[0];
+		// if not first sequence
+		if(game.bgm != "") {
+			// fade out
+			bgmx.animate({volume: 0}, 500, function() {
+				bgm.pause();
+				bgm.currentTime = 0;
+			});
+			
+		}
+		bgmx_new = $('#'+res);
+		bgm_new = bgmx_new[0];
+		// if paused successfully
+		// if(bgm.paused) {
+		bgm_new.volume = 0;
+		// fade in
+		bgmx_new.animate({volume: configuration.bgm_volume}, 500);
+		// possibility of not supporting audio loop
+		if(typeof bgm_new.loop == 'boolean') {
+			bgm_new.loop = true;
+		}
+		else {
+			bgm_new.addEventListener('ended', function() {
+				this.currentTime = 0;
+				this.play();
+			}, false);
+		}
+		bgm_new.play();
+		game.bgm = res;
+		// }
 	}
 
 	// HOWLER ALTERNATIVE
-	// if(current.bgm != source) {
+	// if(game.bgm != source) {
 	// 	console.log("aa");
 	// 	// bgm_glob.stop();
 	// 	if(bgm_glob) {
@@ -3766,75 +3763,70 @@ function playBgm(source) {
 	// 		});
 	// 		bgm_glob.play();
 	// 	}
-	// 	current.bgm = source;
+	// 	game.bgm = source;
 	// }
-	
 }
-
-$('#test').click(function() {
-	console.log(canvas.getObjects());
-})
-
 function stopBgm() {
-	var bgmx = $('#bgm_play');
-	bgmx.animate({volume: 0}, 3000, function() {
-		var bgm = $('#bgm_play')[0];
-		if(!bgm.paused) {
+	var bgmx = $('#'+game.bgm);
+	var bgm = bgmx[0];
+	if(!bgm.paused) {
+		bgmx.animate({volume: 0}, 3000, function() {
 			bgm.pause();
 			bgm.currentTime = 0;
-		}
-	});
-}
-
-function stopVoice() {
-	var voice = $('#voice_play')[0];
-	if(voice.pused) {
-		voice.pause();
-		voice.currentTime = 0;
-		game.status.voice = "idle";
+		});
 	}
 }
-
+function playSfx(res) {
+	if(game.sfx != res) {
+		var sfxx = $('#'+game.sfx);
+		var sfx = sfxx[0];
+		if(game.sfx != "") {
+			// possibility long sfx
+			if(!sfx.paused) {
+				sfx.pause();
+				sfx.currentTime = 0;
+			}
+		}
+		sfx = $('#'+res)[0];
+		sfx.play();
+		game.sfx = res;
+	}
+}
 function stopSfx() {
-	var sfx = $('#sfx_play')[0];
+	var sfx = $('#'+game.sfx)[0];
 	if(sfx.pused) {
 		sfx.pause();
 		sfx.currentTime = 0;
 	}
 }
-
-function playSfx(source) {
-	var sfx = $('#sfx_play')[0];
-	if(sfx.paused) {
-		sfx.src = source;
-		sfx.volume = configuration.sfx_volume;
-		sfx.loop = false;
-		sfx.play();
-		// console.log("sfx played");
-	}
-}
-function playVoice(source) {
+function playVoice(res) {
 	if(game.status.voice == "idle") {
-		var voice = $('#voice_play')[0];
-		if(source) {
-			voice.src = source;
-			voice.volume = configuration.voice_volume;
-			voice.loop = false;
-			game.status.voice = "busy";
-			voice.play();
-			voice.onended = function() {
-				game.status.voice = "idle";
-			}
+		if(res) {
+			var voice = $('#'+res)[0];
 		}
 		else {
-			game.status.voice = "busy";
-			voice.play();
-			voice.onended = function() {
-				game.status.voice = "idle";
-			}
+			var voice = $('#'+game.voice)[0];
+		}
+		voice.volume = configuration.voice_volume;
+		voice.loop = false;
+		game.status.voice = "busy";
+		voice.play();
+		voice.onended = function() {
+			game.status.voice = "idle";
 		}
 	}
 
+}
+
+function stopVoice() {
+	if(game.voice != "") {
+		var voice = $('#'+game.voice)[0];
+		if(!voice.paused) {
+			voice.pause();
+			voice.currentTime = 0;
+			game.status.voice = "idle";
+		}
+	}
 }
 
 
