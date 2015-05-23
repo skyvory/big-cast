@@ -178,14 +178,14 @@ class Project extends CI_Controller {
 			$this->load->view('foot');
 		}
 		else if($publish_check == true && $this->checkPublishability($project_id) == false) {
-			$publishability = $this->checkPublishability($project_id);
-			if($publishability == false) {
+			// $publishability = $this->checkPublishability($project_id);
+			// if($publishability == false) {
 				$data['error'] = array('error' => "Your project is not suitable for publishing yet!", 'list' => $this->session->userdata('publishability_error'));
 				$this->load->view('project_head', $head);
 				$this->load->view('menu_view');
 				$this->load->view('project_setting_view', $data);
 				$this->load->view('foot');
-			}
+			// }
 		}
 		else if($cover_file == true && $this->upload->do_upload() == false) {
 			$data['error'] = array('error' => $this->upload->display_errors());
@@ -245,7 +245,7 @@ class Project extends CI_Controller {
 				$temp_sequence = array();
 				// if not a duplicate, add for chekcing later
 				if(!in_array($value['jumpto_line_id'], $jump_point)) {
-					$jump_point[] = $value['line_id'];
+					$jump_point[] = $value['jumpto_line_id'];
 				}
 			}
 			if($value['fk_linetype_id'] == 2) {
@@ -279,8 +279,10 @@ class Project extends CI_Controller {
 		// check if jump destination is in valid sequence 
 		foreach ($jump_point as $key => $value) {
 			if(!in_array($value, $end_sequence) && !in_array($value, $jump_sequence)) {
-				$seq = $this->common->getLineSequence($value);
-				$error[] = "sequence " . $seq . " jump to invalid line";
+				$seq = $this->common->getLineJumpToId($value);
+				foreach ($seq as $key => $value) {
+					$error[] = "sequence " . $value['sequence'] . " jumps to invalid chain of sequences";
+				}
 				$validity = false;
 			}
 			// echo $value .".<br/>";
@@ -297,6 +299,10 @@ class Project extends CI_Controller {
 		// }
 
 		// debugging!
+		// foreach ($jump_point as $key => $value) {
+		// 	echo $value . " ";
+		// }
+		// echo "<BR>";
 		// foreach ($end_sequence as $key => $value) {
 		// 	echo $value . " ";
 		// }
@@ -305,7 +311,7 @@ class Project extends CI_Controller {
 		// 	echo $value . " ";
 		// }
 		// echo "<BR>";
-		$this->session->set_userdata('publishability_error', $error);
+		// $this->session->set_userdata('publishability_error', $error);
 		return $validity;
 	}
 	public function resource($project_id = FALSE) {

@@ -217,6 +217,14 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('project', $data);
 		return $exec;
 	}
+	function getLineJumpToId($line_id) {
+		$this->db->select('sequence');
+		$this->db->from('line');
+		$this->db->where('jumpto_line_id', $line_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
 
 
 
