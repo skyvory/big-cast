@@ -205,6 +205,12 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('project');
 		return $exec;
 	}
+	function deleteProject($user_id, $project_id) {
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->delete('project');
+		return $exec;
+	}
 
 
 

@@ -4,7 +4,11 @@
 			<?php if(isset($error)) { echo $error['error'] . "<br />"; foreach ($error['list'] as $value) { echo $value . "<br />"; } } ?>
 			<?php echo validation_errors(); ?>
 			<div class="page-header">
-				<h2>Project's Setting</h2>
+				<h2>Project's Setting
+					<?php $attributes = array('class' => 'form-inline pull-right'); echo form_open('project/deleteProject', $attributes); ?>
+						<input type="submit" name="submitdelete" class="btn btn-danger" value="Delete Project" onclick="return confirm('This action is irreversible! Are you sure?');"/>
+					</form>
+				</h2>
 			</div>
 			<?php echo form_open_multipart('project/changeSetting'); ?>
 				<div class="form-group">
@@ -26,9 +30,11 @@
 					</label>
 					</div>
 				 </div>
+
 				 <input type="button" class="btn btn-default" onclick="history.back();" value="Back">
 				<input type="submit" name="submitchange" class="btn btn-primary" value="submit" />
 			</form>
+			
 		</div>
 	</div>	
 </div>

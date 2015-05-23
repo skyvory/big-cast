@@ -16,7 +16,6 @@ class Project extends CI_Controller {
 			redirect('login', 'refresh');
 		}
 	}
-
 	function main() {
 		// $this->load->helper('form');
 		$this->load->helper('url');
@@ -61,7 +60,6 @@ class Project extends CI_Controller {
 		$this->load->view('project_view', $data);
 		$this->load->view('foot');
 	}
-
 	public function newProject() {
 		$this->load->helper('form');
 		$this->load->helper('url');
@@ -113,7 +111,6 @@ class Project extends CI_Controller {
 			}
 		}
 	}
-	
 	public function setting() {
 		$this->load->helper('form');
 		$this->load->helper('url');
@@ -221,6 +218,7 @@ class Project extends CI_Controller {
 				redirect('project', 'location');
 			}
 			else {
+				$data['project'] = $this->common->getProject($project_id);
 				$data['error'] = array('error' => "error writing to database");
 				$this->load->view('project_head', $head);
 				$this->load->view('menu_view');
@@ -229,7 +227,6 @@ class Project extends CI_Controller {
 			}
 		}
 	}
-
 	private function checkPublishability($project_id) {
 		$validity = true;
 		$error = array();
@@ -311,8 +308,6 @@ class Project extends CI_Controller {
 		$this->session->set_userdata('publishability_error', $error);
 		return $validity;
 	}
-	
-
 	public function resource($project_id = FALSE) {
 		//url helper for redirect
 		$this->load->helper('url');
@@ -331,7 +326,6 @@ class Project extends CI_Controller {
 			redirect('resource/manage/' . $project_id, 'location');
 		}
 	}
-
 	public function editor($project_id = FALSE) {
 		$this->load->helper('url');
 		$proj = $this->common->getProject($project_id);
@@ -351,15 +345,22 @@ class Project extends CI_Controller {
 			redirect('editor/manage/' . $project_id, 'location');
 		}
 	}
-
-
-	//in placeholder
-	public function loadPublishedProject() {
-		$page = 1;
-		$sess = $this->session->userdata('user_auth');
-		$project_data = $this->common->getUserProject($sess['id']);
+	public function deleteProject() {
+		$user = $this->session->userdata('user_auth');
+		$project_id = $this->session->userdata('active');
+		$pass = $this->common->deleteProject($user['id'], $project_id);
+		if($pass) {
+			redirect('project');
+		}
+		else {
+			$data['project'] = $this->common->getProject($project_id);
+			$data['error'] = array('error' => "error deleting, try again later");
+			$this->load->view('project_head', $head);
+			$this->load->view('menu_view');
+			$this->load->view('project_setting_view', $data);
+			$this->load->view('foot');
+		}
 	}
-
 }
 
 ?>
