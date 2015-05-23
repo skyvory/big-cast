@@ -818,7 +818,7 @@ canvas.on('mouse:down', function(options) {
 				break;
 		}
 	}
-	else if((game.screen == "configuration") || (game.screen == "on_play_configuration")) {
+	else if((game.screen == "configuration") || (game.screen == "on_play_configuration" || (game.screen == "on_choice_configuration"))) {
 		// console.log(options.target.bgmvolume_id);
 		switch(options.target.id) {
 			case "font":
@@ -915,12 +915,15 @@ canvas.on('mouse:down', function(options) {
 			case "exit_button":
 				exitConfigurationScreen();
 				callSaveConfiguration();
-				if(game.screen === "configuration") {
+				if(game.screen == "configuration") {
 					game.screen = "title";
 				}
-				else if(game.screen === "on_play_configuration") {
+				else if(game.screen == "on_play_configuration") {
 					// $(text_display).delay(3000).fadeIn(500);
 					game.screen = "play";
+				}
+				else if(game.screen == "on_choice_configuration") {
+					game.screen = "choice";
 				}
 				break;
 			default:
@@ -1126,7 +1129,7 @@ canvas.on('mouse:down', function(options) {
 				case "configuration_button":
 					renderConfigurationScreen();
 					$(text_display).fadeOut(1000);
-					game.screen = "on_play_configuration";
+					game.screen = "on_choice_configuration";
 					break;
 				case "log_button":
 					break;
@@ -3840,7 +3843,7 @@ function stopVoice() {
 function renderLineText(line_content) {
 	var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
 	context.font = '21px '+font_list[font_index].name;
-	var interval_speed = (parseInt(configuration.text_speed) * 10);
+	var interval_speed = (parseInt(configuration.text_speed) * 5);
 	var cursor_x = 100;
 	var cursor_y = 490;
 	var line_break = cursor_x;
