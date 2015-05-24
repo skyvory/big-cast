@@ -27,8 +27,11 @@ class Login extends CI_Controller {
 			$password = $this->input->post('password');
 			$auth = $this->verifyUser($username, $password);
 			if($auth){
+				$user_session = $this->session->userdata();
+				foreach ($user_session as $key => $value) {
+					$this->session->unset_userdata($key);
+				}
 				if($auth['status'] == "ok"){
-					$sess_array = array();
 					$sess_array = array('id' => $auth['user_id'], 'name' => $auth['username'], 'perm' => $auth['fk_permission_id']);
 					$this->session->set_userdata('user_auth', $sess_array);
 					redirect('home', 'location');
@@ -97,12 +100,10 @@ class Login extends CI_Controller {
 		$username = $this->input->post('username');
 		$match = $this->common->isUserExist($username);
 		if($match){
-			//return true;
 			echo "1";
 		}
 		else{
 			echo "0";
-			//return false;
 		}
 	}
 
@@ -155,25 +156,11 @@ class Login extends CI_Controller {
 		$this->load->helper('url');
 		$user_session = $this->session->userdata();
 		foreach ($user_session as $key => $value) {
-			if($key == 'user_auth') {
-				$this->session->unset_userdata($key);
-			}
+			$this->session->unset_userdata($key);
 		}
 		$this->session->sess_destroy();
 		redirect('login', 'refresh');
 	}
-
-	// for function testing
-	public function alpha() {
-		$path_to_resource = './resources/';
-		$new_directory = $path_to_resource . '2';
-		$make = mkdir($new_directory, 777);
-		if($make)
-			echo "okay";
-		else
-			echo "no";
-	}
-
 }
 
 ?>
