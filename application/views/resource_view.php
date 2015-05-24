@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1 resource-area">
 			<div class="page-header">
-				<h2>Resource of <?php echo $project['title']; ?></h2>
+				<h2>Resource of <?php echo $project['title']; ?><a href="<?php echo base_url() . 'index.php/project/editor/' . $project['id']; ?>" class="btn btn-warning pull-right">to Editor</a></h2>
 			</div>
 			<?php if(isset($error)) echo($error); ?>
 			<div id="progress">
