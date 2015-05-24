@@ -40,3 +40,4 @@ To Do:
 - error handling when loading deleted line data
 - sfx loop feature
 - check http://stackoverflow.com/questions/28819199/bring-canvas-instance-to-front
+- get list of speaker from character name and existing speaker in line table
