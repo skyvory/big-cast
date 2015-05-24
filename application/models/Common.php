@@ -157,8 +157,9 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
-	function getProject($project_id) {
+	function getProject($user_id, $project_id) {
 		$this->db->from('project');
+		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('project_id', $project_id);
 		$query = $this->db->get();
 		$result = $query->row_array();
@@ -275,9 +276,10 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function updateBackgroundResource($id, $name) {
+	function updateBackgroundResource($project_id, $resource_id, $name) {
 		$data = array('name' => $name);
-		$this->db->where('resource_id', $id);
+		$this->db->where('fk_project_id', $project_id);
+		$this->db->where('resource_id', $resource_id);
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
@@ -313,19 +315,30 @@ Class Common extends CI_Model {
 		return $result;
 	}
 
-	function updateSpriteResource($resource_id, $character_name, $figure_name, $expression_name) {
+	function updateSpriteResource($project_id, $resource_id, $character_name, $figure_name, $expression_name) {
 		$data = array('character_name' => $character_name, 'figure_name' => $figure_name, 'expression_name' => $expression_name);
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('resource_id', $resource_id);
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
-	function deleteResource($resource_id) {
+	function deleteResource($project_id, $resource_id) {
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('resource_id', $resource_id);
-		$exec = $this->db->delete('resource');
+		$this->db->delete('resource');
+		$affect = $this->db->affected_rows();
+		$this->fb->log("affect", $affect);
+		if($affect > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 		return $exec;
 	}
-	function getResource($resource_id) {
+	function getResource($project_id, $resource_id) {
 		$this->db->from('resource');
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('resource_id', $resource_id);
 		$query = $this->db->get();
 		$result = $query->row_array();
@@ -342,8 +355,9 @@ Class Common extends CI_Model {
 			return FALSE;
 		}
 	}
-	function updateAudioResource($resource_id, $name) {
+	function updateAudioVideoResource($project_id, $resource_id, $name) {
 		$data = array('name' => $name);
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('resource_id', $resource_id);
 		$exec = $this->db->update('resource', $data);
 		return $exec;

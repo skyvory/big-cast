@@ -1,4 +1,38 @@
-/*editor style*/
+.editor-container {
+	margin: 10px 10px 20px;
+}
+.line-command-row {
+	position:fixed;
+	z-index: 10;
+	bottom: 6%;
+	right: 5%;
+	background-color: rgba(34, 255, 2, 0.09803921568627451);
+	width: 300px;
+	max-width: 500px
+}
+.line-command-col {
+	background-color: rgba(78, 23, 234, 0.1);
+	padding: 10px;
+	margin: 0px 0px 10px;
+}
+.pagination-row {
+	position:fixed;
+	z-index: 10;
+	margin: 0 auto;
+	width: 60%;
+}
+.pagination-col {
+	background-color: rgba(78, 23, 234, 0.1);
+	padding: 10px;
+	margin: 0px 0px 10px;
+}
+.pagination-search-input {
+	display:inline-block;
+	width:30%;
+}
+.line-col {
+	margin-top: 80px;
+}
 .line-item {
 	margin: 5px;
 }
@@ -35,8 +69,10 @@ table td {
 	border: none;
 }
 .line-area {
-	background-color: rgba(65, 103, 102, 0.1);
 	padding: 3px;
+}
+.line-list {
+	background-color: rgba(65, 103, 102, 0.1);
 }
 .preview-area {
 	background-color: rgba(65, 103, 102, 0.3);
@@ -51,10 +87,10 @@ table td {
 	width: 20% !important;
 }
 .line-delete-button {
-	margin: 0px 0px 5px;
+	margin: 0 0 5px;
 }
 .line-project-button, .line-collapse-button {
-	margin: 5px 0px 0px;
+	margin: 5px 0 0;
 }
 .sprite-form .row .col-md-9 .form-group .sprite-input {
 	width: 28%;
@@ -62,8 +98,14 @@ table td {
 .sprite-form .row .col-md-9 .form-group .sprite-number-input {
 	width: 9%;
 }
-
-
+.request-loading {
+	left: 50%;
+	position: absolute;
+}
+html {
+	overflow: -moz-scrollbars-vertical; 
+	overflow-y: scroll;
+}
 
 
 /*custom ui theme*/

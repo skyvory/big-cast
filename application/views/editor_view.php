@@ -1,19 +1,19 @@
-<div class="container-fluid" style="margin: 10px 10px 20px;">
+<div class="container-fluid editor-container">
 	<div id="notification">
 		<?php if(isset($error)) echo($error); ?>
 	</div>
 
-	<div class="row draggable" style="position:fixed; z-index: 10; bottom: 6%; right: 5%; background-color: rgba(34, 255, 2, 0.09803921568627451);width: 300px; max-width: 500px">
-		<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;" >
+	<div class="row draggable line-command-row">
+		<div class="col-md-12 line-command-col">
 			<div class="line-command-area">
 				<span class="pull-left">Add line</span><br />
 					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" id="addtextlinebutton" class="btn btn-default">text</button>
-						<button type="button" id="addchoicelinebutton"  class="btn btn-default">choice</button>
-						<button type="button" id="addvideolinebutton"  class="btn btn-default">video</button>
-						<button type="button" id="addendlinebutton"  class="btn btn-default">end</button>
+						<button type="button" id="addtextlinebutton" data-loading-text="text" class="btn btn-default">text</button>
+						<button type="button" id="addchoicelinebutton" data-loading-text="choice" class="btn btn-default">choice</button>
+						<button type="button" id="addvideolinebutton" data-loading-text="video" class="btn btn-default">video</button>
+						<button type="button" id="addendlinebutton" data-loading-text="end" class="btn btn-default">end</button>
 					</div>
-					<button type="button" id="savebutton" class="btn btn-success pull-right">Save</button>
+					<button type="button" id="savebutton" data-loading-text="Saving..." class="btn btn-success pull-right">Save</button>
 					<div class="row">
 					<div class="col-md-8">
 					<div class="btn-group btn-group-sm" role="group">
@@ -68,8 +68,8 @@
 					</div>
 				</div>
 			</div> -->
-			<div class="row draggable" style="position:fixed; z-index: 10; margin: 0 auto; width: 60%;">
-				<div class="col-md-12" style="background-color: rgba(78, 23, 234, 0.1); padding: 10px; margin: 0px 0px 10px;">
+			<div class="row draggable pagination-row">
+				<div class="col-md-12 pagination-col">
 					<div class="pagination-area">
 							<div class="btn-group">
 								<button id="firstpagebutton" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="go to first page"><span class="glyphicon glyphicon-step-backward"></span></button>
@@ -91,7 +91,7 @@
 								<button id="lastpagebutton" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="go to last page"><span class="glyphicon glyphicon-step-forward"></span> </button>
 							</div>
 							<button type="button" class="btn btn-default collapse-all-button" data-toggle="tooltip" data-placement="bottom" title="collapse all details"><span class="glyphicon glyphicon-menu-hamburger"></span> </button>
-							<form class="form-inline pull-right" style="display:inline-block; width:30%;">
+							<form class="form-inline pull-right pagination-search-input">
 								<div class="form-group">
 									<div class="input-group" data-toggle="tooltip" data-placement="bottom" title="load lines by label">
 										<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
@@ -103,9 +103,9 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 line-area" style="margin-top: 80px;">
-						<span class="request-loading request-loading-resourcelist">
-							<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..." style="display:none" />
+				<div class="col-md-12 line-area line-col">
+						<span class="request-loading">
+							<img src="<?php echo base_url(); ?>assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."  />
 						</span>
 						<table class="table">
 							<tbody class="line-list">

@@ -21,7 +21,7 @@
 					<input type="file" id="coverimage" name="userfile" class="form-control">
 				</div> -->
 				<button type="submit" id="newprojectsubmit" class="btn btn-primary">Create</button>
-			</form>
+			<?php echo form_close(); ?>
 		</div>
 	</div>	
 </div>

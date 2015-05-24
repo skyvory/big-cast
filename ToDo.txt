@@ -6,6 +6,7 @@ Cast-WebBasedVisualNovelAuthoringTool
 Known Issue:
 - need change php.ini for bigger file upload
 - pagination after display line by label
+- delte folder resource when delete project
 
 To Do:
 - keep login cookie

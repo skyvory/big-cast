@@ -1,44 +1,47 @@
-<div class="container-fluid" style="margin: 30px 10px 20px;">
+<div class="container-fluid">
 <div id="notification"></div>
-<!-- <div id="dropshade"></div> -->
-<div class="row">
-	<div class="col-md-10 resource-area">
-
-		<?php if(isset($error)) echo($error); ?>
-		<?php echo form_open_multipart('home/do_upload'); ?>
-		<!--input type="file" multiple name="userfile[]"/-->
-		<h3>Select the resource type & upload.</h3>
-		<p>You can drop multiple files anywhere or use browse button below.</p>
-		<input type="file" id="fileupload" name="userfile" multiple />
-		<input type="hidden" id="resourcetype" name="resourcetype" value="1" />
-		<!-- <input type="submit" id="upload" value="upload" /> -->
-		</form>
-		
-		<div id="progress">
-		<div class="bar" style="width: 0%;"></div>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1 resource-area">
+			<div class="page-header">
+				<h2>Resource of <?php echo $project['title']; ?></h2>
+			</div>
+			<?php if(isset($error)) echo($error); ?>
+			<div id="progress">
+				<span class="progress-bar progress-bar-striped active bar" role="progresbar" style="width: 0%;"></span>
+			</div>
+			<?php echo form_open_multipart('home/do_upload'); ?>
+				<diiv class="row">
+					<div class="col-md-5">
+						<h4>Select resource type & upload.</h4>
+					</div>
+					<div class="col-md-7">
+						<p>You can drop multiple files anywhere or use browse button below.</p>
+						<input type="file" id="fileupload" name="userfile" multiple />
+						<input type="hidden" id="resourcetype" name="resourcetype" value="1" />
+						<!-- <input type="submit" id="upload" value="upload" /> -->
+					</div>
+				</diiv>
+			<?php echo form_close(); ?>
+			<div>
+				<ul class="nav nav-tabs resource-navbar">
+					<li role="presentation" class="active"><a href="#" id="spritebutton">Sprites</a></li>
+					<li role="presentation"><a href="#" id="backgroundbutton">Background</a></li>
+					<li role="presentation"><a href="#" id="bgmbutton">BGM</a></li>
+					<li role="presentation"><a href="#" id="sfxbutton">SFX</a></li>
+					<li role="presentation"><a href="#" id="voicebutton">Voice</a></li>
+					<li role="presentation"><a href="#" id="videobutton">Video</a></li>
+				</ul>
+			</div>
+				<div class="resource-preinput">
+				</div>
+			<span class="request-loading request-loading-resourcelist" style="">
+				<img src="<?php echo base_url(); ?>assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
+			</span>
+			<div class="resource-list">
+			</div>
 		</div>
 
-		<p>Select type of rsource 
-		<div>
-		<ul class="nav nav-tabs resource-navbar">
-			<li role="presentation" class="active"><a href="#" id="spritebutton">Sprites</a></li>
-			<li role="presentation"><a href="#" id="backgroundbutton">Background</a></li>
-			<li role="presentation"><a href="#" id="bgmbutton">BGM</a></li>
-			<li role="presentation"><a href="#" id="sfxbutton">SFX</a></li>
-			<li role="presentation"><a href="#" id="voicebutton">Voice</a></li>
-			<li role="presentation"><a href="#" id="videobutton">Video</a></li>
-		</ul>
-		</div>
-		<div class="resource-preinput">
-		</div>
-		<span class="request-loading request-loading-resourcelist" style="">
-			<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
-		</span>
-		<div class="resource-list">
-		</div>
 	</div>
-
-</div>
 </div>
 
 

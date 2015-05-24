@@ -44,18 +44,18 @@ class Game extends CI_Controller {
 				$this->load->view('foot');
 			}
 			else {
-				$data['message'] = "You don't have access to this page!";
-				$this->load->view('game_forbidden_head', $head);
+				$data['message'] = "You are not authorized to access this page!";
+				$this->load->view('forbidden_head', $head);
 				$this->load->view('menu_view');
-				$this->load->view('game_forbidden', $data);
+				$this->load->view('forbidden_view', $data);
 				$this->load->view('foot');
 			}
 		}
 		else {
 			$data['message'] = "Game not found!";
-			$this->load->view('game_forbidden_head', $head);
+			$this->load->view('forbidden_head', $head);
 			$this->load->view('menu_view');
-			$this->load->view('game_forbidden', $data);
+			$this->load->view('forbidden_view', $data);
 			$this->load->view('foot');
 		}
 

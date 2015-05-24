@@ -105,7 +105,7 @@ table td {
 
 .bar {
 	height: 18px;
-	background: green;
+	/*background: #00FF00;*/
 }
 
 #dropshade {
@@ -138,5 +138,14 @@ table td {
 	margin: 10px;
 }
 .resource-navbar {
-	margin-bottom: 5px;
+	margin-bottom: 5px!important;
+}
+.error-notification {
+	position: fixed;
+	z-index: 3;
+	top: 15%;
+	right: 5%;
+}
+.page-header {
+	margin: 5px 0;
 }

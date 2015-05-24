@@ -30,7 +30,7 @@
 					</div>
 				  	<input type="submit" id="login" value="Login" tabindex="3" class="btn btn-primary" style="width: 40%;"/>
 				  	<div id="error"></div>
-				</form>
+				<?php echo form_close(); ?>
 			</div>
 		</div>
 		<p>Don't have an account yet? <span> <a href="<?= base_url() ?>index.php/register" class="btn btn-default btn-sm">register</a> </span></p>

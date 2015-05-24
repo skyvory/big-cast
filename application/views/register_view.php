@@ -34,7 +34,7 @@
 					<span id="passwordmatch"></span>
 					</div>
 					<input type="submit" id="register" value="Register" class="btn btn-primary"/>
-				</form>
+				<?php echo form_close(); ?>
 			</div>
 		</div>
 		<p>Already have an account? <span> <a href="<?= base_url() ?>index.php/login" class="btn btn-default btn-sm">login</a> </span></p>

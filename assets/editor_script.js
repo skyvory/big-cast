@@ -21,10 +21,6 @@ var tail = 0;
 // 	sprite: []
 // };
 
-$('#test').click(function() {
-	console.log(line_obj);
-});
-
 function getLastLineObjectBySequence(seq) {
 	// var select_form = $('.line-list tr td form').has('input[name=sequence][value='+seq+']');
 	if(seq != 0) {
@@ -86,16 +82,17 @@ function callLineData(page, by) {
 		},
 		dataType: "json",
 		beforeSend: function() {
-			//placehoder
+			$('.line-list').fadeOut(100);
+			$('.request-loading').show();
 		}
 	});
 	req.done(function(msg) {
+		$('.request-loading').hide();
+		$('.line-list').fadeIn(500);
 		if(msg) {
-			// var obj =  $.parseJSON(msg);
 			if(msg.length > 0) {
 				line_obj = msg;
 				head = msg[0]['sequence'];
-				console.log(head);
 				tail = head;
 				var block = "";
 				$('.line-list').html("");
@@ -137,7 +134,6 @@ function callLineData(page, by) {
 				head = 0;
 				tail = 0;
 				$('.line-list').html('<p class="no-line">No line to display.</p><p class="no-line">You can add lines by using add line buttons.</p>');
-				console.log("no result fetched");
 			}
 		}
 	});
@@ -220,21 +216,20 @@ $('#addtextlinebutton').click(function() {
 				},
 				dataType: "html",
 				beforeSend: function() {
-					//placeholder
+					$('#addtextlinebutton').button('loading');
 				}
 			});
 			req.done(function(msg) {
+				$('#addtextlinebutton').button('reset');
 				if(msg) {
 					var new_line_id = msg;
 
 					//increment all sequence after selected line by 1 starting from end to up
 					if(tail > form_sequence) {
-						console.log("OK");
 						for(var i = tail; i > form_sequence; i--) {
 							var i_index = getObjectIndex(line_obj, 'sequence', i);
 							var i_sequence = parseInt(line_obj[i_index].sequence) + 1;
 							line_obj[i_index].sequence = i_sequence.toString();
-							console.log(i);
 						}
 					}
 
@@ -264,16 +259,11 @@ $('#addtextlinebutton').click(function() {
 					}
 					// insert new text line data in middle of line_obj
 					line_obj.splice(index_to_write, 0, new_line);
-					console.log(line_obj);
-
 					tail++;
 					var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+sequence_to_insert+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /><span class="glyphicon glyphicon-volume-down"></span> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="160" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /><input type="hidden" name="jumpto_line_id" value="" /><span class="glyphicon glyphicon-tag"></span> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+sequence_to_insert+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
-
 					// append block of new text line after selected line
 					var element_before_insert = $('.line-list tr').has('input[name=sequence][value='+form_sequence+']');
 					$(block).insertAfter( $(element_before_insert) );
-//					console.log(element_before_insert);
-
 					// reorder sequence number and hidden input value on view end
 					var count = head;
 					$('.line-list').children('tr').each(function() {
@@ -309,10 +299,11 @@ $('#addtextlinebutton').click(function() {
 			},
 			dataType: "html",
 			beforeSend: function() {
-				//placeholder
+				$('#addtextlinebutton').button('loading');
 			}
 		});
 		req.done(function(msg) {
+			$('#addtextlinebutton').button('reset');
 			if(msg) {
 				var new_line_id = msg;
 				if(head == 0) {
@@ -347,7 +338,6 @@ $('#addtextlinebutton').click(function() {
 			}
 		});
 	}
-	
 });
 
 // new choice line
@@ -365,8 +355,6 @@ $('#addchoicelinebutton').click(function() {
 			callErrorNotification("select line first!");
 		}
 		else {
-			// get object consist of value from selected line
-			var last = getLastLineObjectBySequence(form_sequence);
 			var sequence_to_insert = form_sequence + 1;
 			var req = $.ajax({
 				url: config.base + 'index.php/editor/newLine',
@@ -377,23 +365,21 @@ $('#addchoicelinebutton').click(function() {
 				},
 				dataType: "html",
 				beforeSend: function() {
-					//placeholder
+					$('#addchoicelinebutton').button('loading');
 				}
 			});
 			req.done(function(msg) {
+				$('#addchoicelinebutton').button('reset');
 				if(msg) {
 					var new_line_id = msg;
-
 					//increment all sequence after selected line by 1 starting from end to up
 					if(tail > form_sequence) {
 						for(var i = tail; i > form_sequence; i--) {
 							var i_index = getObjectIndex(line_obj, 'sequence', i);
 							var i_sequence = parseInt(line_obj[i_index].sequence) + 1;
 							line_obj[i_index].sequence = i_sequence.toString();
-							console.log(i);
 						}
 					}
-
 					//insert new choice line to line_obj
 					var index_to_write = getObjectIndex(line_obj, 'sequence', form_sequence) + 1;
 					var new_line = {
@@ -459,10 +445,11 @@ $('#addchoicelinebutton').click(function() {
 			},
 			dataType: "html",
 			beforeSend: function() {
-				//placeholder
+				$('#addchoicelinebutton').button('loading');
 			}
 		});
 		req.done(function(msg) {
+			$('#addchoicelinebutton').button('reset');
 			if(msg) {
 				var new_line_id = msg;
 				if(head == 0) {
@@ -504,7 +491,6 @@ $('#addchoicelinebutton').click(function() {
 			}
 		});
 	}
-	
 });
 
 // new video line
@@ -528,10 +514,11 @@ $('#addvideolinebutton').click(function() {
 				},
 				dataType: "html",
 				beforeSend: function() {
-					//placeholder
+					$('#addvideolinebutton').button('loading');
 				}
 			});
 			req.done(function(msg) {
+				$('#addvideolinebutton').button('reset');
 				if(msg) {
 					var new_line_id = msg;
 					//increment all sequence after selected line by 1 starting from end to up
@@ -540,11 +527,10 @@ $('#addvideolinebutton').click(function() {
 							var i_index = getObjectIndex(line_obj, 'sequence', i);
 							var i_sequence = parseInt(line_obj[i_index].sequence) + 1;
 							line_obj[i_index].sequence = i_sequence.toString();
-							console.log(i);
 						}
 					}
 
-					//insert new choice line to line_obj
+					//insert new video line to line_obj
 					var index_to_write = getObjectIndex(line_obj, 'sequence', form_sequence) + 1;
 					var new_line = {
 						line_id: new_line_id.toString(),
@@ -555,7 +541,7 @@ $('#addvideolinebutton').click(function() {
 						video_name: "",
 						video_resource_id: ""
 					}
-					// insert new choice line data in middle of line_obj
+					// insert new video data in middle of line_obj
 					line_obj.splice(index_to_write, 0, new_line);
 
 					tail++;
@@ -577,7 +563,7 @@ $('#addvideolinebutton').click(function() {
 			});
 		}
 	}
-	// add line at end section
+	// add video at end section
 	else if(insert_position == "end") {
 		var temp_tail = tail+1;
 		var req = $.ajax({
@@ -589,10 +575,11 @@ $('#addvideolinebutton').click(function() {
 			},
 			dataType: "html",
 			beforeSend: function() {
-				//placeholder
+				$('#addvideolinebutton').button('loading');
 			}
 		});
 		req.done(function(msg) {
+			$('#addvideolinebutton').button('reset');
 			if(msg) {
 				var new_line_id = msg;
 				if(head == 0) {
@@ -614,7 +601,6 @@ $('#addvideolinebutton').click(function() {
 			}
 		});
 	}
-	
 });
 
 // new end line
@@ -638,10 +624,11 @@ $('#addendlinebutton').click(function() {
 				},
 				dataType: "html",
 				beforeSend: function() {
-					//placeholder
+					$('#addendlinebutton').button('loading');
 				}
 			});
 			req.done(function(msg) {
+				$('#addendlinebutton').button('reset');
 				if(msg) {
 					var new_line_id = msg;
 					//increment all sequence after selected line by 1 starting from end to up
@@ -650,7 +637,6 @@ $('#addendlinebutton').click(function() {
 							var i_index = getObjectIndex(line_obj, 'sequence', i);
 							var i_sequence = parseInt(line_obj[i_index].sequence) + 1;
 							line_obj[i_index].sequence = i_sequence.toString();
-							console.log(i);
 						}
 					}
 
@@ -695,10 +681,11 @@ $('#addendlinebutton').click(function() {
 			},
 			dataType: "html",
 			beforeSend: function() {
-				//placeholder
+				$('#addendlinebutton').button('loading');
 			}
 		});
 		req.done(function(msg) {
+			$('#addendlinebutton').button('reset');
 			if(msg) {
 				var new_line_id = msg;
 				if(head == 0) {
@@ -716,7 +703,6 @@ $('#addendlinebutton').click(function() {
 			}
 		});
 	}
-	
 });
 
 // for button to collapse more line details
@@ -730,7 +716,6 @@ $('.pagination-area').on('click', '.collapse-all-button', function(e) {
 	var element = $('.line-list .collapse');
 	element.collapse('toggle');
 });
-
 //show sprite management area on text line hover
 $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function() {
 	//unnecessary! var select_form = $(this.form);
@@ -782,11 +767,13 @@ function getLineBySequence(sequence) {
 		return line_obj.sequence == sequence
 	});
 }
+
 function getLineById(id) {
 	return line_obj.filter(function(line_obj){
 		return line_obj.line_id == id
 	});
 }
+
 function getObjectIndex(array, attr, value) {
 	for(var i = 0; i < array.length; i++) {
 		if(array[i][attr] == value) {
@@ -794,6 +781,7 @@ function getObjectIndex(array, attr, value) {
 		}
 	}
 }
+
 function sortLineObjectBySequence() {
 	line_obj.sort(function(a, b) {
 		return a.sequence - b.sequence
@@ -801,11 +789,14 @@ function sortLineObjectBySequence() {
 }
 
 $('#savebutton').click(function() {
+	var save_button = $(this).button('loading');
 	sortLineObjectBySequence();
-	saveLine();
+	saveLine(function() {
+		save_button.button('reset');
+	});
 });
 
-function saveLine() {
+function saveLine(callback) {
 	var simple_line_obj = [];
 	var simple_sprite_obj = [];
 	var simple_choice_obj = [];
@@ -894,16 +885,6 @@ function saveLine() {
 				fk_linetype_id: value.fk_linetype_id
 			});
 		}
-
-		// $.each(line_obj[i].sprite, function(index, value) {
-		// 	simple_line_obj[i].sprite.push({
-		// 		sprite_id: value.sprite_id,
-		// 		fk_resource_id: value.fk_resource_id,
-		// 		position_x: value.position_x,
-		// 		position_y: value.position_y,
-		// 		position_z: value.position_z
-		// 	});
-		// });
 		i++;
 	});
 	var delete_json = JSON.stringify(delete_obj);
@@ -924,7 +905,6 @@ function saveLine() {
 	});
 	req.done(function(msg) {
 		if(msg) {
-			console.log(msg);
 			var update_obj = msg;
 			// update new created sprite in line_obj with insert id
 			$.each(update_obj, function(index, value) {
@@ -950,11 +930,13 @@ function saveLine() {
 		else {
 			callErrorNotification("failed to save!");
 		}
+		if(callback) {
+			callback();
+		}
 	})
 }
 
 // $('.line-list').on('change', 'input[name=background]', function() {
-// 	console.log("OK");
 // 	var input_id = $(select_form).find('input[name=background_resource_id]').val();
 // 	var input_value = $(this).val();
 // 	var verify = 0;
@@ -968,13 +950,10 @@ function saveLine() {
 // 	// 		verify++;
 // 	// 	}
 // 	// };
-// 	console.log(input_id);
-// 	console.log(input_value);
 // 	if(verify == 1) {
 // 		line_obj[index_to_write].background_resource_id = input_id;
 // 		line_obj[index_to_write].background_name = input_value;
 // 		$(this).css("color", "");
-// 		console.log("OK");
 // 	}
 // 	else {
 // 		line_obj[index_to_write].background_resource_id = "";
@@ -986,10 +965,8 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 	var select_form = $(this.form);
 	var input_name = $(this).attr('name');
 	var form_id = $(select_form).find('input[name=line_id]').val();
-	console.log(form_id);
 	// index on line_obj of which id used to change its array value
 	var index_to_write = getObjectIndex(line_obj, 'line_id', form_id);
-	console.log(input_name);
 	switch(input_name) {
 
 		case "speaker":
@@ -1064,7 +1041,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			if(verify == 1) {
 				line_obj[index_to_write].sfx_resource_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1089,7 +1065,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			if(verify == 1) {
 				line_obj[index_to_write].voice_resource_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1115,7 +1090,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			if(verify == 1) {
 				line_obj[index_to_write].jumpto_line_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1142,7 +1116,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			if(verify == 1) {
 				line_obj[index_to_write].choice[choice_index_to_write].jumpto_line_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1183,7 +1156,6 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 			if(verify == 1) {
 				line_obj[index_to_write].video_resource_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1226,7 +1198,6 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 				line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id = input_id;
 				line_obj[line_index_to_write].sprite[index_to_write].sprite_name = input_value;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1240,7 +1211,6 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 			break;
 
 		case "position_x":
-			console.log("OK");
 			var input_value = $(this).val();
 			line_obj[line_index_to_write].sprite[index_to_write].position_x = input_value;
 			break;
@@ -1256,7 +1226,6 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 			break;
 
 		case "video":
-			console.log("GODDAMN");
 
 		case "effect":
 			var input_id = $(select_form).find('input[name=effect_id]').val();
@@ -1270,7 +1239,6 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 			if(verify == 1) {
 				line_obj[line_index_to_write].sprite[index_to_write].fk_effect_id = input_id;
 				$(this).css("color", "");
-				console.log("OK");
 			}
 			else if(input_value == "") {
 				line_obj[index_to_write].background_resource_id = "";
@@ -1287,7 +1255,6 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 
 $('.sprite-list').on('keyup', 'input[name=position_x], input[name=position_y], input[name=position_z]', function() {
 	$(this).trigger('change');
-	console.log('ij');
 });
 
 // $('.sprite-list').on('keypress', 'input[name=position_x]', function() {
@@ -1305,7 +1272,6 @@ $('.sprite-list').on('keyup', 'input[name=position_x], input[name=position_y], i
 // 	}
 // 	var input_value = $(this).val();
 // 	line_obj[line_index_to_write].sprite[index_to_write].position_x = input_value;
-// 	console.log("mammmamia");
 // });
 
 //unnecessary!
@@ -1331,7 +1297,6 @@ $('.sprite-list').on('keyup', 'input[name=position_x], input[name=position_y], i
 // 			var spr_id = msg;
 // 			var index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
 // 			var count = line_obj[index_to_write].sprite.length;	
-// 			console.log(index_to_write);
 // 			line_obj[index_to_write]['sprite'].push({
 // 				sprite_id: spr_id.toString(),
 // 				fk_resource_id: "",
@@ -1448,6 +1413,7 @@ function callCharacterAutocompleteData() {
 		character_list = msg;
 	});
 }
+
 function callBackgroundAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadBackgroundList',
@@ -1464,6 +1430,7 @@ function callBackgroundAutocompleteData() {
 		background_list = msg;
 	});
 }
+
 function callBgmAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadBgmList',
@@ -1480,6 +1447,7 @@ function callBgmAutocompleteData() {
 		bgm_list = msg;
 	});
 }
+
 function callSfxAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadSfxList',
@@ -1496,6 +1464,7 @@ function callSfxAutocompleteData() {
 		sfx_list = msg;
 	});
 }
+
 function callVoiceAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadVoiceList',
@@ -1512,6 +1481,7 @@ function callVoiceAutocompleteData() {
 		voice_list = msg;
 	});
 }
+
 function callLabelAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadLabelList',
@@ -1528,6 +1498,7 @@ function callLabelAutocompleteData() {
 		label_list = msg;
 	});
 }
+
 function callSpriteAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadSpriteList',
@@ -1542,6 +1513,7 @@ function callSpriteAutocompleteData() {
 		sprite_list = msg;
 	});
 }
+
 function callEffectAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadEffectList',
@@ -1559,6 +1531,7 @@ function callEffectAutocompleteData() {
 		effect_list = msg;
 	});
 }
+
 function callVideoAutocompleteData() {
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/loadVideoList',
@@ -2100,7 +2073,6 @@ var delay = (function(){
 $('#currentpage').keyup(function() {
 	var input_value = $(this).val();
 	delay(function() {
-		console.log(input_value);
 		callLineData(input_value);
 	}, 1000);
 });
@@ -2288,7 +2260,6 @@ $('.line-list').on('click', '.line-project-button', function() {
 		}
 	}
 });
-
 
 window.onbeforeunload = function (e) {
 	var confirm_close = "Save your work if you haven't done it yet!"
