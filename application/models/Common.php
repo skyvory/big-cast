@@ -404,6 +404,16 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('resource', $data);
 		return $exec;
 	}
+
+
+
+
+
+
+
+
+
+
 	// EDITOR FUNCTION
 /*	function getLine($user_id, $project_id, $limit, $offset) {
 		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
@@ -762,13 +772,7 @@ Class Common extends CI_Model {
 		$exec = $this->db->delete('sprite');
 		return $exec;
 	}
-	// function deleteLine($line_id) {
-	// 	$this->db->where_in('line_id', $line_id);
-	// 	$exec = $this->db->delete('line');
-	// 	return $exec;
-	// }
 	function getLineres($project_id, $line_id, $resource_type_id) {
-		$this->db->select('fk_resource_id');
 		$this->db->from('lineres');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
 		$this->db->where('fk_project_id', $project_id);
@@ -794,6 +798,12 @@ Class Common extends CI_Model {
 		$this->db->set('fk_line_id', $line_id);
 		$this->db->set('fk_resource_id', $resource_id);
 		$exec = $this->db->insert('lineres');
+		return $exec;
+	}
+	function deleteLineres($line_id, $resource_id) {
+		$this->db->where('fk_line_id', $line_id);
+		$this->db->where('fk_resource_id', $resource_id);
+		$exec = $this->db->delete('lineres');
 		return $exec;
 	}
 	function createChoice($choice) {

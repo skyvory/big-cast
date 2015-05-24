@@ -622,6 +622,9 @@ class Editor extends CI_Controller {
 			if(!is_int($value['position_z'])) {
 				$value['position_z'] = 0;
 			}
+			if(empty($value['fk_effect_id'])) {
+				$value['fk_effect_id'] = null;
+			}
 			if($value['fk_resource_id'] != null) {
 				if($value['sprite_id'] == "new") {
 					$sprite_to_create[] = array(
@@ -684,34 +687,24 @@ class Editor extends CI_Controller {
 		if(count($lineres) > 0  && $status == TRUE) {
 			foreach ($lineres as $key => $value) {
 				$lineres_resource = $this->common->getLineres($proj['id'], $value['line_id'], $value['resource_type_id']);
-				if($lineres_resource) {
-					$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['resource_id'], $lineres_resource['fk_resource_id']);
-					if(!$pass_lineres_update) {
-						$status = FALSE;
+				if(!empty($value['resource_id'])) {
+					if($lineres_resource) {
+						$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['resource_id'], $lineres_resource['fk_resource_id']);
+						if(!$pass_lineres_update) {
+							$status = FALSE;
+						}
+					}
+					else {
+						$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['resource_id']);
+						if(!$pass_lineres_create) {
+							$status = FALSE;
+						}
 					}
 				}
+				// delete lineres if empty resource
 				else {
-					$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['resource_id']);
-					// unnecessary!
-					// switch ($value['resource_type_id']) {
-					// 	case 2:
-					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['background_resource_id']);
-					// 		break;
-					// 	case 3:
-					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['bgm_resource_id']);
-					// 		break;
-					// 	case 4:
-					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['sfx_resource_id']);
-					// 		break;
-					// 	case 5:
-					// 		$pass_lineres_create = $this->common->createLineres($value['line_id'], $value['voice_resource_id']);
-					// 		break;
-					// 	default:
-					// 		$pass_lineres_create = FALSE;
-					// 		break;
-					// }
-					if(!$pass_lineres_create) {
-						$status = FALSE;
+					if($lineres_resource) {
+						$pass_lineres_delete = $this->common->deleteLineres($value['line_id'], $lineres_resource['resource_id']);
 					}
 				}
 			}
