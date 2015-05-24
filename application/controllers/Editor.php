@@ -511,6 +511,8 @@ class Editor extends CI_Controller {
 		$choice = json_decode($choice_json, TRUE);
 		$sprite_to_delete = array();
 		$line_to_delete = array();
+
+		// append all sprite to be deleted into an array
 		foreach ($delete as $key => $value) {
 			if($value['object'] == "sprite") {
 				$sprite_to_delete[] = $value['id'];
@@ -522,6 +524,7 @@ class Editor extends CI_Controller {
 		$lineres = array();
 		// validation, assign default value, assign lineres
 		foreach ($line as $key => $value) {
+			// text line
 			if($value['fk_linetype_id'] == 1) {
 				if(empty($value['label'])) {
 					$line[$key]['label'] = null;
@@ -565,6 +568,7 @@ class Editor extends CI_Controller {
 					);
 				}
 			}
+			// choice line
 			else if($value['fk_linetype_id'] == 2) {
 				if(empty($value['label'])) {
 					$line[$key]['label'] = null;
@@ -574,6 +578,7 @@ class Editor extends CI_Controller {
 				$line[$key]['content'] = null;
 				$line[$key]['jumpto_line_id'] = null;
 			}
+			// video line
 			else if($value['fk_linetype_id'] == 3) {
 				if(empty($value['label'])) {
 					$line[$key]['label'] = null;
@@ -593,6 +598,7 @@ class Editor extends CI_Controller {
 					);
 				}
 			}
+			// end line
 			else if($value['fk_linetype_id'] == 4) {
 				$line[$key]['label'] = null;
 				$line[$key]['speaker'] = null;
@@ -608,6 +614,7 @@ class Editor extends CI_Controller {
 		}
 		$sprite_to_create = array();
 		$sprite_to_update = array();
+		// looping sprite array
 		foreach ($sprite as $key => $value) {
 			// assign default value if not valid
 			$value['position_x'] = (int) $value['position_x'];
@@ -627,6 +634,7 @@ class Editor extends CI_Controller {
 			}
 			if($value['fk_resource_id'] != null) {
 				if($value['sprite_id'] == "new") {
+					// append new sprite to be inserted
 					$sprite_to_create[] = array(
 						'fk_resource_id' => $value['fk_resource_id'],
 						'position_x' => $value['position_x'],
@@ -639,6 +647,7 @@ class Editor extends CI_Controller {
 					);
 				}
 				else {
+					// append changed sprite to be updated
 					$sprite_to_update[] = array(
 						'sprite_id' => $value['sprite_id'],
 						'fk_resource_id' => $value['fk_resource_id'],
@@ -651,6 +660,7 @@ class Editor extends CI_Controller {
 				}
 			}
 		}
+
 		$choice_to_create = array();
 		$choice_to_update = array();
 		foreach ($choice as $key => $value) {

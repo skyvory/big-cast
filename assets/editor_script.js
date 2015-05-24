@@ -1014,7 +1014,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].bgm_resource_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1043,7 +1043,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].sfx_resource_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1067,7 +1067,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].voice_resource_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1092,7 +1092,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].jumpto_line_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1118,7 +1118,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].choice[choice_index_to_write].jumpto_line_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1158,7 +1158,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[index_to_write].video_resource_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1200,10 +1200,11 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id = "";
 				$(this).css("color", "");
 			}
 			else {
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id = input_id;
 				line_obj[line_index_to_write].sprite[index_to_write].sprite_name = "";
 				$(this).css("color", "rgba(255, 90, 90, 1)");
 				callErrorNotification("sprite resource doesn't exist!");
@@ -1225,11 +1226,10 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 			line_obj[line_index_to_write].sprite[index_to_write].position_z = input_value;
 			break;
 
-		case "video":
-
 		case "effect":
 			var input_id = $(select_form).find('input[name=effect_id]').val();
 			var input_value = $(this).val();
+			console.log(input_value);
 			var verify = 0;
 			$.each(effect_list, function(index, value) {
 				if(input_id == value.effect_id && input_value == value.name) {
@@ -1241,7 +1241,7 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 				$(this).css("color", "");
 			}
 			else if(input_value == "") {
-				line_obj[index_to_write].background_resource_id = "";
+				line_obj[line_index_to_write].sprite[index_to_write].fk_effect_id = "";
 				$(this).css("color", "");
 			}
 			else {
@@ -1253,8 +1253,61 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 	}
 });
 
-$('.sprite-list').on('keyup', 'input[name=position_x], input[name=position_y], input[name=position_z]', function() {
-	$(this).trigger('change');
+$('.sprite-list').on('keyup', 'input[name=position_x], input[name=position_y], input[name=position_z], input[name=sprite], input[name=effect]', function() {
+	// $(this).trigger('change');
+});
+
+// another event so sprite and effect don't clash with verification, for instance, combining if(input == "") together would cause event to call error notification after a word is typed on sprite and effect
+$('.sprite-list').on('keyup', 'input[type=text]', function() {
+	var select_form = $(this.form);
+	var input_name = $(this).attr('name');
+	var line_form_id = $('.select-line').find('input[name=line_id]').val();
+	var form_id = $(select_form).find('input[name=sprite_id]').val();
+	// index on line_obj of which id used to change its array value
+	var line_index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
+	var index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_id', form_id);
+	if(form_id == "new") {
+		form_id = $(select_form).find('input[name=sprite_temp_index]').val();
+		index_to_write = form_id;
+		index_to_write = getObjectIndex(line_obj[line_index_to_write].sprite, 'sprite_temp_index', form_id);
+	}
+	switch(input_name) {
+
+		case "sprite":
+			var input_id = $(select_form).find('input[name=sprite_resource_id]').val();
+			var input_value = $(this).val();
+			if(input_value == "") {
+				console.log(line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id);
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_resource_id = "";
+				line_obj[line_index_to_write].sprite[index_to_write].sprite_name = "";
+				$(this).css("color", "");
+			}
+			break;
+
+		case "position_x":
+			var input_value = $(this).val();
+			line_obj[line_index_to_write].sprite[index_to_write].position_x = input_value;
+			break;
+
+		case "position_y":
+			var input_value = $(this).val();
+			line_obj[line_index_to_write].sprite[index_to_write].position_y = input_value;
+			break;
+
+		case "position_z":
+			var input_value = $(this).val();
+			line_obj[line_index_to_write].sprite[index_to_write].position_z = input_value;
+			break;
+
+		case "effect":
+			var input_id = $(select_form).find('input[name=effect_id]').val();
+			var input_value = $(this).val();
+			if(input_value == "") {
+				line_obj[line_index_to_write].sprite[index_to_write].fk_effect_id = "";
+				$(this).css("color", "");
+			}
+			break;
+	}
 });
 
 // $('.sprite-list').on('keypress', 'input[name=position_x]', function() {
