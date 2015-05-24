@@ -20,6 +20,9 @@
 						<?php if(isset($value['project_id'])) echo $value['project_id']; ?>
 					</td>
 					<td>
+						<?php if(isset($value['username'])) echo $value['username']; ?>
+					</td>
+					<td>
 						<?php if(isset($value['title'])) echo $value['title']; ?>
 					</td>
 					<td>

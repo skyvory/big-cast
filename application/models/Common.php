@@ -41,9 +41,10 @@ Class Common extends CI_Model {
 
 
 	// ADMIN FUNCTION
-	function getUserAll($limit, $offset) {
+	function getUserAllMember($limit, $offset) {
 		$this->db->from('user');
 		$this->db->limit($limit, $offset);
+		$this->db->where('fk_permission_id', 2);
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -100,6 +101,13 @@ Class Common extends CI_Model {
 		$this->db->where('user_id', $user_id);
 		$exec = $this->db->delete('user');
 		return $exec;
+	}
+	function countUserAllMember() {
+		$this->db->from('user');
+		$this->db->join('permission', 'permission_id = fk_permission_id');
+		$this->db->where('fk_permission_id', 2);
+		$count = $this->db->count_all_results();
+		return $count;
 	}
 
 

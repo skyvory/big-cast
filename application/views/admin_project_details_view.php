@@ -29,7 +29,10 @@
 						<dd><?php if(isset($project['username'])) echo $project['username']; ?></dd>
 					</dl>
 					 
-					<a href="<?= base_url() . 'index.php/admin/deleteProject/' . $project['project_id']; ?>" class="btn btn-danger pull-right" onclick="return confirm('Are you sure?')">Delete</a>
+					 <?php $attribute = array('style' => 'display: inline-block;'); echo form_open('admin/deleteProject', $attribute); ?>
+						<input type="hidden" name="project_id" value="<?php echo $project['project_id']; ?>" />
+						<input type="submit" class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure?')" />
+					<?php echo form_close(); ?>
 				</div>
 			</div>
 		</div>

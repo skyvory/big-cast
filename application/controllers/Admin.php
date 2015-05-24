@@ -28,7 +28,7 @@ class Admin extends CI_Controller {
 		$self['user'] = $user;
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 		$config['base_url'] = base_url() . 'index.php/admin/userList';
-		$config['total_rows'] = $this->common->countUserAll();
+		$config['total_rows'] = $this->common->countUserAllMember();
 		$config['per_page'] = 25;
 		$config['uri_segment'] = 3;
 		$config['num_links'] = 5;
@@ -53,7 +53,7 @@ class Admin extends CI_Controller {
 		$config['last_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 		$data['page'] = $this->pagination->create_links();
-		$data['user'] = $this->common->getUserAll($config['per_page'], $page);
+		$data['user'] = $this->common->getUserAllMember($config['per_page'], $page);
 
 		$this->load->view('admin_head', $head);
 		$this->load->view('admin_menu_view', $self);
@@ -63,6 +63,7 @@ class Admin extends CI_Controller {
 
 	function projectList() {
 		$this->load->helper('url');
+		$this->load->helper('form');
 		$this->load->library('pagination');
 		
 		$user = $this->session->userdata('user_auth');
@@ -104,6 +105,7 @@ class Admin extends CI_Controller {
 	}
 	public function viewProject() {
 		$this->load->helper('url');
+		$this->load->helper('form');
 		$this->load->library('pagination');
 		
 		$user = $this->session->userdata('user_auth');
@@ -260,10 +262,14 @@ class Admin extends CI_Controller {
 	public function deleteUser() {
 		$user_id = $this->input->post('user_id');
 		$pass = $this->common->deleteUser($user_id);
-		redirect('admin/user', 'location');
+		redirect('admin/userList', 'location');
 	}
 
-
+	public function deleteProject() {
+		$user_id = $this->input->post('project_id');
+		$pass = $this->common->deleteUser($user_id);
+		redirect('admin/projectList', 'location');
+	}
 
 
 
