@@ -5,21 +5,22 @@
 				<h2>Project's Setting
 					<?php $attributes = array('class' => 'form-inline pull-right'); echo form_open('project/deleteProject', $attributes); ?>
 						<input type="submit" name="submitdelete" class="btn btn-danger" value="Delete Project" onclick="return confirm('This action is irreversible! Are you sure?');"/>
-					</form>
+					<?php echo form_close(); ?>
 				</h2>
 			</div>
-			<?php echo validation_errors(); ?>
 			<?php echo form_open_multipart('project/changeSetting'); ?>
 				<div class="form-group">
 					<label for="title" class="control-label">Title</label>
+					<?php echo form_error('title'); ?>
 					<input type="text" id="title" name="title" class="form-control" value="<?php echo $project['title']; ?>">
 				</div>
 				<div class="form-group">
 					<label for="description" class="control-label">Description</label>
-					<!-- <input type="text" id="description" name="description" class="form-control"> -->
+					<?php echo form_error('description'); ?>
 					<textarea id="description" name="description" class="form-control"><?php echo $project['description']; ?></textarea>
 				</div>
-					<label for="userfile" class="control-label">Cover upload</label>
+					<label for="userfile" class="control-label">Cover upload (jpg only)</label>
+					<?php echo form_error('userfile'); ?>
 					<input type="file" id="userfile" name="userfile" class="">
 					<br />
 				<div class="form-group">
@@ -41,11 +42,9 @@
 						}
 					?>
 				 </div>
-
-				 <input type="button" class="btn btn-default" onclick="history.back();" value="Back">
+				 <a href="<?php echo base_url(); ?>index.php/project" class="btn btn-default">Back</a>
 				<input type="submit" name="submitchange" class="btn btn-primary" value="submit" />
 			<?php echo form_close(); ?>
-			
 		</div>
 	</div>	
 </div>

@@ -14,17 +14,20 @@
 	<div class="col-md-5">
 
 
-		<?php if(isset($notification)) echo($notification); ?>
 		<div id="loginfront" class="panel panel-primary">
-			<div class="panel-heading">Log In</div>
+			<div class="panel-heading">
+				Log In
+			</div>
 			<div class="panel-body">
-				<?php echo validation_errors(); ?>
+				<?php if(isset($notification)) echo($notification); ?>
 				<?php echo form_open('login'); ?>
 					<div class="form-group">
 					<label for="username">Username</label>
+					<?php echo form_error('username'); ?>
 					<input type="username" id="username" name="username" class="form-control" tabindex="1" value="sv"/>
 					</div>
 					<div class="form-group">
+					<?php echo form_error('password'); ?>
 					<label for="password">Password</label>
 					<input type="password" id="password" name="password" class="form-control" tabindex="2" value="sv"/>
 					</div>

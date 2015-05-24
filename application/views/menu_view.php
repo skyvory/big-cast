@@ -8,7 +8,7 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand">
-				<img alt="Cast" src="<?php echo base_url(); ?>assets/images/ArtificialPoint_i8-16.ico" class="brand-icon" />
+				<img alt="Cast" src="<?php echo base_url(); ?>assets/images/ap-8.0m.jpg" class="brand-icon" />
 			</a>
 		</div>
 
