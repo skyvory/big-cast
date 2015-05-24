@@ -16,7 +16,7 @@ class Editor extends CI_Controller {
 			redirect('login', 'refresh');
 		}
 	}
-	function manage($project_id = FALSE) {
+	function manage() {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
@@ -59,40 +59,6 @@ class Editor extends CI_Controller {
 		return $string;
 	}
 	
-	// public function loadLinePagination() {
-	// 	$this->load->helper('url');
-	// 	$this->load->library('pagination');
-	// 	$proj = $this->session->userdata('active_project');
-	// 	// pagination
-	// 	$config['page_query_string'] = TRUE;
-	// 	$page = 0;
-	// 	$config['base_url'] = base_url() . 'editor/loadLineData';
-	// 	$config['total_rows'] = $this->common->getTotalLine($proj['id']);
-	// 	// $this->fb->log($config['total_rows']);
-
-	// 	$config['per_page'] = 3; //20
-	// 	$config['num_links'] = 8;
-	// 	$config['use_page_numbers'] = FALSE;
-	// 	// $config['first_tag_open'] = '<li class="first">';
-	// 	// $config['first_link'] = '<i class="icon-first-2"></i> First';
-	// 	// $config['first_tag_close'] = '</li>';
-	// 	// $config['prev_tag_open'] = ' <li class="prev">';
-	// 	// $config['prev_link'] = '<i class="icon-previous"></i> Prev';
-	// 	// $config['prev_tag_close'] = '</li>';
-	// 	// $config['cur_tag_open'] = '<li class="active"><a>';
-	// 	// $config['cur_tag_close'] = '</a></li>';
-	// 	// $config['num_tag_open'] = '<li>';
-	// 	// $config['num_tag_close'] = '</li>';
-	// 	// $config['next_tag_open'] = '<li class="next">';
-	// 	// $config['next_link'] = 'Next  <i class="icon-next"></i>';
-	// 	// $config['next_tag_close'] = '</li>';
-	// 	// $config['last_tag_open'] = '<li class="last">';
-	// 	// $config['last_link'] = 'Last <i class="icon-last-2"></i>';
-	// 	// $config['last_tag_close'] = '</li>';
-	// 	$this->pagination->initialize($config);
-	// 	$page = $this->pagination->create_links();
-	// 	echo $page;
-	// }
 	public function loadLineData() {
 		$sess = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
@@ -124,9 +90,6 @@ class Editor extends CI_Controller {
 				$page = 1;
 			}
 		}
-		
-
-		// $this->fb->log($page);
 		// (conditional) load with search or page
 		if($by == "0") {
 			// offset is automatically 0 if string put as value (php)
@@ -141,7 +104,6 @@ class Editor extends CI_Controller {
 				$offset = 0;
 			}
 		}
-
 		
 		$pass_line = $this->common->getLine($proj['id'], $per_page, $offset);
 		$line = array();
@@ -710,9 +672,10 @@ class Editor extends CI_Controller {
 		}
 		// check for data existence and write to database
 		$status = TRUE;
+		$proj = $this->session->userdata('active_project');
 		// line text update
 		if(count($line) > 0  && $status == TRUE) {
-			$pass_line_update = $this->common->updateTextLine($line);
+			$pass_line_update = $this->common->updateTextLine($proj['id'], $line);
 			if(!$pass_line_update) {
 				$status = FALSE;
 			}
@@ -720,27 +683,9 @@ class Editor extends CI_Controller {
 		// line resource update
 		if(count($lineres) > 0  && $status == TRUE) {
 			foreach ($lineres as $key => $value) {
-				$lineres_resource = $this->common->getLineres($value['line_id'], $value['resource_type_id']);
+				$lineres_resource = $this->common->getLineres($proj['id'], $value['line_id'], $value['resource_type_id']);
 				if($lineres_resource) {
 					$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['resource_id'], $lineres_resource['fk_resource_id']);
-					// unnecessary!
-					// switch ($value['resource_type_id']) {
-					// 	case 2:
-					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['background_resource_id'], $lineres_resource);
-					// 		break;
-					// 	case 3:
-					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['bgm_resource_id'], $lineres_resource);
-					// 		break;
-					// 	case 4:
-					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['sfx_resource_id'], $lineres_resource);
-					// 		break;
-					// 	case 5:
-					// 		$pass_lineres_update = $this->common->updateLineres($value['line_id'], $value['voice_resource_id'], $lineres_resource);
-					// 		break;
-					// 	default:
-					// 		$pass_lineres_update = FALSE;
-					// 		break;
-					// }
 					if(!$pass_lineres_update) {
 						$status = FALSE;
 					}

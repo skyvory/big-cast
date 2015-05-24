@@ -2211,7 +2211,7 @@ $(document).ready(function() {
 	canvas.add(txt);
 })
 
-var path_to_project = '../../../resources/' + config.user + '/' + config.project + '/';
+var path_to_project = config.base + 'resources/' + config.user + '/' + config.project + '/';
 $('.line-list').on('click', '.line-project-button', function() {
 	canvas.clear();
 	var seq = $(this.form).find('input[name=sequence]').val();

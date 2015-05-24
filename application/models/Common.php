@@ -671,7 +671,7 @@ Class Common extends CI_Model {
 			return TRUE;
 		}
 	}
-	function updateTextLine($line) {
+	function updateTextLine($project_id, $line) {
 		$this->db->trans_begin();
 		foreach ($line as $key => $value) {
 			$data = array(
@@ -681,6 +681,7 @@ Class Common extends CI_Model {
 				'content' => $value['content'],
 				'jumpto_line_id' => $value['jumpto_line_id']
 			);
+			$this->db->where('fk_project_id', $project_id);
 			$this->db->where('line_id', $value['line_id']);
 			$exec = $this->db->update('line', $data);
 		}
@@ -758,10 +759,11 @@ Class Common extends CI_Model {
 	// 	$exec = $this->db->delete('line');
 	// 	return $exec;
 	// }
-	function getLineres($line_id, $resource_type_id) {
+	function getLineres($project_id, $line_id, $resource_type_id) {
 		$this->db->select('fk_resource_id');
 		$this->db->from('lineres');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
+		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_line_id', $line_id);
 		$this->db->where('fk_resourcetype_id', $resource_type_id);
 		$query = $this->db->get();
