@@ -19,6 +19,7 @@ class Admin extends CI_Controller {
 
 	function userList() {
 		$this->load->helper('url');
+		$this->load->helper('form');
 		$this->load->library('pagination');
 		
 		$user = $this->session->userdata('user_auth');
@@ -26,7 +27,7 @@ class Admin extends CI_Controller {
 		
 		$self['user'] = $user;
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		$config['base_url'] = base_url() . 'index.php/project/main';
+		$config['base_url'] = base_url() . 'index.php/admin/userList';
 		$config['total_rows'] = $this->common->countUserAll();
 		$config['per_page'] = 25;
 		$config['uri_segment'] = 3;
@@ -52,14 +53,10 @@ class Admin extends CI_Controller {
 		$config['last_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 		$data['page'] = $this->pagination->create_links();
-
 		$data['user'] = $this->common->getUserAll($config['per_page'], $page);
 
-		$user = $this->session->userdata('user_auth');
-		$self['user'] = $user;
-		$this->load->vars($self);
 		$this->load->view('admin_head', $head);
-		$this->load->view('admin_menu_view');
+		$this->load->view('admin_menu_view', $self);
 		$this->load->view('admin_user_view', $data);
 		$this->load->view('foot');
 	}
@@ -72,7 +69,7 @@ class Admin extends CI_Controller {
 		$head['title'] = "Project";
 		$self['user'] = $user;
 		$page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-		$config['base_url'] = base_url() . 'index.php/project/main';
+		$config['base_url'] = base_url() . 'index.php/admin/projectList';
 		$config['total_rows'] = $this->common->countProjectAll();
 		$config['per_page'] = 25;
 		$config['uri_segment'] = 3;
@@ -98,12 +95,10 @@ class Admin extends CI_Controller {
 		$config['last_tag_close'] = '</li>';
 		$this->pagination->initialize($config);
 		$data['page'] = $this->pagination->create_links();
-
 		$data['project'] = $this->common->getProjectAll($config['per_page'], $page);
 
-		$this->load->vars($self);
 		$this->load->view('admin_head', $head);
-		$this->load->view('admin_menu_view');
+		$this->load->view('admin_menu_view', $self);
 		$this->load->view('admin_project_view', $data);
 		$this->load->view('foot');
 	}
@@ -117,9 +112,8 @@ class Admin extends CI_Controller {
 		$project_id = $this->uri->segment(3);
 		$data['project'] = $this->common->getProjectDetails($project_id);
 
-		$this->load->vars($self);
 		$this->load->view('admin_head', $head);
-		$this->load->view('admin_menu_view');
+		$this->load->view('admin_menu_view', $self);
 		$this->load->view('admin_project_details_view', $data);
 		$this->load->view('foot');
 	}
@@ -127,7 +121,6 @@ class Admin extends CI_Controller {
 	public function register(){
 		$this->load->helper('form');
 		$this->load->library('form_validation');
-
 
 		$this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.username]|min_length[4]|max_length[16]|alpha_numeric|trim');
 		$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
@@ -140,7 +133,7 @@ class Admin extends CI_Controller {
 		if($this->form_validation->run() == false){
 			$this->load->view('admin_head', $head);
 			$this->load->view('admin_menu_view');
-			$this->load->view('admin_register_view');
+			$this->load->view('admin_user_register_view');
 			$this->load->view('foot');
 		}
 		else{
@@ -152,7 +145,7 @@ class Admin extends CI_Controller {
 				$data['notification'] = "Password doesn't match. Please re-type your password!";
 				$this->load->view('admin_head', $head);
 				$this->load->view('admin_menu_view');
-				$this->load->view('admin_register_view', $data);
+				$this->load->view('admin_user_register_view', $data);
 				$this->load->view('foot');
 			}
 			else{
@@ -181,57 +174,64 @@ class Admin extends CI_Controller {
 		return $pass;
 	}
 
-	
-
 	public function editUser(){
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 
-		$this->form_validation->set_rules('username', 'Username', 'required|min_length[4]|max_length[16]|alpha_numeric|trim');
-		if(!empty($password)) {
-			$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
-		}
-
-
-		$head['title'] = "Edit User";
 		$user = $this->session->userdata('user_auth');
+		$head['title'] = "Edit User";
 		$self['user'] = $user;
-		$this->load->vars($self);
 
-		if($this->form_validation->run() == false){
-			$user_id = $this->uri->segment(3);
+		if($this->input->post('edit_view')) {
+			$head['title'] = "Edit User";
+			$user_id = $this->input->post('user_id');
 			$data['userdata'] = $this->common->getUserById($user_id);
 			$this->load->view('admin_head', $head);
-			$this->load->view('admin_menu_view');
+			$this->load->view('admin_menu_view', $self);
 			$this->load->view('admin_user_edit_view', $data);
 			$this->load->view('foot');
 		}
-		else{
-			$user_id = $this->input->post('user_id');
-			$username = $this->input->post('username');
-			$password = $this->input->post('password');
-			$password_repeat = $this->input->post('password_repeat');
-			if(empty($password)) {
-				$this->fb->log($user_id);
-				$pass = $this->common->updateUserName($user_id, $username);
-				if($pass) {
-					redirect('admin/user', 'location');
-				}
-				// error else
+		else {
+			$this->form_validation->set_rules('username', 'Username', 'required|min_length[4]|max_length[16]|alpha_numeric|trim');
+			if(!empty($password)) {
+				$this->form_validation->set_rules('password', 'Password', 'required|min_length[4]|max_length[32]');
 			}
-			else {
-				if($password != $password_repeat){
-					$data['error'] = array('error' => "Password doesn't match. Please re-type your password!");
-					$data['userdata'] = $this->common->getUserById($user_id);
-					$this->load->view('admin_head', $head);
-					$this->load->view('admin_menu_view');
-					$this->load->view('admin_user_edit_view', $data);
-					$this->load->view('foot');
-				}
-				else{
-					$reg = $this->updateUser($user_id, $username, $password);
-					if($reg){
+
+			if($this->form_validation->run() == false){
+				$user_id = $this->input->post('user_id');
+				$data['userdata'] = $this->common->getUserById($user_id);
+				$this->load->view('admin_head', $head);
+				$this->load->view('admin_menu_view', $self);
+				$this->load->view('admin_user_edit_view', $data);
+				$this->load->view('foot');
+			}
+			else{
+				$user_id = $this->input->post('user_id');
+				$username = $this->input->post('username');
+				$password = $this->input->post('password');
+				$password_repeat = $this->input->post('password_repeat');
+				if(empty($password)) {
+					$this->fb->log($user_id);
+					$pass = $this->common->updateUserName($user_id, $username);
+					if($pass) {
 						redirect('admin/user', 'location');
+					}
+					// error else
+				}
+				else {
+					if($password != $password_repeat){
+						$data['error'] = array('error' => "Passwords don't match. Please re-type your password!");
+						$data['userdata'] = $this->common->getUserById($user_id);
+						$this->load->view('admin_head', $head);
+						$this->load->view('admin_menu_view', $self);
+						$this->load->view('admin_user_edit_view', $data);
+						$this->load->view('foot');
+					}
+					else{
+						$reg = $this->updateUser($user_id, $username, $password);
+						if($reg){
+							redirect('admin/user', 'location');
+						}
 					}
 				}
 			}
@@ -258,7 +258,7 @@ class Admin extends CI_Controller {
 	}
 
 	public function deleteUser() {
-		$user_id = $this->uri->segment(3);
+		$user_id = $this->input->post('user_id');
 		$pass = $this->common->deleteUser($user_id);
 		redirect('admin/user', 'location');
 	}
@@ -266,7 +266,14 @@ class Admin extends CI_Controller {
 
 
 
-	
+
+
+
+
+
+
+
+
 	public function setting() {
 		$this->load->helper('form');
 		$this->load->helper('url');
@@ -285,9 +292,8 @@ class Admin extends CI_Controller {
 		$this->load->view('menu_view');
 		$this->load->view('project_setting_view', $data);
 		$this->load->view('foot');
-		
-
 	}
+
 	public function changeSetting() {
 		$this->load->helper('form');
 		$this->load->helper('url');
