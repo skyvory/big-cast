@@ -7,8 +7,8 @@ class Resource extends CI_Controller {
 		$this->load->model('common','',TRUE);
 		$this->load->helper('url');
 		if($this->session->userdata('user_auth')) {
-			$sess = $this->session->userdata('user_auth');
-			if($sess['perm'] == 1) {
+			$user = $this->session->userdata('user_auth');
+			if($user['perm'] == 1) {
 				redirect('admin', 'refresh');
 			}
 		} 
@@ -16,52 +16,49 @@ class Resource extends CI_Controller {
 			redirect('login', 'refresh');
 		}
 	}
-	function index() {
+	function manage() {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		
-		$data['user'] = $this->session->userdata('user_auth');
-		$head['title'] = "Resource";
+		$proj = $this->session->userdata('active_project');
+		if($proj) {
+			$head['title'] = "Resource";
+			$self['user'] = $this->session->userdata('user_auth');
+			$data['project'] = $proj;
 
-		$this->load->vars($data);
-		$this->load->view('resource_head', $head);
-		$this->load->view('menu_view');
-		$this->load->view('resource_view');
-		$this->load->view('foot');
-	}
-	function manage($project_id = FALSE) {
-		$this->load->helper('form');
-		$this->load->helper('url');
-		
-		$data['user'] = $this->session->userdata('user_auth');
-		$head['title'] = "Resource";
-
-		$this->load->vars($data);
-		$this->load->view('resource_head', $head);
-		$this->load->view('menu_view');
-		$this->load->view('resource_view');
-		$this->load->view('foot');
+			$this->load->view('resource_head', $head);
+			$this->load->view('menu_view', $self);
+			$this->load->view('resource_view', $data);
+			$this->load->view('foot');
+		}
+		else {
+			redirect('project', 'location');
+		}
 	}
 	public function do_upload() {
 		$this->load->helper('url');
 
-		$sess = $this->session->userdata('user_auth');
+		$user = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
 		$resource_type = $this->input->post('restype');
-		$path_to_project = 'resources/' . $sess['id'] . '/' . $proj['id'] . '/';
+		$path_to_project = 'resources/' . $user['id'] . '/' . $proj['id'] . '/';
 
 		// sprite type resource
 		if($resource_type == 1) {
 			$upload_path_url = base_url() . $path_to_project . 'sprite/';
 			$config['upload_path'] = FCPATH . $path_to_project . 'sprite/';
-			$config['allowed_types'] = 'jpg|jpeg|png|bmp';
+			$config['allowed_types'] = 'jpg|jpeg|png';
 			$config['overwrite'] = FALSE;
 			$config['max_size'] = 20 * 1024 * 1024; //20 MB
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
 			if($this->upload->do_upload() == FALSE){
-				$this->fb->log($this->upload->display_errors());
+				$info = new StdClass;
+				$info->error = $this->upload->display_errors();
+				$files[] = $info;
+				$this->output->set_content_type('application/json');
+				$this->output->set_output(json_encode(array('files' => $files)));
 			}
 			else{
 				$data = $this->upload->data();
@@ -71,52 +68,51 @@ class Resource extends CI_Controller {
 				$config['create_thumb'] = TRUE;
 				$config['thumb_marker'] = '_thumb';
 				$config['quality'] = '70%';
-				$config['width'] = 400;
-				$config['height'] = 400;
+				$config['width'] = 360;
+				$config['height'] = 360;
 				$this->load->library('image_lib', $config);
 				//resize original image for thumbnail
 				if($this->image_lib->resize() == FALSE){
-					$this->fb->log($this->image_lib->display_errors());
-				}
-
-				//extract original filename without extension
-				$base_file_name = $this->trimExtension($data['orig_name']);
-				//get post data for character name and figure name
-				$character_name = $this->input->post('charname');
-				$figure_name = $this->input->post('figname');
-				// $this->fb->log($character_name);
-				//write file record to database
-				$pass = $this->common->createSpriteResource($base_file_name, $data['file_name'], $character_name, $figure_name, '1', $proj['id']);
-				if($pass != NULL) {
+					// $this->fb->log($this->image_lib->display_errors());
 					$info = new StdClass;
-					$info->id = $pass;
-					$info->name = $base_file_name;
-					$info->size = $data['file_size'];
-					$info->type = $data['file_type'];
-					//generate url info with url to thumb file
-					$info->url = $upload_path_url . 'thumbs/' . $data['raw_name'] . '_thumb' . $data['file_ext'];
-					$info->error = null;
-					$info->resource_type = $resource_type;
-					$info->character_name = $character_name;
-					$info->figure_name = $figure_name;
+					$info->error = $this->image_lib->display_errors();
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
-						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
-						//$this->fb->log(json_encode(array("files" => $files)));
-					}
-					else{
-						exit('No direct script access allowed');
+					$this->output->set_content_type('application/json');
+					$this->output->set_output(json_encode(array('files' => $files)));
+				}
+				else {
+					//extract original filename without extension
+					$base_file_name = $this->trimExtension($data['orig_name']);
+					//get post data for character name and figure name
+					$character_name = $this->input->post('charname');
+					$figure_name = $this->input->post('figname');
+					// $this->fb->log($character_name);
+					//write file record to database
+					$pass = $this->common->createSpriteResource($base_file_name, $data['file_name'], $character_name, $figure_name, '1', $proj['id']);
+					if($pass != NULL) {
+						$info = new StdClass;
+						$info->id = $pass;
+						$info->name = $base_file_name;
+						$info->size = $data['file_size'];
+						$info->type = $data['file_type'];
+						//generate url info with url to thumb file
+						$info->url = $upload_path_url . 'thumbs/' . $data['raw_name'] . '_thumb' . $data['file_ext'];
+						$info->error = null;
+						$info->resource_type = $resource_type;
+						$info->character_name = $character_name;
+						$info->figure_name = $figure_name;
+						$files[] = $info;
+						$this->output->set_content_type('application/json');
+						$this->output->set_output(json_encode(array("files" => $files)));
 					}
 				}
-
-				
 			}
 		}
 		// background type resource
 		else if($resource_type == 2) {
 			$upload_path_url = base_url() . $path_to_project . 'background/';
 			$config['upload_path'] = FCPATH . $path_to_project . 'background/';
-			$config['allowed_types'] = 'jpg|jpeg|png|bmp';
+			$config['allowed_types'] = 'jpg|jpeg|png';
 			$config['overwrite'] = FALSE;
 			$config['max_size'] = 20 * 1024 * 1024;
 			$config['encrypt_name'] = TRUE;
@@ -124,10 +120,14 @@ class Resource extends CI_Controller {
 			$this->load->library('upload', $config);
 
 			if($this->upload->do_upload() == FALSE){
-				$this->fb->log($this->upload->display_errors());
+				$info = new StdClass;
+				$info->error = $this->upload->display_errors();
+				$files[] = $info;
+				$this->output->set_content_type('application/json');
+				$this->output->set_output(json_encode(array('files' => $files)));
 			}
 			else{
-				$this->fb->log($sess['id']);
+				$this->fb->log($user['id']);
 				$this->fb->log($proj['id']);
 				$data = $this->upload->data();
 				//config for image resize
@@ -138,38 +138,37 @@ class Resource extends CI_Controller {
 				$config['create_thumb'] = TRUE;
 				$config['thumb_marker'] = '_thumb';
 				$config['quality'] = '70%';
-				$config['width'] = 80;
-				$config['height'] = 80;
+				$config['width'] = 360;
+				$config['height'] = 360;
 				$this->load->library('image_lib', $config);
 				//resize original image for thumbnail
 				if($this->image_lib->resize() == FALSE){
-					$this->fb->log($this->image_lib->display_errors());
-				}
-
-				//trim original filename
-				$base_file_name = $this->trimExtension($data['orig_name']);
-				//write file info to database
-				$pass = $this->common->createBackgroundResource($base_file_name, $data['file_name'], '2', $proj['id']);
-				if($pass != NULL) {
 					$info = new StdClass;
-					$info->id = $pass;
-					$info->name = $base_file_name;
-					$info->size = $data['file_size'];
-					$info->type = $data['file_type'];
-					// $info->url = $upload_path_url . $data['file_name'];
-					$info->url = $upload_path_url . 'thumbs/' . $data['raw_name'] . '_thumb' . $data['file_ext'];
-					$info->error = null;
-					//unnecessary!$info->delete_type = 'DELETE';
-					$info->resource_type = $resource_type;
+					$info->error = $this->image_lib->display_errors();
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
+					$this->output->set_content_type('application/json');
+					$this->output->set_output(json_encode(array('files' => $files)));
+				}
+				else {
+					//trim original filename
+					$base_file_name = $this->trimExtension($data['orig_name']);
+					//write file info to database
+					$pass = $this->common->createBackgroundResource($base_file_name, $data['file_name'], '2', $proj['id']);
+					if($pass != NULL) {
+						$info = new StdClass;
+						$info->id = $pass;
+						$info->name = $base_file_name;
+						$info->size = $data['file_size'];
+						$info->type = $data['file_type'];
+						// $info->url = $upload_path_url . $data['file_name'];
+						$info->url = $upload_path_url . 'thumbs/' . $data['raw_name'] . '_thumb' . $data['file_ext'];
+						$info->error = null;
+						//unnecessary!$info->delete_type = 'DELETE';
+						$info->resource_type = $resource_type;
+						$files[] = $info;
 						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
 					}
-					else{
-						exit('No direct script access allowed');
-					}
 				}
-				
 			}
 		}
 		// bgm type resource
@@ -181,11 +180,12 @@ class Resource extends CI_Controller {
 			$config['max_size'] = 30 * 1024 * 1024;
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
-
-			$this->fb->log("ok");
-
 			if($this->upload->do_upload() == FALSE){
-				$this->fb->log($this->upload->display_errors());
+				$info = new StdClass;
+				$info->error = $this->upload->display_errors();
+				$files[] = $info;
+				$this->output->set_content_type('application/json');
+				$this->output->set_output(json_encode(array('files' => $files)));
 			}
 			else{
 				$data = $this->upload->data();
@@ -201,12 +201,7 @@ class Resource extends CI_Controller {
 					$info->error = null;
 					$info->resource_type = $resource_type;
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
-						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
-					}
-					else{
-						exit('No direct script access allowed');
-					}
+					$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
 				}
 			}
 		}
@@ -236,12 +231,7 @@ class Resource extends CI_Controller {
 					$info->error = null;
 					$info->resource_type = $resource_type;
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
-						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
-					}
-					else{
-						exit('No direct script access allowed');
-					}
+					$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
 				}
 			}
 		}
@@ -256,7 +246,11 @@ class Resource extends CI_Controller {
 			$this->load->library('upload', $config);
 
 			if($this->upload->do_upload() == FALSE){
-				$this->fb->log($this->upload->display_errors());
+				$info = new StdClass;
+				$info->error = $this->upload->display_errors();
+				$files[] = $info;
+				$this->output->set_content_type('application/json');
+				$this->output->set_output(json_encode(array('files' => $files)));
 			}
 			else{
 				$data = $this->upload->data();
@@ -275,12 +269,7 @@ class Resource extends CI_Controller {
 					$info->resource_type = $resource_type;
 					// $info->character_name = $character_name;
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
-						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
-					}
-					else{
-						exit('No direct script access allowed');
-					}
+					$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
 				}
 			}
 		}
@@ -294,7 +283,11 @@ class Resource extends CI_Controller {
 			$this->load->library('upload', $config);
 
 			if($this->upload->do_upload() == FALSE){
-				$this->fb->log($this->upload->display_errors());
+				$info = new StdClass;
+				$info->error = $this->upload->display_errors();
+				$files[] = $info;
+				$this->output->set_content_type('application/json');
+				$this->output->set_output(json_encode(array('files' => $files)));
 			}
 			else{
 				$data = $this->upload->data();
@@ -310,12 +303,7 @@ class Resource extends CI_Controller {
 					$info->error = null;
 					$info->resource_type = $resource_type;
 					$files[] = $info;
-					if($this->input->is_ajax_request()){
-						$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
-					}
-					else{
-						exit('No direct script access allowed');
-					}
+					$this->output->set_content_type('application/json')->set_output(json_encode(array("files" => $files)));
 				}
 			}
 		}
@@ -327,8 +315,9 @@ class Resource extends CI_Controller {
 	public function changeBackgroundProperty() {
 		$resource_id = $this->input->post('id');
 		$name = $this->input->post('name');
-		$pass = $this->common->updateBackgroundResource($resource_id, $name);
-		if($pass) {
+		$proj = $this->session->userdata('active_project');
+		if($proj) {
+			$pass = $this->common->updateBackgroundResource($proj['id'], $resource_id, $name);
 			echo "1";
 		}
 		else {
@@ -340,8 +329,9 @@ class Resource extends CI_Controller {
 		$character_name = $this->input->post('character');
 		$figure_name = $this->input->post('figure');
 		$expression_name = $this->input->post('expression');
-		$pass = $this->common->updateSpriteResource($resource_id, $character_name, $figure_name, $expression_name);
-		if($pass) {
+		$proj = $this->session->userdata('active_project');
+		if($proj) {
+			$pass = $this->common->updateSpriteResource($proj['id'], $resource_id, $character_name, $figure_name, $expression_name);
 			echo "1";
 		}
 		else {
@@ -349,10 +339,10 @@ class Resource extends CI_Controller {
 		}
 	}
 	public function loadResource() {
-		$sess = $this->session->userdata('user_auth');
+		$user = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
 		$resource_type_request = $this->input->post('type');
-		$path_to_project = '../../../resources/' . $sess['id'] . '/' . $proj['id'] . '/';
+		$path_to_project = base_url() . 'resources/' . $user['id'] . '/' . $proj['id'] . '/';
 		if($resource_type_request == 1) {
 			$resource_data = $this->common->getSpriteResource($proj['id']);
 			foreach ($resource_data as $value) {
@@ -425,7 +415,7 @@ class Resource extends CI_Controller {
 					<tr><td>
 					<div class="media bgm-media">
 						<div class="media-left audio-thumbnail-area">
-							<img src="../../../assets/images/musical_note-512.png" class="media-object resource-thumbnail"/>
+							<img src="<?php echo base_url(); ?>assets/images/musical_note-512.png" class="media-object resource-thumbnail"/>
 						</div>
 						<div class="media-body">
 							<div class="resource-property">
@@ -459,7 +449,7 @@ class Resource extends CI_Controller {
 					<tr><td>
 					<div class="media sfx-media">
 						<div class="media-left audio-thumbnail-area">
-							<img src="../../../assets/images/Audio-512.png" class="media-object resource-thumbnail"/>
+							<img src="<?php echo base_url(); ?>assets/images/Audio-512.png" class="media-object resource-thumbnail"/>
 						</div>
 						<div class="media-body">
 							<div class="resource-property">
@@ -493,7 +483,7 @@ class Resource extends CI_Controller {
 					<tr><td>
 					<div class="media voice-media">
 						<div class="media-left audio-thumbnail-area">
-							<img src="../../../assets/images/microphone-2-512.png" class="media-object resource-thumbnail"/>
+							<img src="<?php echo base_url(); ?>assets/images/microphone-2-512.png" class="media-object resource-thumbnail"/>
 						</div>
 						<div class="media-body">
 							<div class="resource-property">
@@ -563,110 +553,58 @@ class Resource extends CI_Controller {
 	}
 	public function removeResource() {
 		$resource_id = $this->input->post('id');
-		$sess = $this->session->userdata('user_auth');
+		$user = $this->session->userdata('user_auth');
 		$proj = $this->session->userdata('active_project');
-		$file = $this->common->getResource($resource_id);
-		$path_to_project = 'resources/' . $sess['id'] . '/' . $proj['id'] . '/';
-		switch ($file['fk_resourcetype_id']) {
-			case 1:
-				$directory_type = "sprite";
-				break;
-			case 2:
-				$directory_type = "background";
-				break;
-			case 3:
-				$directory_type = "bgm";
-				break;
-			case 4:
-				$directory_type = "sfx";
-				break;
-			case 5:
-				$directory_type = "voice";
-				break;
-			case 6:
-				$directory_type = "video";
-				break;
-		}
-		// if($file['fk_resourcetype_id'] == 1) {
-		// 	$directory_type = "sprite";
-		// }
-		// else if($file['fk_resourcetype_id'] == 2) {
-		// 	$directory_type = "background";
-		// }
-		// else if($file['fk_resourcetype_id'] == 3) {
-		// 	$directory_type = "bgm";
-		// }
-		// else if($file['fk_resourcetype_id'] == 4) {
-		// 	$directory_type = "sfx";
-		// }
-		// else if($file['fk_resourcetype_id'] == 5) {
-		// 	$directory_type = "voice";
-		// }
-		// else if($file['fk_resourcetype_id'] == 6) {
-		// 	$directory_type = "video";
-		// }
-		$select_file = $path_to_project . $directory_type . '/' . $file['file_name'];
-		unlink($select_file);
-		$image_type = array(1,2);
-		if(in_array($file['fk_resourcetype_id'], array(1,2))) {
-			$select_file_thumb = $path_to_project . $directory_type . '/thumbs/' . $this->trimExtension($file['file_name']) . '_thumb' . $this->extractExtension($file['file_name']);
-			unlink($select_file_thumb);
-		}
-		$del = $this->common->deleteResource($resource_id);
+		$file = $this->common->getResource($proj['id'], $resource_id);
+		$del = $this->common->deleteResource($proj['id'], $resource_id);
 		if($del) {
+			$path_to_project = 'resources/' . $user['id'] . '/' . $proj['id'] . '/';
+			switch ($file['fk_resourcetype_id']) {
+				case 1:
+					$directory_type = "sprite";
+					break;
+				case 2:
+					$directory_type = "background";
+					break;
+				case 3:
+					$directory_type = "bgm";
+					break;
+				case 4:
+					$directory_type = "sfx";
+					break;
+				case 5:
+					$directory_type = "voice";
+					break;
+				case 6:
+					$directory_type = "video";
+					break;
+			}
+			$select_file = $path_to_project . $directory_type . '/' . $file['file_name'];
+			unlink($select_file);
+			$image_type = array(1,2);
+			if(in_array($file['fk_resourcetype_id'], $image_type)) {
+				$select_file_thumb = $path_to_project . $directory_type . '/thumbs/' . $this->trimExtension($file['file_name']) . '_thumb' . $this->extractExtension($file['file_name']);
+				unlink($select_file_thumb);
+			}
 			echo "1";
-			$this->fb->log("1");
 		}
 		else {
 			echo "0";
-			$this->fb->log("0");
 		}
+		
 	}
-	public function changeAudioProperty() {
+	public function changeAudioVideoProperty() {
 		$resource_id = $this->input->post('id');
 		$name = $this->input->post('name');
-		$pass = $this->common->updateAudioResource($resource_id, $name);
-		if($pass) {
+		$proj = $this->session->userdata('active_project');
+		if($proj) {
+			$pass = $this->common->updateAudioVideoResource($proj['id'], $resource_id, $name);
 			echo "1";
 		}
 		else {
 			echo "0";
 		}
 	}
-	public function changeVoiceProperty() {
-		$resource_id = $this->input->post('id');
-		$name = $this->input->post('name');
-		// $character_name = $this->input->post('character');
-		$pass = $this->common->updateVoiceResource($resource_id, $name);
-		if($pass) {
-			echo "1";
-		}
-		else {
-			echo "0";
-		}
-	}
-	public function changeVideoProperty() {
-		$resource_id = $this->input->post('id');
-		$name = $this->input->post('name');
-		$pass = $this->common->updateVideoResource($resource_id, $name);
-		if($pass) {
-			echo "1";
-		}
-		else {
-			echo "0";
-		}
-	}
-	
-	public function alpha() {
-		$this->fb->log("aaa");
-	}
-
-	//not yet tested!
-	public function uploadmusic() {
-		error_reporting(E_ALL | E_STRICT);
-		$this->load->library("UploadHandler");
-	}
-
 }
 
 ?>
