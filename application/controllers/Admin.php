@@ -266,9 +266,35 @@ class Admin extends CI_Controller {
 	}
 
 	public function deleteProject() {
-		$user_id = $this->input->post('project_id');
-		$pass = $this->common->deleteUser($user_id);
-		redirect('admin/projectList', 'location');
+		$project_id = $this->input->post('project_id');
+		$project = $this->common->getProjectById($project_id);
+		if($project) {
+			$pass = $this->common->deleteProject($project['fk_user_id'], $project['project_id']);
+			if($pass) {
+				$dirPath = FCPATH . 'resources/' . $project['fk_user_id'] . '/' . $project['project_id'] . '/';
+				$this->deleteDir($dirPath);
+				redirect('project');
+			}
+			redirect('admin/projectList', 'location');
+		}
+	}
+	private function deleteDir($dirPath) {
+		if (! is_dir($dirPath)) {
+			throw new InvalidArgumentException("$dirPath must be a directory");
+		}
+		if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+			$dirPath .= '/';
+		}
+		$files = glob($dirPath . '*', GLOB_MARK);
+		foreach ($files as $file) {
+			if (is_dir($file)) {
+				self::deleteDir($file);
+			}
+			else {
+				unlink($file);
+			}
+		}
+		rmdir($dirPath);
 	}
 
 

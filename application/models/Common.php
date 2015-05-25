@@ -109,6 +109,13 @@ Class Common extends CI_Model {
 		$count = $this->db->count_all_results();
 		return $count;
 	}
+	function getProjectById($project_id) {
+		$this->db->from('project');
+		$this->db->where('project_id', $project_id);
+		$query = $this->db->get();
+		$result = $query->row_array();
+		return $result;
+	}
 
 
 
@@ -218,8 +225,14 @@ Class Common extends CI_Model {
 	function deleteProject($user_id, $project_id) {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('project_id', $project_id);
-		$exec = $this->db->delete('project');
-		return $exec;
+		$this->db->delete('project');
+		$affect = $this->db->affected_rows();
+		if($affect > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	function updateProjectToPublish($project_status_id, $published_date, $project_id) {
 		$data = array('fk_projectstatus_id' => $project_status_id, 'published_date' => $published_date);
