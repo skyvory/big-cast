@@ -161,6 +161,7 @@ Class Common extends CI_Model {
 		$this->db->join('projectstatus', 'projectstatus_id = fk_projectstatus_id');
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->limit($limit, $offset);
+		$this->db->order_by('project_id', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -233,6 +234,13 @@ Class Common extends CI_Model {
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
+	}
+	function updateProjectDate($project_id) {
+		$now = date('Y-m-d H:i:s');
+		$this->db->set('updated_date', $now);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
 	}
 
 

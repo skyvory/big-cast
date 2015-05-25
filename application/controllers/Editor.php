@@ -785,6 +785,7 @@ class Editor extends CI_Controller {
 		// 	}
 		// }
 		// output
+		$this->common->updateProjectDate($proj['id']);
 		if($status == TRUE) {
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($create_status, JSON_PRETTY_PRINT));
