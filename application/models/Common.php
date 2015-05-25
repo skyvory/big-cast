@@ -99,8 +99,14 @@ Class Common extends CI_Model {
 	}
 	function deleteUser($user_id) {
 		$this->db->where('user_id', $user_id);
-		$exec = $this->db->delete('user');
-		return $exec;
+		$this->db->delete('user');
+		$affect = $this->db->affected_rows();
+		if($affect > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	function countUserAllMember() {
 		$this->db->from('user');

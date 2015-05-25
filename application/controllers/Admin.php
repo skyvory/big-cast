@@ -262,6 +262,10 @@ class Admin extends CI_Controller {
 	public function deleteUser() {
 		$user_id = $this->input->post('user_id');
 		$pass = $this->common->deleteUser($user_id);
+		if($pass) {
+			$dirPath = FCPATH . 'resources/' . $user_id . '/';
+			$this->deleteDir($dirPath);
+		}
 		redirect('admin/userList', 'location');
 	}
 
