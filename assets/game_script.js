@@ -2801,7 +2801,7 @@ function renderNextLine(callback) {
 										spr.set('selectable', false);
 										canvas.add(spr);
 									}
-									else if(value.fk_effect_id == 5) {
+									else if(value.fk_effect_id == 4) {
 										var spr = new fabric.Image(img, {
 											line_sprite_resource_id: value.sprite_resource_id,
 											top: (value.position_y * 100),
@@ -2815,7 +2815,7 @@ function renderNextLine(callback) {
 											duration: 1000
 										});
 									}
-									else if(value.fk_effect_id == 7) {
+									else if(value.fk_effect_id == 6) {
 										var spr = new fabric.Image(img, {
 											line_sprite_resource_id: value.sprite_resource_id,
 											top: (value.position_y * 100),
@@ -2829,7 +2829,7 @@ function renderNextLine(callback) {
 											duration: 1000
 										});
 									}
-									else if(value.fk_effect_id == 9) {
+									else if(value.fk_effect_id == 8) {
 										var spr = new fabric.Image(img, {
 											line_sprite_resource_id: value.sprite_resource_id,
 											top: -800,
@@ -2843,7 +2843,7 @@ function renderNextLine(callback) {
 											duration: 1000
 										});
 									}
-									else if(value.fk_effect_id == 11) {
+									else if(value.fk_effect_id == 10) {
 										var spr = new fabric.Image(img, {
 											line_sprite_resource_id: value.sprite_resource_id,
 											top: 800,
@@ -2886,7 +2886,7 @@ function renderNextLine(callback) {
 									spr.set('selectable', false);
 									canvas.add(spr);
 								}
-								else if(value.fk_effect_id == 5) {
+								else if(value.fk_effect_id == 4) {
 									var spr = new fabric.Image(img, {
 										line_sprite_resource_id: value.sprite_resource_id,
 										top: (value.position_y * 100),
@@ -2900,7 +2900,7 @@ function renderNextLine(callback) {
 										duration: 1000
 									});
 								}
-								else if(value.fk_effect_id == 7) {
+								else if(value.fk_effect_id == 6) {
 									var spr = new fabric.Image(img, {
 										line_sprite_resource_id: value.sprite_resource_id,
 										top: (value.position_y * 100),
@@ -2914,7 +2914,7 @@ function renderNextLine(callback) {
 										duration: 1000
 									});
 								}
-								else if(value.fk_effect_id == 9) {
+								else if(value.fk_effect_id == 8) {
 									var spr = new fabric.Image(img, {
 										line_sprite_resource_id: value.sprite_resource_id,
 										top: -800,
@@ -2928,7 +2928,7 @@ function renderNextLine(callback) {
 										duration: 1000
 									});
 								}
-								else if(value.fk_effect_id == 11) {
+								else if(value.fk_effect_id == 10) {
 									var spr = new fabric.Image(img, {
 										line_sprite_resource_id: value.sprite_resource_id,
 										top: 800,
@@ -2966,7 +2966,7 @@ function renderNextLine(callback) {
 								var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 								canvas.remove(canvas.item(canvas_index));
 							}
-							else if(value.fk_effect_id == 6) {
+							else if(value.fk_effect_id == 5) {
 								spr.animate('left', '-1000', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 1000,
@@ -2976,7 +2976,7 @@ function renderNextLine(callback) {
 									}
 								});
 							}
-							else if(value.fk_effect_id == 8) {
+							else if(value.fk_effect_id == 7) {
 								spr.animate('left', '1000', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 1000,
@@ -2986,7 +2986,7 @@ function renderNextLine(callback) {
 									}
 								});
 							}
-							else if(value.fk_effect_id == 10) {
+							else if(value.fk_effect_id == 9) {
 								spr.animate('top', '-800', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 1000,
@@ -2996,7 +2996,7 @@ function renderNextLine(callback) {
 									}
 								});
 							}
-							else if(value.fk_effect_id == 12) {
+							else if(value.fk_effect_id == 11) {
 								spr.animate('top', '800', {
 									onChange: canvas.renderAll.bind(canvas),
 									duration: 1000,
@@ -3009,7 +3009,7 @@ function renderNextLine(callback) {
 							else {
 								spr.animate('opacity', '0', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 500,
+									duration: 965,
 									onComplete: function() {
 										// $.each(sprite_to_remove, function(j_index, j_value) {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
@@ -3031,7 +3031,7 @@ function renderNextLine(callback) {
 							var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 							canvas.remove(canvas.item(canvas_index));
 						}
-						else if(value.fk_effect_id == 6) {
+						else if(value.fk_effect_id == 5) {
 							spr.animate('left', '-1000', {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 1000,
@@ -3041,7 +3041,7 @@ function renderNextLine(callback) {
 								}
 							});
 						}
-						else if(value.fk_effect_id == 8) {
+						else if(value.fk_effect_id == 7) {
 							spr.animate('left', '1000', {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 1000,
@@ -3051,7 +3051,7 @@ function renderNextLine(callback) {
 								}
 							});
 						}
-						else if(value.fk_effect_id == 10) {
+						else if(value.fk_effect_id == 8) {
 							spr.animate('top', '-800', {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 1000,
@@ -3061,7 +3061,7 @@ function renderNextLine(callback) {
 								}
 							});
 						}
-						else if(value.fk_effect_id == 12) {
+						else if(value.fk_effect_id == 11) {
 							spr.animate('top', '800', {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 1000,
@@ -3074,7 +3074,7 @@ function renderNextLine(callback) {
 						else {
 							spr.animate('opacity', '0', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
+								duration: 965,
 								onComplete: function() {
 									// repeat get index because canvas index value would change after each and result in wrong index, since function is executed after completion of transition
 									canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
@@ -3136,7 +3136,7 @@ function renderNextLine(callback) {
 							spr.set('selectable', false);
 							canvas.add(spr);
 						}
-						else if(value.fk_effect_id == 5) {
+						else if(value.fk_effect_id == 4) {
 							var spr = new fabric.Image(img, {
 								line_sprite_resource_id: value.sprite_resource_id,
 								top: (value.position_y * 100),
@@ -3150,7 +3150,7 @@ function renderNextLine(callback) {
 								duration: 1000
 							});
 						}
-						else if(value.fk_effect_id == 7) {
+						else if(value.fk_effect_id == 6) {
 							var spr = new fabric.Image(img, {
 								line_sprite_resource_id: value.sprite_resource_id,
 								top: (value.position_y * 100),
@@ -3164,7 +3164,7 @@ function renderNextLine(callback) {
 								duration: 1000
 							});
 						}
-						else if(value.fk_effect_id == 9) {
+						else if(value.fk_effect_id == 8) {
 							var spr = new fabric.Image(img, {
 								line_sprite_resource_id: value.sprite_resource_id,
 								top: -800,
@@ -3178,7 +3178,7 @@ function renderNextLine(callback) {
 								duration: 1000
 							});
 						}
-						else if(value.fk_effect_id == 11) {
+						else if(value.fk_effect_id == 10) {
 							var spr = new fabric.Image(img, {
 								line_sprite_resource_id: value.sprite_resource_id,
 								top: 800,
@@ -3582,7 +3582,7 @@ function renderInGameInterface(callback) {
 			line_interface_id: 1,
 			top: 420,
 			left: 0,
-			opacity: 0.9
+			opacity: 1
 		});
 		txt_box.set('selectable', false);
 		canvas.add(txt_box);
