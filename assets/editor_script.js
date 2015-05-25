@@ -2241,7 +2241,7 @@ $('.sprite-list').on('mouseover', 'input[name=position_z]', function() {
 
 $('.sprite-list').on('mouseover', 'input[name=effect]', function() {
 	$(this).tooltip({
-		title: "transition default to fade in/out and crossfade",
+		title: "transition default to fade in/out",
 		html: true
 	});
 	$(this).tooltip('show');
