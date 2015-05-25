@@ -1190,7 +1190,7 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 			var input_value = $(this).val();
 			var verify = 0;
 			$.each(sprite_list, function(index, value) {
-				if(input_id == value.resource_id && input_value == value.name) {
+				if(input_id == value.resource_id && input_value == value.label) {
 					verify++;
 				}
 			});
@@ -1561,9 +1561,19 @@ function callSpriteAutocompleteData() {
 	req.done(function(msg) {
 		// ! NEED ENHANCEMENT !
 		$.each(msg, function(index, value) {
-			sprite_name_list.push(value.name);
+			// sprite_name_list.push(value.name);
+			sprite_list.push({
+				label: value.character_name + ' ' + value.figure_name + ' ' + value.expression_name,
+				name: value.name,
+				character_name: value.character_name,
+				figure_name: value.figure_name,
+				expression_name: value.expression_name,
+				resource_id: value.resource_id,
+				file_name: value.file_name,
+				thumb_name: value.thumb_name
+			});
 		});
-		sprite_list = msg;
+		//sprite_list = msg;
 	});
 }
 
@@ -1887,22 +1897,28 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 				input[0].selectionStart = original.length;
 				input[0].selectionEnd = top_value.length;
 			}
+			$(this).autocomplete("widget").css({
+		                "width": "600px",
+		                "top": "18%",
+		                "left": "20%",
+		                "max-height": "600px"
+	  	       });
 		},
 		select: function(event, ui) {
 			// get this input element
 			var input = $(this);
 			$(this.form).find('input[name=sprite_resource_id]').val(ui.item.resource_id);
-			$(this.form).find('input[name=sprite]').val(ui.item.name);
+			$(this.form).find('input[name=sprite]').val(ui.item.label);
 			// trigger on change method to change value immediately
 			$(this).trigger('change');
 			return false;
 		},
 		autoFocus: true,
-		
+		position: { my : "right top", at: "left bottom", offset: '' }
 	})
 	.autocomplete('instance')._renderItem = function(ul, item) {
-		return $('<li>')
-			.append("<a>" + item.character_name + "<br>" + item.figure_name + " - " + item.expression_name + "</a>")
+		return $('<li></li>')
+			.append('<a>' + '<img src="' + config.base + 'resources/' + config.user + '/' + config.project + '/sprite/thumbs/' + item.thumb_name + '" class="autocomplete-sprite-image" />' + item.character_name + ' ' + item.figure_name + ' ' + item.expression_name + "</a>")
 			.appendTo(ul);
 	};
 });

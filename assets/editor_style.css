@@ -235,7 +235,7 @@ html {
 }
 /*autocomplete scrollable, keep position on scroll*/
 .ui-autocomplete {
-	max-height: 200px;
+	max-height: 500px; /*BEFORE 200*/
 	overflow-x: hidden;
 	overflow-y: auto;
 	position: fixed;
@@ -282,4 +282,9 @@ input[type=number] {
 .tooltip-inner {
 	white-space:nowrap;
 	max-width:none;
+}
+.autocomplete-sprite-image {
+	width: auto;
+	max-height: 200px;
+	height: auto;
 }

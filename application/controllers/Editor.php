@@ -443,17 +443,17 @@ class Editor extends CI_Controller {
 		foreach ($pass as $key => $value) {
 			$thumb_name = $this->trimExtension($value['file_name']) . '_thumb' . $this->extractExtension($value['file_name']);
 			$list[] = array(
-				'resource_id' => $value['resource_id'],
-				'name' => $value['name'],
-				'thumb_name' => $thumb_name,
-				'character_name' => $value['character_name'],
-				'figure_name' => $value['figure_name'],
-				'expression_name' => $value['expression_name'],
-				'file_name' => $value['file_name'],
+				'name' => utf8_encode($value['name']),
+				'character_name' => utf8_encode($value['character_name']),
+				'figure_name' => utf8_encode($value['figure_name']),
+				'expression_name' => utf8_encode($value['expression_name']),
+				'resource_id' => utf8_encode($value['resource_id']),
+				'file_name' => utf8_encode($value['file_name']),
+				'thumb_name' => utf8_encode($thumb_name),
 			);
 		}
 		$this->output->set_content_type('application/json');
-		$this->output->set_output(json_encode($pass, JSON_PRETTY_PRINT));
+		$this->output->set_output(json_encode($list, JSON_PRETTY_PRINT));
 	}
 	public function loadEffectList() {
 		$sess = $this->session->userdata('user_auth');
