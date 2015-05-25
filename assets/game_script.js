@@ -909,11 +909,9 @@ canvas.on('mouse:down', function(options) {
 				break;
 			case "text_head":
 				toTextConfiguration();
-				game.screen = "configuration";
 				break;
 			case "sound_head":
 				toSoundConfiguration();
-				game.screen = "configuration";
 				break;
 			case "exit_button":
 				exitConfigurationScreen();
