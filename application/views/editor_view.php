@@ -600,22 +600,25 @@
 		<form class="form-inline sprite-form">
 			<div class="row">
 				<div class="col-md-1">
-					<span class="sprite-index">'+(count-1)+'</span>
+					<span class="sprite-index">'+(count+1)+'</span>
 				</div>
 				<div class="col-md-9">
 					<div class="form-group">
 						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" />
 							<input type="hidden" name="sprite_resource_id" value="" />
+						<br />
+						x 
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="0" />
+						y 
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="0" />
+						z 
 						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="0" />
-						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="" />
+						<input type="text" name="effect" class="form-control input-xs sprite-effect-input" placeholder="transition" value="" />
 							<input type="hidden" name="effect_id" value="" />
-					<span class="glyphicon glyphicon-resize-vertical"></span>
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 				</div>
 			</div>
 			<input type="hidden" name="sprite_id" value="new" />
@@ -637,16 +640,19 @@
 					<div class="form-group">
 						<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+value.sprite_name+'" />
 							<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" />
+						<br />
+						x 
 						<input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" />
+						y 
 						<input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" />
+						z 
 						<input type="text" name="position_z" class="form-control input-xs sprite-number-input" placeholder="z" value="'+value.position_z+'" />
-						<input type="text" name="effect" class="form-control input-xs sprite-input" placeholder="transition" value="'+eff+'" />
+						<input type="text" name="effect" class="form-control input-xs sprite-effect-input" placeholder="transition" value="'+eff+'" />
 							<input type="hidden" name="effect_id" value="'+value.fk_effect_id+'" />
-					<span class="glyphicon glyphicon-resize-vertical"></span>
 					</div>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button"><span class="glyphicon glyphicon-remove"></span></button>
+					<button type="button" class="btn btn-danger btn-xs pull-left sprite-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button>
 				</div>
 			</div>
 			<input type="hidden" name="sprite_id" value="'+value.sprite_id+'" />

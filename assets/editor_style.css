@@ -93,10 +93,13 @@ table td {
 	margin: 5px 0 0;
 }
 .sprite-form .row .col-md-9 .form-group .sprite-input {
-	width: 28%;
+	width: 98%;
 }
 .sprite-form .row .col-md-9 .form-group .sprite-number-input {
 	width: 9%;
+}
+.sprite-form .row .col-md-9 .form-group .sprite-effect-input {
+	width: 48%;
 }
 .request-loading {
 	left: 50%;
