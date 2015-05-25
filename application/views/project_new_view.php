@@ -16,6 +16,7 @@
 					<?php echo form_error('description'); ?>
 					<textarea id="description" name="description" class="form-control"></textarea>
 				</div>
+				 <a href="<?php echo base_url(); ?>index.php/project" class="btn btn-default">Back</a>
 				<button type="submit" id="newprojectsubmit" class="btn btn-primary">Create</button>
 			<?php echo form_close(); ?>
 		</div>

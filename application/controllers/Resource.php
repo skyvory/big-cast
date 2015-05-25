@@ -47,7 +47,7 @@ class Resource extends CI_Controller {
 		if($resource_type == 1) {
 			$upload_path_url = base_url() . $path_to_project . 'sprite/';
 			$config['upload_path'] = FCPATH . $path_to_project . 'sprite/';
-			$config['allowed_types'] = 'jpg|jpeg|png';
+			$config['allowed_types'] = 'jpg|jpeg|png|gif';
 			$config['overwrite'] = FALSE;
 			$config['max_size'] = 20 * 1024 * 1024; //20 MB
 			$config['encrypt_name'] = TRUE;
