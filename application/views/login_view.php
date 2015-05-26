@@ -24,12 +24,12 @@
 					<div class="form-group">
 					<label for="username">Username</label>
 					<?php echo form_error('username'); ?>
-					<input type="username" id="username" name="username" class="form-control" tabindex="1" value="sv"/>
+					<input type="username" id="username" name="username" class="form-control" tabindex="1" value=""/>
 					</div>
 					<div class="form-group">
 					<?php echo form_error('password'); ?>
 					<label for="password">Password</label>
-					<input type="password" id="password" name="password" class="form-control" tabindex="2" value="sv"/>
+					<input type="password" id="password" name="password" class="form-control" tabindex="2" value=""/>
 					</div>
 				  	<input type="submit" id="login" value="Login" tabindex="3" class="btn btn-primary" style="width: 40%;"/>
 				  	<div id="error"></div>
