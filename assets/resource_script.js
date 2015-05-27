@@ -1,10 +1,6 @@
-//for file upload
 $(function(){
-
 	$('#fileupload').fileupload({
-		url: 'http://localhost/cast/index.php/resource/do_upload',
 		dataType: 'json',
-		//calculate progress
 		progressall: function (e, data) {
 			var progress = parseInt(data.loaded / data.total * 100, 10);
 			$('#progress .bar').slideDown(500).css(
@@ -52,7 +48,6 @@ $(function(){
 		
 	});
 	
-	//programatically set form data on upload start
 	$('#fileupload').bind('fileuploadsubmit', function (e, data) {
 		var restype_input = $('#resourcetype');
 		var charname_input = $('#charactername');
@@ -64,12 +59,6 @@ $(function(){
 				figname: figname_input.val()
 			};
 		}
-		// else if(restype_input.val() == 5) {
-		// 	data.formData = {
-		// 		restype: restype_input.val(),
-		// 		charname: charname_input.val()
-		// 	};
-		// }
 		else {
 			data.formData = {restype: restype_input.val()};
 		}
@@ -78,7 +67,6 @@ $(function(){
 		}
 	});
 });
-
 function callErrorNotification(message) {
 	var block = '<div class="alert alert-danger error-notification">'+message+'</div>';
 	$('#notification').append(block).hide().fadeIn();
@@ -88,8 +76,6 @@ function callErrorNotification(message) {
 		});
 	}, 5000);
 }
-
-//load content on resource type on navbar click and set resource type to use on file uplaod
 var restype = $('#resourcetype');
 $('#spritebutton').click(function() {
 	restype.val("1");
@@ -115,37 +101,6 @@ $('#videobutton').click(function() {
 	restype.val("6");
 	callResourceList(6);
 });
-
-//drag hover effect
-$(document).bind('dragover', function(e) {
-	var dropzone = $('#dropshade'),
-	timeout = window.dropzoneTimeout;
-	if(!timeout) {
-		dropzone.addClass('in');
-	}
-	else {
-		clearTimeout(timeout);
-	}
-	var found = false,
-	node = e.target;
-	do {
-		if(node === dropzone[0]) {
-			found = true;
-			break;
-		}
-		node = node.parentNode;
-	}
-	while(node != null);
-	if(found) {
-		dropzone.addClass('hover');
-	}
-	window.dropzoneTimeout = setTimeout(function(){
-		window.dropzoneTimeout = null;
-		dropzone.removeClass('in hover');
-	}, 100);
-});
-
-//resource navbar click change active
 $('.resource-navbar li').click(function(e) {
 	$('.resource-navbar li.active').removeClass('active');
 	var $this = $(this);
@@ -154,8 +109,6 @@ $('.resource-navbar li').click(function(e) {
 	}
 	e.preventDefault();
 });
-
-//change background resource property
 $('.resource-list').on("click", '.background-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
@@ -183,8 +136,6 @@ $('.resource-list').on("click", '.background-form-submit-button', function(e) {
 		}
 	});
 });
-
-//change sprite resource property
 $('.resource-list').on("click", '.sprite-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
@@ -216,8 +167,6 @@ $('.resource-list').on("click", '.sprite-form-submit-button', function(e) {
 		}
 	});
 });
-
-// change bgm resource property
 $('.resource-list').on("click", '.bgm-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
@@ -245,8 +194,6 @@ $('.resource-list').on("click", '.bgm-form-submit-button', function(e) {
 		}
 	});
 });
-
-// change sfx resource property
 $('.resource-list').on("click", '.sfx-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
@@ -274,25 +221,20 @@ $('.resource-list').on("click", '.sfx-form-submit-button', function(e) {
 		}
 	});
 });
-
-// change voice resource property
 $('.resource-list').on("click", '.voice-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
 	var voi_id = $(selectform).find('[name=voice_id]').val();
 	var voi_name = $(selectform).find('[name=voice_name]').val();
-	// var voi_character = $(selectform).find('[name=voice_character]').val();
 	var req = $.ajax({
 		url: config.base+"index.php/resource/changeAudioVideoProperty",
 		type: "POST",
-		// data: {id: voi_id, name: voi_name, character: voi_character},
 		data: {id: voi_id, name: voi_name},
 		dataType: "html"
 	});
 	req.done(function(msg) {
 		if(msg == 1) {
 			$('#voicename_' + voi_id).css("background", "#FFFFFF");
-			// $('#voicecharactername_' + voice_id).css("background", "#FFFFFF");
 			var not = '<div class="alert alert-success resourcechange-notification">Change saved!</div>';
 			$('#notification').append(not).hide().fadeIn();
 			window.setTimeout(function() {
@@ -306,8 +248,6 @@ $('.resource-list').on("click", '.voice-form-submit-button', function(e) {
 		}
 	});
 });
-
-// change video resource property
 $('.resource-list').on("click", '.video-form-submit-button', function(e) {
 	e.preventDefault();
 	var selectform = this.form;
@@ -335,13 +275,9 @@ $('.resource-list').on("click", '.video-form-submit-button', function(e) {
 		}
 	});
 });
-
-// detect changed input value
 $('.resource-list').on("keyup", 'input[type=text]', function() {
 	$(this).css("background", "#FDFFD5");
 });
-
-// load resource list
 function callResourceList(type) {
 	var req = $.ajax({
 		url: config.base + "index.php/resource/loadResource",
@@ -356,27 +292,15 @@ function callResourceList(type) {
 		$('.request-loading-resourcelist').hide();
 		$('.resource-list').html(msg);
 	});
-	//append additional form for sprite upload
 	if(type == 1) {
 		var html2append = '<div class="row"><div class="col-md-10 sprite-input-append"><p>Fill the Character and Pose Name before dropping your files</p><form class="form-inline"><label for="charactername">Character name</label> <input type="text" id="charactername" name="character_name" value="" /> <label for="figurename">Pose name</label> <input type="text" id="figurename" name="figure_name" value="" /></form></div></div>';
-		// $(html2append).appendTo('.resource-preinput');
 		$('.resource-preinput').html(html2append);
 	}
-	//append additional form for voice upload
-	// else if(type == 5) {
-	// 	var html2append = '<label for="charactername">Character name</label><input type="text" id="charactername" name="character_name" value="ageha" />';
-	// 	// $(html2append).appendTo('.resource-preinput');
-	// 	$('.resource-preinput').html(html2append);
-	// }
 	else {
 		$('.resource-preinput').html('');
 	}
 }
-
-// load resource list on start
 $(document).ready( callResourceList(1) );
-
-// delete sprite resource item
 $('.resource-list').on("click", '.sprite-form-delete-button, .sprite-form-remove-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);
@@ -403,8 +327,6 @@ $('.resource-list').on("click", '.sprite-form-delete-button, .sprite-form-remove
 		}
 	});
 });
-
-// delete background resource item
 $('.resource-list').on("click", '.background-form-delete-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);
@@ -431,8 +353,6 @@ $('.resource-list').on("click", '.background-form-delete-button', function(e) {
 		}
 	});
 });
-
-// delete bgm resource item
 $('.resource-list').on("click", '.bgm-form-delete-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);
@@ -459,8 +379,6 @@ $('.resource-list').on("click", '.bgm-form-delete-button', function(e) {
 		}
 	});
 });
-
-// delete sfx resource item
 $('.resource-list').on("click", '.sfx-form-delete-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);
@@ -487,8 +405,6 @@ $('.resource-list').on("click", '.sfx-form-delete-button', function(e) {
 		}
 	});
 });
-
-// delete voice resource item
 $('.resource-list').on("click", '.voice-form-delete-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);
@@ -515,8 +431,6 @@ $('.resource-list').on("click", '.voice-form-delete-button', function(e) {
 		}
 	});
 });
-
-// delete video resource item
 $('.resource-list').on("click", '.video-form-delete-button', function(e) {
 	e.preventDefault();
 	var selectform = $(this.form);

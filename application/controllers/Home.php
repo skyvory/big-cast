@@ -17,19 +17,20 @@ class Home extends CI_Controller {
 		}
 	}
 
-	function index() {
-		$this->load->helper('url');
-		$user = $this->session->userdata('user_auth');
-		$head['title'] = "Project";
-		$self['user'] = $user;
-		$data['project'] = $this->common->getRecentProject($user['id']);
-		$data['release'] = $this->common->getLatestRelease();
-		$this->load->vars($self);
-		$this->load->view('home_head', $head);
-		$this->load->view('menu_view');
-		$this->load->view('home_view', $data);
-		$this->load->view('foot');
-	}
+function index() {
+	$this->load->helper('url');
+	$user = $this->session->userdata('user_auth');
+	$head['title'] = "Project";
+	$self['user'] = $user;
+	$data['project'] = $this->common->getRecentProject($user['id']);
+	$data['release'] = $this->common->getLatestRelease();
+	$this->load->vars($self);
+	$this->load->view('home_head', $head);
+	$this->load->view('menu_view');
+	$this->load->view('home_view', $data);
+	$this->load->view('foot');
+}
+
 }
 
 ?>
