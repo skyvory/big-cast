@@ -744,7 +744,7 @@ $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function()
 				var eff = "";
 			}
 			index_to_write = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
-			if(index_to_write) {
+			if(index_to_write > -1) {
 				var spr_label = sprite_list[index_to_write].label;
 			}
 			else {
