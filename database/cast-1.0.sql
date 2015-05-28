@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.2.2
+-- version 4.1.12
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: May 28, 2015 at 02:23 PM
--- Server version: 5.5.27
--- PHP Version: 5.4.7
+-- Generation Time: May 28, 2015 at 05:20 PM
+-- Server version: 5.6.16
+-- PHP Version: 5.5.11
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -363,22 +363,14 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`user_id`),
   KEY `user_id` (`user_id`),
   KEY `fk_permission_id` (`fk_permission_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`user_id`, `username`, `password`, `salt`, `created_date`, `updated_date`, `fk_permission_id`) VALUES
-(1, 'sv', '$2a$07$1cd6dfb5886fac276ff0dugHlw49Ykidio2cqtgI6BBszPaemYgRm', '$2a$07$1cd6dfb5886fac276ff0d3d13605cc1f893415b865aa76db614af7750d2ba768e3276193ffa9cc6c2ff251da76083e2d4cf6c0febe31949d8cabc125eb9b9f30$', '2015-04-11 16:32:12', '2015-05-21 20:59:33', 2),
-(2, 'skyvory', '$2a$07$b60547c3e56786ebc1d49OtFRYS4njPc/NfNMs0FBY9TfrJU6t0CC', '$2a$07$b60547c3e56786ebc1d49dc27722eb01637a32f0af1d0c3bdf61bafbd3b1b16cafbebf68513f70f1a0a56d9d8621725c17a0ba5507d74b25945369216ea85c58$', '2015-04-28 01:29:14', '2015-04-27 23:29:14', 2),
-(4, 'dummy', '$2a$07$b461a6c1d94feb55941d2uS2U6xXzgIP797NDxHMtUBFlNsCAKf7S', '$2a$07$b461a6c1d94feb55941d2411f2dce3b60c80dc1cd75df4450a567af547626040a976c800109c8fd7e3b9a68dcdd59f32fbd9ec9156c182a527d6798c7328c262$', '2015-04-28 01:39:40', '2015-04-27 23:39:40', 2),
-(5, 'dummy1', '$2a$07$67696950dc8e23c1594b0OWLYDMFKId2vv.rrIlLvmQUEn.79lBUm', '$2a$07$67696950dc8e23c1594b0b48794fba10e893c9a4ed1508770282dedd35fd8e9a173ebb38c4f9425e1b49d8650d1af1df7b86e9b99280bf040fff7b28f04273e6$', '2015-04-28 03:15:09', '2015-04-28 01:15:09', 2),
-(7, 'bbbb', '$2a$07$e9946924c03d91b9fa3a8eDjbA2IKctkP5igWhUPpLkF7XskNd6MW', '$2a$07$e9946924c03d91b9fa3a8f6338c9e177c49067d9abce55152db6f3c418580987827aef81f7d0b4a8b2312c1e9556ac1774c1fbeb1e33f2f0b6cfbaec19ed1b0b$', '2015-05-20 22:27:49', '2015-05-20 20:27:49', 2),
-(8, 'aaa1', '$2a$07$ccf0c98297b8418ec3bffe76jAcK4jEHm6PTr.8Vq6M2UU.Tl95WK', '$2a$07$ccf0c98297b8418ec3bffe59c646bb7f87312f195ff79cd728cc8b3ffa0bb8a1782c1852bb444de3799ebae30ed50de2535ad4516756ee4d8057d44bd1ebece0$', '2015-05-21 03:23:38', '2015-05-21 01:23:38', 2),
-(9, 'aaa2', '$2a$07$3559e1b06d40fc967d47au/lYqI0KCD76fUtJvDZgHamfj53GL6me', '$2a$07$3559e1b06d40fc967d47a53df3f98117a8fb0e6f2b2318e38a286469994a0691939b71db9277a8be14498966e4ce4e805670d2e2bf2657fc2d58a068d35253ba$', '2015-05-21 07:12:24', '2015-05-21 05:12:24', 2),
-(10, 'aaaa', '$2a$07$a7fced9d98faf0ab2efdfuHgUA12vvbe8DV85iU.U2MLKrVh85zVi', '$2a$07$a7fced9d98faf0ab2efdf38c6e30ccfd1aa7882116afa262df92a69ff6625e8a36a0292d4279e71af3030284139337b541e2842c6a2172723cca9d05633c87cc$', '2015-05-21 09:59:53', '2015-05-21 07:59:53', 2),
-(11, 'admin', '$2a$07$53b701839a43b18214295O8FgSqSXBJWI8kMf8rpdQsRnKBST1lJC', '$2a$07$53b701839a43b18214295bcc44f969fdf2058704bd8ec2aa4077f6ac2b6697d596d9f30b27dc58face8911aff4cb10440d79f698669a8e43d4ec6071f19de965$', '2015-05-24 11:48:00', '2015-05-24 09:48:29', 1);
+(1, 'admin', '$2a$07$53b701839a43b18214295O8FgSqSXBJWI8kMf8rpdQsRnKBST1lJC', '$2a$07$53b701839a43b18214295bcc44f969fdf2058704bd8ec2aa4077f6ac2b6697d596d9f30b27dc58face8911aff4cb10440d79f698669a8e43d4ec6071f19de965$', '2015-05-28 17:20:32', '2015-05-28 15:20:46', 1);
 
 --
 -- Constraints for dumped tables
