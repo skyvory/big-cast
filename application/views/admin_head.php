@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>C <?php if(isset($title)) echo " - " . $title; ?></title>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8">
+		<link rel="shortcut icon" href="<?= base_url(); ?>assets/images/ap-i9-16.ico" type="image/x-icon" />
 
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
