@@ -3304,7 +3304,7 @@ function renderNextLine(callback) {
 			renderLineText(line[current.sequence].content);
 		}
 		// render interface
-		if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
+		if(current.sequence == 0 && line[current.sequence].fk_linetype_id == 1) {
 			renderInGameInterface();
 		}
 		if(line[current.sequence].speaker.length > 0) {
@@ -3580,7 +3580,7 @@ function renderInGameInterface(callback) {
 			line_interface_id: 1,
 			top: 420,
 			left: 0,
-			opacity: 1
+			opacity: 0.8
 		});
 		txt_box.set('selectable', false);
 		canvas.add(txt_box);
