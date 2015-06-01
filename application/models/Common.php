@@ -586,6 +586,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 1);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -597,6 +598,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 2);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -608,6 +610,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 3);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -619,6 +622,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 5);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -630,6 +634,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 4);
+		$this->db->order_by('name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
