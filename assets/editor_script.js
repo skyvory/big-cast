@@ -1385,7 +1385,7 @@ $('.sprite-command-area').on('click', '#addspritebutton', function() {
 	else {
 		var index_to_write = getObjectIndex(line_obj, 'line_id', line_form_id);
 		var count = line_obj[index_to_write].sprite.length;	
-		var sprite_count_limit = 2;
+		var sprite_count_limit = 4;
 		if(count >= sprite_count_limit) {
 			callErrorNotification("can't add more sprite!");
 		}
