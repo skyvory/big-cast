@@ -344,7 +344,7 @@ Class Common extends CI_Model {
 		$this->db->from('resource');
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 1);
-		$this->db->order_by('character_name, figure_name, expression_name', 'ASC');
+		$this->db->order_by('character_name, figure_name, expression_name, name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
@@ -657,6 +657,7 @@ Class Common extends CI_Model {
 		$this->db->where('fk_user_id', $user_id);
 		$this->db->where('fk_project_id', $project_id);
 		$this->db->where('fk_resourcetype_id', 1);
+		$this->db->order_by('character_name, figure_name, expression_name, name', 'ASC');
 		$query = $this->db->get();
 		$result = $query->result_array();
 		return $result;
