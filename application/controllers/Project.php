@@ -215,6 +215,10 @@ class Project extends CI_Controller {
 					$published_date = date('Y-m-d H:i:s');
 					$pass = $this->common->updateProjectToPublish($status, $published_date, $project['project_id']);
 				}
+				else {
+					$status = 1;
+					$pass = $this->common->updateProjectToPublish($status, null, $project['project_id']);
+				}
 				if($cover_file == true) {
 					$cover = 1;
 					$this->common->updateCover($cover, $project['project_id']);
