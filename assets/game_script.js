@@ -438,7 +438,7 @@ function preloadImage(source, resource_id, callback) {
 
 function preloadSprite(sourcearray, callback) {
 	$.each(sourcearray, function(index, value) {
-		setTimeout(function() {
+		// setTimeout(function() {
 			var is_exist = $('.image-cache').has('img[id='+value.resource_id+']').length;
 			if(is_exist) {
 				callback(true);
@@ -452,7 +452,7 @@ function preloadSprite(sourcearray, callback) {
 					}
 				});
 			}
-		}, index * 1000);
+		// }, index * 1000);
 		
 	});
 }
@@ -761,6 +761,48 @@ function renderTitleMenu() {
 // 	}
 // });
 
+// fullscreen toggle
+function toggleFullscreen(e) {
+		var key;
+		if(window.event) {
+			key = window.event.keyCode;
+		}
+		else if (e) {
+			key = e.which;
+		}
+		var e = e || window.event;
+		if(key == 13 && e.altKey){
+			var full_element = $('.game-area')[0];
+			if (full_element.requestFullscreen) {
+					full_element.requestFullscreen();
+			}
+			else if (full_element.webkitRequestFullscreen) {
+					full_element.webkitRequestFullscreen();
+			}
+			else if (full_element.mozRequestFullScreen) {
+					full_element.mozRequestFullScreen();
+			}
+			else if (full_element.msRequestFullscreen) {
+					full_element.msRequestFullscreen();
+			}
+			// var canvas_container = $('.canvas-container')[0];
+			// canvas_container.style.width  = '1200px';
+			// canvas_container.style.height = '900px';
+			var upper_canvas = $('.upper-canvas')[0];
+			new_height = $(window).height();
+			console.log(new_height);
+			new_width = new_height / 8 * 6;
+			upper_canvas.style.width  = new_width;
+			upper_canvas.style.height = new_height;
+			var lower_canvas = $('.lower-canvas')[0];
+			lower_canvas.style.width  = new_width;
+			lower_canvas.style.height = new_height;
+			$('.canvas-container').css("left", "20%");
+		}
+	}
+document.onkeydown = toggleFullscreen;
+
+// shortcut key
 var key_enable = true;
 $(document).bind('keydown', function(e){
 	if(key_enable == true) {
@@ -2655,7 +2697,10 @@ function renderNextLine(callback) {
 							});
 							bg.set('selectable', false);
 							canvas.add(bg);
-							canvas.sendToBack(bg);
+							// keep background depth for empty content
+							if(line[current.sequence].content.length > 0) {
+								canvas.sendToBack(bg);
+							}
 						}
 						else {
 							var bg = new fabric.Image(img, {
@@ -2666,7 +2711,9 @@ function renderNextLine(callback) {
 							});
 							bg.set('selectable', false);
 							canvas.add(bg);
-							canvas.sendToBack(bg);
+							if(line[current.sequence].content.length > 0) {
+								canvas.sendToBack(bg);
+							}
 							bg.animate('opacity', '1', {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 500,
@@ -3210,9 +3257,12 @@ function renderNextLine(callback) {
 			}
 			// }
 			// readjust game interface to original position after render
-			for(var i = 1; i <= 10; i++) {
-				var interface_index = getObjectIndex(canvas.getObjects(), 'line_interface_id', i);
-				canvas.bringToFront(canvas.item(interface_index));
+			// keep interface behind for empty content
+			if(line[current.sequence].content.length > 0) {
+				for(var i = 1; i <= 10; i++) {
+					var interface_index = getObjectIndex(canvas.getObjects(), 'line_interface_id', i);
+					canvas.bringToFront(canvas.item(interface_index));
+				}
 			}
 		}
 		else {
@@ -3851,7 +3901,7 @@ function stopVoice() {
 // context.font = '21px sans-serif';
 function renderLineText(line_content) {
 	var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
-	context.font = '21px '+font_list[font_index].name;
+	context.font = '20px '+font_list[font_index].name;
 	var interval_speed = (parseInt(configuration.text_speed) * 5);
 	var cursor_x = 100;
 	var cursor_y = 490;
