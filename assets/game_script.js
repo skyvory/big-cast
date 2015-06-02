@@ -124,14 +124,7 @@ function callConfigurationData(callback) {
 }
 
 function callSequentialLineData(offset, callback) {
-	// current.head + current.limit would result line with total number of limit cached ahead
-	//var process_limit = current.head + current.limit;
-	var process_limit = current.limit; // DEFAULT 60
-	// var offset = 0;
-	// if(current.head > 0) {
-	// 	offset = parseInt(line[current.head].sequence) + 1;
-	// 	console.log(offset);
-	// }
+	var process_limit = 60;
 	var req = $.ajax({
 		url: config.base +'index.php/game/loadLine',
 		type: "POST",
@@ -144,16 +137,8 @@ function callSequentialLineData(offset, callback) {
 	req.done(function(msg) {
 		if(msg.length) {
 			// append all line data to line object
-			// if(current.tail == 0) {
-				// current.tail = parseInt(msg[0].sequence);
-				// same with current tail for resource maintain, keep cache at 0 would lead to error because no 0 sequenced line
-				// cache.tail = current.tail;
-			// }
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
-				// if(parseInt(value.sequence) < current.tail) {
-				// 	current.tail = parseInt(value.sequence);
-				// }
 			})
 			// increase head the same number as retrieved lines
 			current.head+=msg.length;
@@ -173,34 +158,18 @@ function maintainCurrent(callback) {
 	// delete n number of old line cache if reach limit
 	if(current.head > current.limit) {
 		console.log("current removed");
-		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
+		// remove all lines behind after 10 latest current sequence
 		for(var i = 0; i < current.sequence - 10; i++) {
-			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
 			line.splice(0, 1);
 			current.head--;
 			current.sequence--;
 			cache.head--;
 		}
 	}
-	// if(current.sequence % 20 == 0) {
-	// request new lines after reach head - 20, using mod so if no more line, line won't bwe called continuously
-	console.log("current", current.sequence);
-	console.log("head", current.head);
-	console.log("call line timing", current.sequence % (current.head - 20));
+	// request new lines after reach head - 20, using mod so if no more line, rquest won't be called continuously
+	// append more line when current line reach (head minus 20), no request made if game is less than 20 lines
 	if(current.sequence % (current.head - 20) == 0) {
-		// var is_dead_end = true;
-		// for(var i = current.sequence; i < current.head; i++) {
-		// 	if(parseInt(line[i].fk_linetype_id) != 2 && line[i].jumpto_line_id.length > 0) {
-		// 		is_dead_end = false;
-		// 	}
-		// 	else if(parseInt(line[i].fk_linetype_id) == 2) {
-		// 		is_dead_end = false;
-		// 	}
-		// }
-		console.log("more line call");
-		// if(is_dead_end == false) {
-			callSequentialLineData(parseInt(line[current.head].sequence));
-		// }
+		callSequentialLineData(parseInt(line[current.head].sequence));
 	}
 	if(callback) {
 		callback();
@@ -215,9 +184,8 @@ function maintainCache(callback) {
 			var spr_del = true;
 			for(var i = current.sequence; i < current.sequence + 10; i++) {
 				var j = 0;
-				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
 				if(line[i].fk_linetype_id == 1) {
-					// checking ahead to resolve resource missing
+					// checking ahead to resolve missing resource problem
 					if(line[i].background_resource_id) {
 						if(id == line[i].background_resource_id) {
 							bg_del = false;
@@ -233,7 +201,6 @@ function maintainCache(callback) {
 				}
 			}
 			if(bg_del == true) {
-				console.log(this);
 				$(this).remove();
 				cache.count--;
 			}
@@ -270,7 +237,6 @@ function maintainCache(callback) {
 				}
 			}
 			if(bgm_del == true) {
-				console.log(this);
 				$(this).remove();
 				cache.count--;
 			}
@@ -285,58 +251,13 @@ function maintainCache(callback) {
 		});
 	}
 	// request new cache
-	if(cache.head - current.sequence < 10) {
+	// if(cache.head - current.sequence < 10) {
 		processSequentialResource();
-	}
+	// }
 	if(callback) {
 		callback();
 	}
 }
-
-// function removeOldCache(callback) {
-// 	// delete old cache
-// 	for(; cache.head > current.sequence; cache.head--) {
-// 		if(line[0].fk_linetype_id == 1) {
-// 			if(line[0].bgm_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
-// 			}
-// 			if(line[0].sfx_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
-// 			}
-// 			if(line[0].voice_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
-// 			}
-// 			if(line[0].background_resource_id) {
-// 				$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
-// 			}
-// 			if(line[0].sprite) {
-// 				if(line[0].sprite.length) {
-// 					$.each(line[0].sprite, function(index, value) {
-// 						$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-// 					});
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if(callback) {
-// 		callback();
-// 	}
-// }
-
-// function processSequentialResource() {
-// 	var process_limit = cache.head + 5;
-// 	for(var i = cache.head; i < process_limit; i++) {
-// 		cache.head += 1;
-// 		var index_to_read = getObjectIndex(line, 'sequence', cache.head);
-// 		if(line[index_to_read].fk_linetype_id == 1) {
-// 			if(line[index_to_read].background_resource_id) {
-// 				var path_to_background_image = "resources/" + configuration.creator_id + "/" + configuration.game_id + "/background/" + line[index_to_read].background_file_name;
-// 				preloadImage(path_to_background_image, function() {
-// 				})
-// 			}
-// 		}
-// 	}
-// }
 
 function processSequentialResource() {
 	if(cache.head - current.sequence < 10) {
@@ -410,8 +331,7 @@ function processSequentialResource() {
 				// }, 1000);
 			}
 			else if(line[cache.head].fk_linetype_id == 2) {
-				// cache.head++;
-				processSequentialResource();
+					processSequentialResource();
 			}
 			else {
 				// cache.head++;
@@ -1122,6 +1042,8 @@ canvas.on('mouse:down', function(options) {
 					line.splice(index_to_remove, current.head - current.sequence);
 					// removeOldCache(function() {
 						current.head = current.sequence;
+						// reset cache head so next line resource will be fetched
+						cache.head = current.sequence;
 						var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
 						callSequentialLineData(parseInt(offset_jump)-1, function() {
 							processSequentialResource();
@@ -1362,6 +1284,7 @@ function quickLoad() {
 		$('.text-area').show();
 		current.sequence = -1;
 		current.head = -1;
+		cache.head = -1;
 		callSequentialLineData(msg-1, function() {
 			processSequentialResource();
 			setTimeout(function() {
