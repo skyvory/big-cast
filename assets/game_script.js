@@ -1029,32 +1029,24 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "choice") {
 		if(options.target.line_choice_id) {
 			var choice_id_select = options.target.line_choice_id;
-			// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
 			var choice_index_to_read = getObjectIndex(line[current.sequence].choice, 'choice_id', choice_id_select);
-			// console.log(line);
 			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
-					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
-					// shiftCurrent(jump_to);
-					// shiftCurrent(choice_index_to_read);
 					//change to unresponsive game screen for loading line resource
+					game.screen = "stall";
 					var index_to_remove = current.sequence + 1;
-					// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index_to_read].look_ahead[0]);
 					line.splice(index_to_remove, current.head - current.sequence);
-					// removeOldCache(function() {
-						current.head = current.sequence;
-						// reset cache head so next line resource will be fetched
-						cache.head = current.sequence;
-						var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
-						callSequentialLineData(parseInt(offset_jump)-1, function() {
-							processSequentialResource();
-							exitChoice();
-							setTimeout(function() {
-								game.screen = "play";
-								renderNextLine();
-							}, 500);
-						});
-					// });
-					
+					current.head = current.sequence;
+					// reset cache head so next line resource will be fetched
+					cache.head = current.sequence;
+					var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
+					callSequentialLineData(parseInt(offset_jump)-1, function() {
+						processSequentialResource();
+						exitChoice();
+						setTimeout(function() {
+							game.screen = "play";
+							renderNextLine();
+						}, 500);
+					});
 			}
 			else {
 				exitChoice();
@@ -1136,34 +1128,7 @@ canvas.on('mouse:down', function(options) {
 		$('.log-area').slideUp(1000);
 		game.screen = "play";
 	}
-	// console.log(options.e.layerX, options.e.layerY);
 });
-
-// canvas.on('mouse:move', function(options) {
-// 	console.log(options.e.layerX, options.e.layerY);
-// });
-
-
-// function shiftCurrent(choice_index, callback) {
-
-	// get index of next line
-	// var index_to_remove = current.sequence + 1;
-	// get index of current line
-	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
-	// remove all line cache ahead and fill with look_ahead in choice 
-	// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index].look_ahead);
-	// current.head+= line[current.sequence].choice[choice_index].look_ahead.length;
-	// loadLine
-	// change current line to jump seq - 1?
-	// index_to_read + 1 is jumped line
-	// var jump_index = index_to_read + 1;
-	// delete all previous cache
-	// removeOldCache();
-	// removeOldLine();
-
-	// change current sequence
-	// current.sequence = line[jump_index].sequence;
-// } 
 
 function renderNotification(message) {
 	var notify = new fabric.Text(message, {
