@@ -2600,11 +2600,11 @@ function renderNextLine(callback) {
 							bg.set('selectable', false);
 							canvas.add(bg);
 							if(line[current.sequence].content.length > 0) {
-								canvas.sendToBack(bg);
+								// canvas.sendToBack(bg);
 							}
 							bg.animate('opacity', '1', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
+								duration: 800,
 								onComplete: function() {
 									//
 								}
@@ -2623,7 +2623,7 @@ function renderNextLine(callback) {
 						else {
 							bg_bottom.animate('opacity', '0', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
+								duration: 1000,
 								onComplete: function() {
 									canvas.remove(canvas.item(canvas_index));
 									// console.log("bg removed at index", canvas_index);
