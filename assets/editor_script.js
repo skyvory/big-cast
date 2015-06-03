@@ -2193,6 +2193,18 @@ $('#searchpage').keypress(function(event) {
 	}
 });
 
+// trigger enter key to add text line
+$(document).bind('keydown', function(e){
+	switch(e.which) {
+		// enter key
+		case 13:
+			$('#addtextlinebutton').trigger('click');
+			break;
+		default:
+			break;
+	}
+});
+
 // tooltip bootstrap
 $(function () {
 	$('[data-toggle="tooltip"]').tooltip()

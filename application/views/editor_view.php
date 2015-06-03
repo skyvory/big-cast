@@ -8,7 +8,7 @@
 			<div class="line-command-area">
 				<span class="pull-left">Add line</span><br />
 					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" id="addtextlinebutton" data-loading-text="text" class="btn btn-default">text</button>
+						<button type="button" id="addtextlinebutton" data-loading-text="text" class="btn btn-default" data-toggle="tooltip" title="you can use enter key as alternative">text</button>
 						<button type="button" id="addchoicelinebutton" data-loading-text="choice" class="btn btn-default">choice</button>
 						<button type="button" id="addvideolinebutton" data-loading-text="video" class="btn btn-default">video</button>
 						<button type="button" id="addendlinebutton" data-loading-text="end" class="btn btn-default">end</button>
