@@ -2195,13 +2195,13 @@ $('#searchpage').keypress(function(event) {
 
 // trigger enter key to add text line
 $(document).bind('keydown', function(e){
-	switch(e.which) {
-		// enter key
-		case 13:
-			$('#addtextlinebutton').trigger('click');
-			break;
-		default:
-			break;
+	if(e.ctrlKey && e.which == 13) {
+		$('#addtextlinebutton').trigger('click');
+		setTimeout(function() {
+			var end_line = $('.line-list').find('form').has('input[name=sequence][value='+tail+']');
+			var text_area = $(end_line).find('textarea[name=content]');
+			$(text_area).focus();
+		}, 500);
 	}
 });
 
