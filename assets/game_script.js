@@ -2625,6 +2625,7 @@ function renderNextLine(callback) {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 1000,
 								onComplete: function() {
+									canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 									canvas.remove(canvas.item(canvas_index));
 									// console.log("bg removed at index", canvas_index);
 								}
