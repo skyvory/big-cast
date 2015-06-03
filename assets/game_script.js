@@ -3248,6 +3248,9 @@ function renderNextLine(callback) {
 		if(line[current.sequence].speaker.length > 0) {
 			renderSpeaker();
 		}
+		else {
+			removeSpeaker();
+		}
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 
 	}
@@ -3423,6 +3426,11 @@ function renderSpeaker() {
 	});
 	speaker.set('selectable', false);
 	canvas.add(speaker);
+}
+function removeSpeaker() {
+	// remove speaker text
+	var canvas_index = getObjectIndex(canvas.getObjects(), 'id', 'speaker');
+	canvas.remove(canvas.item(canvas_index));
 }
 
 function playAuto() {
