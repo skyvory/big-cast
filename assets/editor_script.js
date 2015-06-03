@@ -1452,15 +1452,29 @@ var effect_list = [];
 var video_name_list = [];
 var video_list = [];
 
-callCharacterAutocompleteData();
-callBackgroundAutocompleteData();
-callBgmAutocompleteData();
-callVoiceAutocompleteData();
-callSfxAutocompleteData();
-callLabelAutocompleteData();
-callSpriteAutocompleteData();
-callEffectAutocompleteData();
-callVideoAutocompleteData();
+$(document).ready(function() {
+	callCharacterAutocompleteData();
+	callBackgroundAutocompleteData();
+	callBgmAutocompleteData();
+	callVoiceAutocompleteData();
+	callSfxAutocompleteData();
+	callLabelAutocompleteData();
+	callSpriteAutocompleteData();
+	callEffectAutocompleteData();
+	callVideoAutocompleteData();
+});
+
+$('.list-refresh-button').click(function() {
+	callCharacterAutocompleteData();
+	callBackgroundAutocompleteData();
+	callBgmAutocompleteData();
+	callVoiceAutocompleteData();
+	callSfxAutocompleteData();
+	callLabelAutocompleteData();
+	callSpriteAutocompleteData();
+	callEffectAutocompleteData();
+	callVideoAutocompleteData();
+});
 
 function callCharacterAutocompleteData() {
 	var req = $.ajax({
@@ -1480,6 +1494,7 @@ function callBackgroundAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		background_name_list = [];
 		$.each(msg, function(index, value) {
 			background_name_list.push({
 				label: value.name,
@@ -1497,6 +1512,7 @@ function callBgmAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		bgm_name_list = [];
 		$.each(msg, function(index, value) {
 			bgm_name_list.push({
 				label: value.name,
@@ -1514,6 +1530,7 @@ function callSfxAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		sfx_name_list = [];
 		$.each(msg, function(index, value) {
 			sfx_name_list.push({
 				label: value.name,
@@ -1531,6 +1548,7 @@ function callVoiceAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		voice_name_list = [];
 		$.each(msg, function(index, value) {
 			voice_name_list.push({
 				label: value.name,
@@ -1548,6 +1566,7 @@ function callLabelAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		label_name_list = [];
 		$.each(msg, function(index, value) {
 			label_name_list.push({
 				label: value.label,
@@ -1565,6 +1584,7 @@ function callSpriteAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		sprite_list = [];
 		// ! NEED ENHANCEMENT !
 		$.each(msg, function(index, value) {
 			// sprite_name_list.push(value.name);
@@ -1590,7 +1610,7 @@ function callEffectAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
-		// ! NEED ENHANCEMENT !
+		effect_name_list = [];
 		$.each(msg, function(index, value) {
 			effect_name_list.push({
 				label: value.name,
@@ -1608,6 +1628,7 @@ function callVideoAutocompleteData() {
 		dataType: "json"
 	});
 	req.done(function(msg) {
+		video_name_list = [];
 		$.each(msg, function(index, value) {
 			video_name_list.push({
 				label: value.name,

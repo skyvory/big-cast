@@ -15,24 +15,25 @@
 					</div>
 					<button type="button" id="savebutton" data-loading-text="Saving..." class="btn btn-success pull-right">Save</button>
 					<div class="row">
-					<div class="col-md-8">
-					<div class="btn-group btn-group-sm" role="group">
-						<div class="radio">
-							<label>
-								<input type="radio" name="line_insert_position" value="after" />
-									<span data-toggle="tooltip" data-placement="left" title="you can select a line by pointing your mouse on that line" />after selected line</span>
-							</label>
-							<label>
-								<input type="radio" name="line_insert_position" value="end" checked  />
-									<span>at end of this section</span>
-							</label>
+						<div class="col-md-8">
+							<div class="btn-group btn-group-sm" role="group">
+								<div class="radio">
+									<label>
+										<input type="radio" name="line_insert_position" value="after" />
+											<span data-toggle="tooltip" data-placement="left" title="you can select a line by pointing your mouse on that line" />after selected line</span>
+									</label>
+									<label>
+										<input type="radio" name="line_insert_position" value="end" checked  />
+											<span>at end of this section</span>
+									</label>
+								</div>
+							</div>
 						</div>
-					</div>
-					</div>
-					<div class="col-md-4">
-					<br />
-						<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
-					</div>
+						<div class="col-md-4">
+							<br />
+							<button type="button" class="btn btn-default btn-sm list-refresh-button" data-toggle="tooltip" title="refresh autocomplete list"><span class="glyphicon glyphicon-refresh"></span></button>
+							<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
+						</div>
 					</div>
 			</div>
 		</div>
