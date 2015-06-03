@@ -387,6 +387,12 @@ class Editor extends CI_Controller {
 		foreach ($pass as $key => $value) {
 			$list[] = $value['character_name'];
 		}
+		$pass = $this->common->getSpeakerAll($sess['id'], $proj['id']);
+		foreach ($pass as $key => $value) {
+			if(!empty($value['speaker']) && !in_array($value['speaker'], $list)) {
+				$list[] = $value['speaker'];
+			}
+		}
 		$this->output->set_content_type('application/json');
 		$this->output->set_output(json_encode($list, JSON_PRETTY_PRINT));
 	}

@@ -591,6 +591,17 @@ Class Common extends CI_Model {
 		$result = $query->result_array();
 		return $result;
 	}
+	function getSpeakerAll($user_id, $project_id) {
+		$this->db->select('speaker');
+		$this->db->distinct();
+		$this->db->from('line');
+		$this->db->join('project', 'project_id = fk_project_id');
+		$this->db->where('fk_user_id', $user_id);
+		$this->db->where('fk_project_id', $project_id);
+		$query = $this->db->get();
+		$result = $query->result_array();
+		return $result;
+	}
 	function getResourceBackground($user_id, $project_id) {
 		$this->db->select('resource_id, name, file_name');
 		$this->db->from('resource');
