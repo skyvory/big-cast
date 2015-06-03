@@ -278,7 +278,7 @@ class Resource extends CI_Controller {
 			$upload_path_url = base_url() . $path_to_project . 'video/';
 			$config['upload_path'] = FCPATH . $path_to_project . 'video/';
 			$config['allowed_types'] = 'mp4';
-			$config['max_size'] = 60 * 1024 * 1024;
+			$config['max_size'] = 160 * 1024 * 1024;
 			$config['encrypt_name'] = TRUE;
 			$this->load->library('upload', $config);
 
