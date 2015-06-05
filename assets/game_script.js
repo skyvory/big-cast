@@ -16,8 +16,8 @@ var cache = {
 	count: 0
 };
 var game = {
-	screen: "title", // title/play/configuration/save/load/backlog/choice
-	mode: "normal", // normal, skip, auto
+	screen: "title", // title/play/configuration/save/load/backlog/choice/skip/auto/stall
+	mode: "normal", // normal, fullscreen
 	bgm: "",
 	voice: "",
 	sfx: "",
@@ -457,7 +457,7 @@ function getObjectIndex(array, attr, value) {
 
 function initializeGame() {
 	$('.request-loading').fadeOut(500, function() {
-		$('.game-area').fadeIn(1500, function() { // DEFAULT 1500
+		$('.visual-area').fadeIn(1500, function() { // DEFAULT 1500
 			renderTitleScreen();
 		});
 	});
@@ -683,44 +683,98 @@ function renderTitleMenu() {
 
 // fullscreen toggle
 function toggleFullscreen(e) {
-		var key;
-		if(window.event) {
-			key = window.event.keyCode;
+	if(game.mode == "normal") {
+		var full_element = $('.game-area')[0];
+		if (full_element.requestFullscreen) {
+				full_element.requestFullscreen();
 		}
-		else if (e) {
-			key = e.which;
+		else if (full_element.webkitRequestFullscreen) {
+				full_element.webkitRequestFullscreen();
 		}
-		var e = e || window.event;
-		if(key == 13 && e.altKey){
-			var full_element = $('.game-area')[0];
-			if (full_element.requestFullscreen) {
-					full_element.requestFullscreen();
-			}
-			else if (full_element.webkitRequestFullscreen) {
-					full_element.webkitRequestFullscreen();
-			}
-			else if (full_element.mozRequestFullScreen) {
-					full_element.mozRequestFullScreen();
-			}
-			else if (full_element.msRequestFullscreen) {
-					full_element.msRequestFullscreen();
-			}
-			// var canvas_container = $('.canvas-container')[0];
-			// canvas_container.style.width  = '1200px';
-			// canvas_container.style.height = '900px';
-			var upper_canvas = $('.upper-canvas')[0];
-			new_height = $(window).height();
-			console.log(new_height);
-			new_width = new_height / 8 * 6;
-			upper_canvas.style.width  = new_width;
-			upper_canvas.style.height = new_height;
-			var lower_canvas = $('.lower-canvas')[0];
-			lower_canvas.style.width  = new_width;
-			lower_canvas.style.height = new_height;
-			$('.canvas-container').css("left", "20%");
+		else if (full_element.mozRequestFullScreen) {
+				full_element.mozRequestFullScreen();
 		}
+		else if (full_element.msRequestFullscreen) {
+				full_element.msRequestFullscreen();
+		}
+		new_height = screen.height;
+		new_width = new_height / 6 * 8;
+		gutter = (screen.width - new_width) / 2;
+		log_height = 2 / 3 * new_height;
+		// separate line so new width calculation doesn't return "NaNpx" (string to math prob)
+		new_height = new_height + "px";
+		new_width = new_width + "px";
+		gutter = gutter + "px";
+		log_height = log_height + "px";
+		var upper_canvas = $('.upper-canvas')[0];
+		upper_canvas.style.height = new_height;
+		upper_canvas.style.width  = new_width;
+		var lower_canvas = $('.lower-canvas')[0];
+		lower_canvas.style.height = new_height;
+		lower_canvas.style.width  = new_width;
+		// text layer resize
+		text_display.style.height = new_height;
+		text_display.style.width = new_width;
+		$('.visual-area').css("left", gutter);
+		$('.text-area').css("left", gutter);
+		$('.video-area').css("left", gutter);
+		$('.log-area').css("width", new_width).css("height", log_height).css("left", gutter);
+		game.mode = "fullscreen";
 	}
-document.onkeydown = toggleFullscreen;
+	else if(game.mode = "fullscreen") {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		}
+		// new_height = screen.height;
+		// new_width = new_height / 6 * 8;
+		// gutter = (screen.width - new_width) / 2;
+		// new_height = new_height + "px";
+		// new_width = new_width + "px";
+		// gutter = gutter + "px";
+		var upper_canvas = $('.upper-canvas')[0];
+		upper_canvas.style.height = "600px";
+		upper_canvas.style.width  = "800px";
+		var lower_canvas = $('.lower-canvas')[0];
+		lower_canvas.style.height = "600px";
+		lower_canvas.style.width  = "800px";
+		// text layer resize
+		text_display.style.height = "600px";
+		text_display.style.width = "800px";
+		$('.visual-area').css("left", "");
+		$('.text-area').css("left", "");
+		$('.video-area').css("left", "");
+		$('.log-area').css("width", "800px").css("height", "430px").css("left", "");
+		game.mode = "normal";
+	}
+}
+
+// add event listener to detect exit from fullscreen using escape key
+document.addEventListener("fullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("webkitfullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("mozfullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("MSFullscreenChange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
 
 // shortcut key
 var key_enable = true;
@@ -731,7 +785,7 @@ $(document).bind('keydown', function(e){
 				// enter key
 				case 13:
 					key_enable = false;
-					if(game.status.text != "busy") {
+					if(game.status.text != "busy" && !e.altKey) {
 						renderNextLine();
 						maintainCurrent();
 						maintainCache();
@@ -741,6 +795,9 @@ $(document).bind('keydown', function(e){
 					break;
 			}
 		}
+	}
+	if(e.which == 13 && e.altKey){
+		toggleFullscreen();
 	}
 });
 $(document).bind('keyup', function(e){
@@ -3317,7 +3374,12 @@ function renderNextLine(callback) {
 			game.screen = "stall";
 			var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
 			$('.video-area').html("");
-			$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+			if(game.mode == "fullscreen") {
+				$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", screen.height / 6 * 8).attr("height", screen.height).appendTo('.video-area');
+			}
+			else {
+				$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+			}
 			stopBgm();
 			blackIn(2000, function() {
 				setTimeout(function() {
