@@ -251,6 +251,9 @@ function maintainCache(callback) {
 		});
 	}
 	// request new cache
+	// if(current.sequence % (cache.head - 10) == 0) {
+	// 	processSequentialResource();
+	// }
 	// if(cache.head - current.sequence < 10) {
 		processSequentialResource();
 	// }
@@ -260,6 +263,7 @@ function maintainCache(callback) {
 }
 
 function processSequentialResource() {
+	console.log("cache head", cache.head);
 	if(cache.head - current.sequence < 10) {
 		cache.head++;
 		// var index_to_read = getObjectIndex(line, 'sequence', cache.head);
@@ -1087,7 +1091,8 @@ canvas.on('mouse:down', function(options) {
 		if(options.target.line_choice_id) {
 			var choice_id_select = options.target.line_choice_id;
 			var choice_index_to_read = getObjectIndex(line[current.sequence].choice, 'choice_id', choice_id_select);
-			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
+			console.log("choice index", choice_index_to_read);
+			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id.length > 0 && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
 					//change to unresponsive game screen for loading line resource
 					game.screen = "stall";
 					var index_to_remove = current.sequence + 1;
@@ -2592,6 +2597,7 @@ function renderNextLine(callback) {
 					var index_to_remove = current.sequence + 1;
 					line.splice(index_to_remove, current.head - current.sequence);
 					current.head = current.sequence;
+					cache.head = current.sequence;
 					var offset_jump = line[current.sequence].look_ahead[0].sequence;
 					callSequentialLineData(parseInt(offset_jump)-1, function() {
 						processSequentialResource();
@@ -2772,11 +2778,12 @@ function renderNextLine(callback) {
 												});
 											}
 										}
-										else
-											console.log("ugh");
+										else{
+											// console.log("ugh");
+										}
 									}
 									else {
-										console.log("aww");
+										// console.log("aww");
 									}
 								}
 								else {
@@ -2859,7 +2866,7 @@ function renderNextLine(callback) {
 										canvas.add(spr);
 										spr.animate('opacity', '1', {
 											onChange: canvas.renderAll.bind(canvas),
-											duration: 500
+											duration: 300
 										});
 									}
 								}
@@ -2944,7 +2951,7 @@ function renderNextLine(callback) {
 									canvas.add(spr);
 									spr.animate('opacity', '1', {
 										onChange: canvas.renderAll.bind(canvas),
-										duration: 500
+										duration: 300
 									});
 								}
 							}
@@ -3822,6 +3829,7 @@ function stopSfx() {
 	}
 }
 function playVoice(res) {
+	console.log("voice", res);
 	if(game.status.voice == "idle") {
 		if(res) {
 			var voice = $('#'+res)[0];
