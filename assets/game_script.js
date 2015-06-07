@@ -29,46 +29,6 @@ var game = {
 }
 var font_list = [];
 
-// var bgm_glob;
-// var sfx_glob;
-// var voice_glob;
-
-// var electro; // Create the Sound 
-// (function(){
-	
-// 	var context = new AudioContext(); // Create and Initialize the Audio Context
-// 	var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
-// 	getSound.open("GET", "../../../resources/~gentle.mp3", true); // Path to Audio File
-// 	getSound.responseType = "arraybuffer"; // Read as Binary Data
-// 	getSound.onload = function() {
-// 		context.decodeAudioData(getSound.response, function(buffer){
-// 			electro = buffer; // Decode the Audio Data and Store it in a Variable
-// 		});
-// 	}
-// 	getSound.send(); // Send the Request and Load the File
-	
-// 	window.addEventListener("keydown",onKeyDown); // Create Event Listener for KeyDown
-	
-// 	function onKeyDown(e){
-// 		switch (e.keyCode) {
-// 			// X
-// 			case 88:
-// 				var playSound = context.createBufferSource(); // Declare a New Sound
-// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-// 				playSound.connect(context.destination);  // Link the Sound to the Output
-// 				playSound.start(0); // Play the Sound Immediately
-// 			break;
-// 			case 13:
-// 			var playSound = context.createBufferSource(); // Declare a New Sound
-// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-// 				playSound.connect(context.destination);  
-// 				playSound.noteOff(0);
-// 				break;
-// 		}
-//  	}
-// }());
-
-
 // canvas renderer
 // var visual_display = document.getElementsByTagName('canvas')[0];
 var visual_display = $('#visual')[0];
@@ -89,8 +49,6 @@ var context = text_display.getContext('2d');
 var canvas = new fabric.Canvas('visual');
 canvas.selection = false;
 canvas.backgroundColor = 'rgba(255, 255, 255,1)';
-
-
 
 // load configuration
 $(document).ready(function() {
@@ -420,7 +378,6 @@ function preloadInterface(callback) {
 		exit_button: "arc_001273.png",
 		white: "white.jpg",
 		black: "black.jpg"
-
 	};
 	$.each(ui, function(index, value) {
 		var path_to_ui = '../../../assets/sys/' + value;
@@ -456,9 +413,6 @@ function getObjectIndex(array, attr, value) {
 	return false;
 }
 
-
-
-
 function initializeGame() {
 	$('.request-loading').fadeOut(500, function() {
 		$('.visual-area').fadeIn(1500, function() { // DEFAULT 1500
@@ -466,38 +420,6 @@ function initializeGame() {
 		});
 	});
 }
-
-
-//canvas.hoverCursor = 'default';
-//cnv.setBackgroundImage('http://localhost/cast/resources/a.jpg', function() { cnv.renderAll(); });
-//canvas.onFpsUpdate = function(){ /* ... */ };
-/*
-//basic reference
-var rect = new fabric.Rect({
-	left: 100,
-	top: 100,
-	fill: 'red',
-	width: 20,
-	height: 20,
-	angle: -60
-});
-canvas.add(rect);
-rect.set('selectable', false);
-
-rect.set({ fill: 'blue' });
-canvas.backgroundColor = 'rgb(200,100,200)';
-
-
-
-canvas.renderAll();
-
-fabric.Image.fromURL('../resources/ap.jpg', function(oimg) {
-	oimg.scale(0.5).setFlipX(true);
-	//cnv.add(oimg);
-});
-*/
-
-//rect.animate('angle', '+=500', { onChange: canvas.renderAll.bind(canvas) });
 
 function renderTitleScreen() {
 	// [0] for dom object instead of jquery object
@@ -525,7 +447,6 @@ function renderTitleScreen() {
 		}
 	});
 	// start button
-	
 }
 
 function renderTitleMenu() {
@@ -591,100 +512,6 @@ function renderTitleMenu() {
 	});
 }
 
-// $(document).keypress(function(e){
-// 	if(game.screen == play) {
-// 		switch(e.which){
-// 			case 13:
-// 				renderNextLine();
-// 				maintainCurrent();
-// 				maintainCache();
-// 				break;
-// 			case 
-// 		}
-		
-// 	}
-// });
-// var key_enable = true;
-// $(document).bind('keydown', function(e){
-// 	if(key_enable == true) {
-// 		if(game.screen == "play") {
-// 			switch(e.which) {
-// 				// enter key
-// 				case 13:
-// 						key_enable = false;
-// 						renderNextLine();
-// 						maintainCurrent();
-// 						maintainCache();
-// 					break;
-// 				// ctrl key
-// 				case 17:
-// 					game.screen = "skip";
-// 					playSkip();
-// 					break;
-// 				// a key
-// 				case 65:
-// 					// toggle
-// 					game.screen = "auto";
-// 					playAuto();
-// 					break;
-// 				// f key
-// 				case 70:
-// 					// toggle skip
-// 					game.screen = "skip";
-// 					playSkip();
-// 					break;
-// 				// s key
-// 				case 83:
-// 					// open save
-// 					game.screen = "save";
-// 					$('.text-area').fadeOut(1000);
-// 					renderSaveScreen();
-// 					break;
-// 				// l key
-// 				case 76:
-// 					// open load
-// 					game.screen = "load";
-// 					renderLoadScreen();
-// 					break;
-// 				// r key
-// 				case 82:
-// 					playVoice();
-// 					// repeat voice
-					
-// 				default:
-// 					break;
-// 			}
-// 		}
-// 		else if(game.screen == "auto") {
-// 			switch(e.which) {
-// 				// return to normal play
-// 				case 13:
-// 					game.screen = "play";
-// 					break;
-// 				// toggle auto
-// 				case 65:
-// 					game.screen = "play";
-// 					break
-// 				default:
-// 					break;
-// 			}
-// 		}
-// 	}
-// });
-// $(document).bind('keyup', function(e){
-// 	if(game.screen == "play") {
-// 		switch(e.keyCode) {
-// 			// toggle skip
-// 			case 17:
-// 				game.screen = "play";
-// 				break;
-// 			default:
-// 				break;
-// 		}
-// 		key_enable = true;
-// 	}
-// });
-
 // fullscreen toggle
 function toggleFullscreen(e) {
 	if(game.mode == "normal") {
@@ -735,19 +562,12 @@ function toggleFullscreen(e) {
 		} else if (document.msExitFullscreen) {
 			document.msExitFullscreen();
 		}
-		// new_height = screen.height;
-		// new_width = new_height / 6 * 8;
-		// gutter = (screen.width - new_width) / 2;
-		// new_height = new_height + "px";
-		// new_width = new_width + "px";
-		// gutter = gutter + "px";
 		var upper_canvas = $('.upper-canvas')[0];
 		upper_canvas.style.height = "600px";
 		upper_canvas.style.width  = "800px";
 		var lower_canvas = $('.lower-canvas')[0];
 		lower_canvas.style.height = "600px";
 		lower_canvas.style.width  = "800px";
-		// text layer resize
 		text_display.style.height = "600px";
 		text_display.style.width = "800px";
 		$('.visual-area').css("left", "");
@@ -835,12 +655,6 @@ canvas.on('mouse:down', function(options) {
 				game.screen = "configuration";
 				break;
 			default:
-				// var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'title_background');
-				// var bg = canvas.item(index_to_read);
-				// bg.animate('left', '+=20', {
-				// 	onChange: canvas.renderAll.bind(canvas),
-				// 	duration: 1000
-				// });
 				break;
 		}
 	}
@@ -1718,16 +1532,6 @@ function exitLoadScreen(callback) {
 			callback();
 		}
 	}, 1000);
-	// index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
-	// canvas.item(index_to_read).animate('top', '-600', {
-	// 	onChange: canvas.renderAll.bind(canvas),
-	// 	duration: 1000,
-	// 	easing: fabric.util.ease.easeInOutBack,
-	// 	onComplete: function() {
-	// 		index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
-	// 		canvas.remove(canvas.item(index_to_read));
-	// 	}
-	// });
 }
 
 function exitSaveScreen(callback) {
