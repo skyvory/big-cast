@@ -272,6 +272,9 @@ $('#addtextlinebutton').click(function() {
 						$(this).find('input[name=sequence]').val(count);
 						count++;
 					});
+					var mid_line = $('.line-list').find('form').has('input[name=sequence][value='+sequence_to_insert+']');
+					var text_area = $(mid_line).find('textarea[name=content]');
+					$(text_area).focus();
 				}
 			});
 		}
@@ -336,6 +339,9 @@ $('#addtextlinebutton').click(function() {
 				var block = '<tr> <td> <form class="form-horizontal text-line-form"> <div class="row"> <div class="col-md-1"> <span class="line-sequence">'+tail+'</span> <br /> <br /> <span class="glyphicon glyphicon-resize-vertical"></span> </div> <div class="col-md-10"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-user"></span> <input type="text" name="speaker" class="form-control input-sm main-line-input" placeholder="speaker" value="'+last.speaker+'" /> <span class="glyphicon glyphicon-picture"></span> <input type="text" name="background" class="form-control input-sm main-line-input" placeholder="background" value="'+last.background+'" /> <input type="hidden" name="background_resource_id" value="'+last.background_resource_id+'" /> <span class="glyphicon glyphicon-headphones"></span> <input type="text" name="bgm" class="form-control input-sm main-line-input" placeholder="bgm" value="'+last.bgm+'" /> <input type="hidden" name="bgm_resource_id" value="'+last.bgm_resource_id+'" /> <span class="glyphicon glyphicon-volume-down"></span> <input type="text" name="voice" class="form-control input-sm main-line-input" placeholder="voice" value="" /> <input type="hidden" name="voice_resource_id" value="" /> </div> </div> <div class="form-group" style="margin-top: -10px; margin-bottom: 5px;"> <textarea name="content" class="form-control input-sm" maxlength="200" rows="1" placeholder="text content"></textarea> </div> <div class="row"> <div class="collapse"> <div class="col-md-12"> <div class="form-group"> <div class="form-inline"> <span class="glyphicon glyphicon-bullhorn"></span> <input type="text" name="sfx" class="form-control input-xs" placeholder="sfx"  value=""/> <input type="hidden" name="sfx_resource_id" value="" /> <span class="glyphicon glyphicon-share-alt"></span> <input type="text" name="jumpto" class="form-control input-xs" placeholder="jump to" value="" /> <input type="hidden" name="jumpto_line_id" value="" /> <span class="glyphicon glyphicon-tag"></span> <input type="text" name="label" class="form-control input-xs" placeholder="label" value="" /> </div> </div> </div> </div> </div> </div> <div class="col-md-1"> <button type="button" class="btn btn-danger btn-xs pull-right line-delete-button" tabindex="-1"><span class="glyphicon glyphicon-remove"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-project-button" tabindex="-1"><span class="glyphicon glyphicon-chevron-right"></span></button> <br /> <button type="button" class="btn btn-default btn-xs pull-right line-collapse-button" tabindex="-1"><span class="glyphicon glyphicon-option-horizontal"></span></button> </div> </div> <input type="hidden" name="sequence" value="'+tail+'" /> <input type="hidden" name="line_id" value="'+new_line_id+'" /> </form> </td> </tr>';
 				$(block).appendTo('.line-list');
 				window.scrollTo(0,document.body.scrollHeight);
+				var end_line = $('.line-list').find('form').has('input[name=sequence][value='+tail+']');
+				var text_area = $(end_line).find('textarea[name=content]');
+				$(text_area).focus();
 			}
 		});
 	}
@@ -2197,11 +2203,11 @@ $('#searchpage').keypress(function(event) {
 $(document).bind('keydown', function(e){
 	if(e.ctrlKey && e.which == 13) {
 		$('#addtextlinebutton').trigger('click');
-		setTimeout(function() {
-			var end_line = $('.line-list').find('form').has('input[name=sequence][value='+tail+']');
-			var text_area = $(end_line).find('textarea[name=content]');
-			$(text_area).focus();
-		}, 500);
+		// setTimeout(function() {
+		// 	var end_line = $('.line-list').find('form').has('input[name=sequence][value='+tail+']');
+		// 	var text_area = $(end_line).find('textarea[name=content]');
+		// 	$(text_area).focus();
+		// }, 500);
 	}
 });
 
