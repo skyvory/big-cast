@@ -2350,31 +2350,34 @@ $('.line-list').on('click', '.line-project-button', function() {
 					canvas.add(bg);
 					bg.animate('opacity', '1', {
 						onChange: canvas.renderAll.bind(canvas),
-						duration: 1000,
-						easing: fabric.util.ease.easeOutExpo
+						duration: 500,
+						easing: fabric.util.ease.easeOutExpo,
+						onComplete: function() {
+							if(line_obj[index_to_read].sprite.length > 0) {
+								$.each(line_obj[index_to_read].sprite, function(index, value) {
+									var spr_index = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
+									fabric.Image.fromURL(path_to_project + 'sprite/' + sprite_list[spr_index].file_name, function(img){
+										var bg = img.scale(0.3).set({
+											top: parseInt(value.position_y) * 30,
+											left: parseInt(value.position_x) * 30,
+											opacity: 0,
+											angle: 0
+										});
+										// bg.set('selectable', false);
+										canvas.add(bg);
+										bg.animate('opacity', '1', {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 500,
+											easing: fabric.util.ease.easeOutExpo
+										});
+									});
+								});
+							}
+						}
 					});
 				});
 			}
-			if(line_obj[index_to_read].sprite.length > 0) {
-				$.each(line_obj[index_to_read].sprite, function(index, value) {
-					var spr_index = getObjectIndex(sprite_list, 'resource_id', value.sprite_resource_id);
-					fabric.Image.fromURL(path_to_project + 'sprite/' + sprite_list[spr_index].file_name, function(img){
-						var bg = img.scale(0.3).set({
-							top: parseInt(value.position_y) * 30,
-							left: parseInt(value.position_x) * 30,
-							opacity: 0,
-							angle: 0
-						});
-						// bg.set('selectable', false);
-						canvas.add(bg);
-						bg.animate('opacity', '1', {
-							onChange: canvas.renderAll.bind(canvas),
-							duration: 1000,
-							easing: fabric.util.ease.easeOutExpo
-						});
-					});
-				});
-			}
+			
 		}
 	}
 });
