@@ -1,4 +1,4 @@
-
+'use strict';
 var configuration = [];
 var line = [];
 // differ from editor, head here means the latest while tail is the oldest
@@ -3544,10 +3544,9 @@ function playBgm(res) {
 				bgm.pause();
 				bgm.currentTime = 0;
 			});
-			
 		}
-		bgmx_new = $('#'+res);
-		bgm_new = bgmx_new[0];
+		var bgmx_new = $('#'+res);
+		var bgm_new = bgmx_new[0];
 		// if paused successfully
 		// if(bgm.paused) {
 		bgm_new.volume = 0;
