@@ -37,6 +37,7 @@ class Game extends CI_Controller {
 					'id' => $project_id,
 					'creator_id' => $pass['fk_user_id']
 				);
+				$head['project'] = $pass;
 				$this->session->set_userdata('active_game', $sess_array);
 				$this->load->view('game_head', $head);
 				$this->load->view('menu_view');

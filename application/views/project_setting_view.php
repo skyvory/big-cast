@@ -19,10 +19,26 @@
 					<?php echo form_error('description'); ?>
 					<textarea id="description" name="description" class="form-control"><?php echo $project['description']; ?></textarea>
 				</div>
-					<label for="userfile" class="control-label">Cover upload (jpg only)</label>
-					<?php echo form_error('userfile'); ?>
-					<input type="file" id="userfile" name="userfile" class="">
-					<br />
+				<label for="userfile" class="control-label">Cover upload (jpg only)</label>
+				<?php if($project['cover'] == 1) echo '<span class="label label-success">exist</span>'; ?>
+				<?php echo form_error('userfile'); ?>
+				<input type="file" id="userfile" name="userfile" class="">
+				<br />
+				<label for="title_background" class="control-label">Title screen background upload (jpg only)</label>
+				<?php if($project['title_background'] == 1) echo '<span class="label label-success">exist</span>'; ?>
+				<?php echo form_error('title_background'); ?>
+				<input type="file" id="title_background" name="title_background" class="">
+				<br />
+				<label for="savedata_background" class="control-label">Save data screen background upload (jpg only)</label>
+				<?php if($project['savedata_background'] == 1) echo '<span class="label label-success">exist</span>'; ?>
+				<?php echo form_error('savedata_background'); ?>
+				<input type="file" id="savedata_background" name="savedata_background" class="">
+				<br />
+				<label for="configuration_background" class="control-label">Configuration screen backgoround upload (jpg only)</label>
+				<?php if($project['configuration_background'] == 1) echo '<span class="label label-success">exist</span>'; ?>
+				<?php echo form_error('configuration_background'); ?>
+				<input type="file" id="configuration_background" name="configuration_background" class="">
+				<br />
 				<div class="form-group">
 					<div class="checkbox">
 					<label>

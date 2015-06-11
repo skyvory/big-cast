@@ -261,6 +261,24 @@ Class Common extends CI_Model {
 		$exec = $this->db->update('project');
 		return $exec;
 	}
+	function updateTitleBackground($cover, $project_id) {
+		$this->db->set('title_background', $cover);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
+	}
+	function updateSavedataBackground($cover, $project_id) {
+		$this->db->set('savedata_background', $cover);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
+	}
+	function updateConfigurationBackground($cover, $project_id) {
+		$this->db->set('configuration_background', $cover);
+		$this->db->where('project_id', $project_id);
+		$exec = $this->db->update('project');
+		return $exec;
+	}
 
 
 

@@ -8,7 +8,10 @@
 
 		<script type="text/javascript">
 		var config = {
-			base: "<?php echo base_url(); ?>"
+			base: "<?php echo base_url(); ?>",
+			title_background: "<?php echo $project['title_background']; ?>",
+			savedata_background: "<?php echo $project['savedata_background']; ?>",
+			configuration_background: "<?php echo $project['configuration_background']; ?>"
 		};
 		</script>
 

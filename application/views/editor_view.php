@@ -572,6 +572,11 @@
 			</div>
 		</div>
 		<div class="col-md-5">
+			<!-- <div class="row">
+				<div class="col-md-5" style="position: fixed;">
+					<button type="button" class="btn btn-xs btn-info pull-right rotate" data-toggle="modal" data-target="#more_setting">more</button>
+				</div>
+			</div> -->
 			<div class="row">
 				<div class="col-md-11 col-md-offset-1 preview-area" style="position: fixed; width: 30%; margin-left: 6%;">
 					<div class="line-preview">
@@ -673,8 +678,43 @@
 
 
 
-
-
-<script type="text/javascript">
-	
-</script>
+<!-- 
+<div class="modal fade" id="more_setting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Modal title</h4>
+			</div>
+			<div class="modal-body">
+			<form class="form-horizontal">
+				<div class="form-group">
+					<label for="title_background" class="col-md-2 control-label">Ttitle screen background</label>
+					<div class="col-md-10">
+						<input type="text" id="title_background" name="title_background" class="form-control" />
+						<input type="hidden" id="title_background_id" name="title_background_id" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="savedata_background" class="col-md-2 control-label">Save data screen background</label>
+					<div class="col-md-10">
+						<input type="text" id="savedata_background" name="savedata_background" class="form-control" />
+						<input type="hidden" id="savedata_background_id" name="savedata_background_id" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="configuration_background" class="col-md-2 control-label">Configuration screen background</label>
+					<div class="col-md-10">
+						<input type="text" id="configuration_background" name="configuration_background" class="form-control" />
+						<input type="hidden" id="configuration_background_id" name="configuration_background_id" />
+					</div>
+				</div>
+			</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button id="save_background_setting_button" type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div> -->

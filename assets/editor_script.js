@@ -1,7 +1,6 @@
 'use strict';
 $(document).ready(function() {
 	callLineData("last"); 
-	// callPagination(); 
 });
 
 var current_page = "last";
@@ -9,17 +8,6 @@ var line_obj = [];
 var delete_obj = [];
 var head = 0;
 var tail = 0;
-// newarray = {id: 1, type: "rand"};
-// line_obj.push(newarray);
-
-// var last = {
-// 	speaker: "",
-// 	background_resource_id: "",
-// 	background: "",
-// 	bgm_resource_id: "",
-// 	bgm: "",
-// 	sprite: []
-// };
 
 function getLastLineObjectBySequence(seq) {
 	// var select_form = $('.line-list tr td form').has('input[name=sequence][value='+seq+']');
@@ -66,7 +54,6 @@ function getLastLineObjectBySequence(seq) {
 		}
 	}
 	return select_obj;
-
 }
 
 function callLineData(page, by) {
@@ -2035,6 +2022,27 @@ $('.line-list').on('keydown', 'input[name=video]', function() {
 	});
 
 });
+
+
+// $('#more_setting').on('keydown', 'input[name=title_background]', function() {
+// 	$(this).autocomplete({
+// 		source: background_name_list,
+// 		minLength: 0,
+// 		focus: function(event, ui) {
+// 			var input = $(this);
+// 			$(this.form).find('input[name=title_background_id]').val(ui.item.value);
+// 			return false;
+// 		},
+// 		select: function(event, ui) {
+// 			// get this input element
+// 			var input = $(this.form);
+// 			$(input).find('input[name=title_background]').val(ui.item.label);
+// 			$(input).find('input[name=title_background_id]').val(ui.item.value);
+// 			return false;
+// 		},
+// 		autoFocus: true
+// 	});
+// });
 
 // line delete capability
 $('.line-list').on('click', '.line-delete-button', function(e) {

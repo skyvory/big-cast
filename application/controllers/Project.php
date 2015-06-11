@@ -171,6 +171,45 @@ class Project extends CI_Controller {
 				$cover_file = false;
 				// $this->fb->log($project_id);
 			}
+			if(isset($_FILES['title_background']['tmp_name']) && is_uploaded_file($_FILES['title_background']['tmp_name'])) {
+				$config['upload_path'] = './resources/' . $user['id'] . '/' . $project['project_id'] . '/';
+				$config['allowed_types'] = 'jpg';
+				$config['file_name']  = 'title.jpg';
+				$config['overwrite']  = 'true';
+				$config['max_size'] = '16000';
+				$this->load->library('upload', $config);
+				$titlebg_file = true;
+			}
+			else {
+				$titlebg_file = false;
+				// $this->fb->log($project_id);
+			}
+			if(isset($_FILES['savedata_background']['tmp_name']) && is_uploaded_file($_FILES['savedata_background']['tmp_name'])) {
+				$config['upload_path'] = './resources/' . $user['id'] . '/' . $project['project_id'] . '/';
+				$config['allowed_types'] = 'jpg';
+				$config['file_name']  = 'savedata.jpg';
+				$config['overwrite']  = 'true';
+				$config['max_size'] = '16000';
+				$this->load->library('upload', $config);
+				$savedatabg_file = true;
+			}
+			else {
+				$savedatabg_file = false;
+				// $this->fb->log($project_id);
+			}
+			if(isset($_FILES['configuration_background']['tmp_name']) && is_uploaded_file($_FILES['configuration_background']['tmp_name'])) {
+				$config['upload_path'] = './resources/' . $user['id'] . '/' . $project['project_id'] . '/';
+				$config['allowed_types'] = 'jpg';
+				$config['file_name']  = 'config.jpg';
+				$config['overwrite']  = 'true';
+				$config['max_size'] = '16000';
+				$this->load->library('upload', $config);
+				$configbg_file = true;
+			}
+			else {
+				$configbg_file = false;
+				// $this->fb->log($project_id);
+			}
 
 			if($this->input->post('status') == true && $project['fk_projectstatus_id'] != 2) {
 				$publish_check = true;
@@ -206,6 +245,27 @@ class Project extends CI_Controller {
 				$this->load->view('project_setting_view', $data);
 				$this->load->view('foot');
 			}
+			else if($titlebg_file == true && $this->upload->do_upload('title_background') == false) {
+				$data['error'] = array('error' => $this->upload->display_errors());
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view', $self);
+				$this->load->view('project_setting_view', $data);
+				$this->load->view('foot');
+			}
+			else if($savedatabg_file == true && $this->upload->do_upload('savedata_background') == false) {
+				$data['error'] = array('error' => $this->upload->display_errors());
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view', $self);
+				$this->load->view('project_setting_view', $data);
+				$this->load->view('foot');
+			}
+			else if($configbg_file == true && $this->upload->do_upload('configuration_background') == false) {
+				$data['error'] = array('error' => $this->upload->display_errors());
+				$this->load->view('project_head', $head);
+				$this->load->view('menu_view', $self);
+				$this->load->view('project_setting_view', $data);
+				$this->load->view('foot');
+			}
 			else {
 				$title = $this->input->post('title');
 				$description = $this->input->post('description');
@@ -222,6 +282,18 @@ class Project extends CI_Controller {
 				if($cover_file == true) {
 					$cover = 1;
 					$this->common->updateCover($cover, $project['project_id']);
+				}
+				if($titlebg_file == true) {
+					$cover = 1;
+					$this->common->updateTitleBackground($cover, $project['project_id']);
+				}
+				if($savedatabg_file == true) {
+					$cover = 1;
+					$this->common->updateSavedataBackground($cover, $project['project_id']);
+				}
+				if($configbg_file == true) {
+					$cover = 1;
+					$this->common->updateConfigurationBackground($cover, $project['project_id']);
 				}
 
 				// $this->fb->log($project_id);

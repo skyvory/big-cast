@@ -8,7 +8,7 @@
 		<div class="col-md-1">
 			<!--button type="button" id="newprojectbutton" class="btn btn-primary" data-toggle="modal" data-target="#newprojectmodal">New Project</button-->
 			<!-- <button type="button" id="newprojectbutton" class="btn btn-primary">New Project</button> -->
-			<a href="<?php echo base_url(); ?>index.php/project/new" class="btn btn-primary">New Project</a>
+			<a href="<?php echo base_url(); ?>index.php/project/new" class="btn btn-primary" data-intro="You can use this button to create a new project.<br><br>Let's move to new project page." data-step="6" data-position="right">New Project</a>
 			<!--Modal-->
 			<!-- <div id="newprojectmodal" class="modal fade" role="dialog">
 				<div class="modal-dialog">
@@ -94,3 +94,8 @@
 						
 </div>
 
+<script type="text/javascript">
+	if(RegExp('multipage', 'gi').test(window.location.search)) {
+		introJs().start();
+	}
+</script>

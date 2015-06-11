@@ -14,7 +14,7 @@ Class Game_model extends CI_Model {
 		return $result;
 	}
 	function getProject($project_id) {
-		$this->db->select('project_id, title, description, cover, created_date, published_date, updated_date, fk_user_id, fk_projectstatus_id');
+		// $this->db->select('project_id, title, description, cover, created_date, published_date, updated_date, fk_user_id, fk_projectstatus_id');
 		$this->db->from('project');
 		$this->db->where('project_id', $project_id);
 		$query = $this->db->get();
