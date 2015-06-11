@@ -360,6 +360,7 @@ function preloadInterface(callback) {
 		start_button: "arc_001261.png",
 		load_button: "arc_001264.png",
 		configuration_button: "arc_001267.png",
+		continue_button: "continue.png",
 		in_configuration_button: "arc_001113.png",
 		in_repeat_button: "arc_001119.png",
 		in_auto_button: "arc_001131.png",
@@ -470,7 +471,7 @@ function renderTitleMenu() {
 	var str_btn = new fabric.Image(img, {
 		id: 'start_button',
 		top: 380,
-		left: 350,
+		left: 300,
 		opacity: 0,
 		angle: 0
 	});
@@ -481,6 +482,26 @@ function renderTitleMenu() {
 		duration: 500
 	});
 	str_btn.animate('top', '400', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500,
+		easing: fabric.util.ease.easeInOutCubic
+	});
+	// render continue button
+	var img = $('#continue_button')[0];
+	var cnt_btn = new fabric.Image(img, {
+		id: 'continue_button',
+		top: 380,
+		left: 400,
+		opacity: 0,
+		angle: 0
+	});
+	cnt_btn.set('selectable', false);
+	canvas.add(cnt_btn);
+	cnt_btn.animate('opacity', '1', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500
+	});
+	cnt_btn.animate('top', '400', {
 		onChange: canvas.renderAll.bind(canvas),
 		duration: 500,
 		easing: fabric.util.ease.easeInOutCubic
@@ -510,7 +531,7 @@ function renderTitleMenu() {
 	var cfg_btn = new fabric.Image(img, {
 		id: 'configuration_button',
 		top: 380,
-		left: 650,
+		left: 600,
 		opacity: 0,
 		angle: 0
 	});
@@ -521,6 +542,26 @@ function renderTitleMenu() {
 		duration: 500
 	});
 	cfg_btn.animate('top', '395', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500,
+		easing: fabric.util.ease.easeInOutCubic
+	});
+	// render exit button
+	var img = $('#exit_button')[0];
+	var ext_btn = new fabric.Image(img, {
+		id: 'exit_button',
+		top: 380,
+		left: 700,
+		opacity: 0,
+		angle: 0
+	});
+	ext_btn.set('selectable', false);
+	canvas.add(ext_btn);
+	ext_btn.animate('opacity', '1', {
+		onChange: canvas.renderAll.bind(canvas),
+		duration: 500
+	});
+	ext_btn.animate('top', '395', {
 		onChange: canvas.renderAll.bind(canvas),
 		duration: 500,
 		easing: fabric.util.ease.easeInOutCubic
@@ -668,6 +709,12 @@ canvas.on('mouse:down', function(options) {
 			case "configuration_button":
 				renderConfigurationScreen();
 				game.screen = "configuration";
+				break;
+			case "continue_button":
+				quickLoad();
+				break;
+			case "exit_button":
+				window.location.replace(config.base + 'index.php/release');
 				break;
 			default:
 				break;
