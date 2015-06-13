@@ -715,7 +715,6 @@ $('.pagination-area').on('click', '.collapse-all-button', function(e) {
 });
 //show sprite management area on text line hover
 $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function() {
-	//unnecessary! var select_form = $(this.form);
 	// add select class on pointed line
 	$(this).parent('td').addClass("select-line");
 	// change selected td background color
@@ -1640,6 +1639,7 @@ function callVideoAutocompleteData() {
 $('.line-list').on('keydown', 'input[name=speaker]', function() {
 	$(this).autocomplete({
 		source: character_list,
+		// min length 0 display autocomplete list on arrowdown key
 		minLength: 1,
 		focus: function() {
 			return false;
@@ -1663,7 +1663,7 @@ $('.line-list').on('keydown', 'input[name=speaker]', function() {
 $('.line-list').on('keydown', 'input[name=background]', function() {
 	$(this).autocomplete({
 		source: background_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
@@ -1708,7 +1708,7 @@ $('.line-list').on('keydown', 'input[name=bgm]', function() {
 		// 	response(list);
 		// },
 		source: bgm_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
@@ -1745,7 +1745,7 @@ $('.line-list').on('keydown', 'input[name=bgm]', function() {
 $('.line-list').on('keydown', 'input[name=voice]', function() {
 	$(this).autocomplete({
 		source: voice_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
@@ -1785,7 +1785,7 @@ $('.line-list').on('keydown', 'input[name=voice]', function() {
 $('.line-list').on('keydown', 'input[name=sfx]', function() {
 	$(this).autocomplete({
 		source: sfx_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
@@ -1822,7 +1822,7 @@ $('.line-list').on('keydown', 'input[name=sfx]', function() {
 $('.line-list').on('keydown', 'input[name=jumpto]', function() {
 	$(this).autocomplete({
 		source: label_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
@@ -1859,7 +1859,7 @@ $('.line-list').on('keydown', 'input[name=jumpto]', function() {
 $('.line-list').on('keydown', 'input[name=choice_jumpto]', function() {
 	$(this).autocomplete({
 		source: label_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			$(this).siblings('input[name=jumpto_line_id]').val(ui.item.value);
@@ -1896,7 +1896,7 @@ $('.line-list').on('keydown', 'input[name=choice_jumpto]', function() {
 $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 	$(this).autocomplete({
 		source: sprite_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
@@ -1951,7 +1951,7 @@ $('.sprite-list').on('keydown', 'input[name=sprite]', function() {
 $('.sprite-list').on('keydown', 'input[name=effect]', function() {
 	$(this).autocomplete({
 		source: effect_name_list,
-		minLength: 1,
+		minLength: 0,
 		focus: function(event, ui) {
 			var input = $(this);
 			// chang value on input
