@@ -798,6 +798,13 @@ class Editor extends CI_Controller {
 		}
 	}
 
+	public function saveLabel() {
+		$line_id = $this->input->post('line_id');
+		$label = $this->input->post('label');
+		$pass = $this->common->updateLineLabel($line_id, $label);
+		echo "1";
+	}
+
 }
 
 ?>

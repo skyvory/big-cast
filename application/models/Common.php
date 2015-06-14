@@ -460,41 +460,6 @@ Class Common extends CI_Model {
 
 
 	// EDITOR FUNCTION
-/*	function getLine($user_id, $project_id, $limit, $offset) {
-		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.fk_effect_id, line.jumpto_line_id, line.fk_linetype_id');
-		$this->db->from('line');
-		$this->db->join('project', 'project.project_id = line.fk_project_id');
-		$this->db->where('project.fk_user_id', $user_id);
-		$this->db->where('line.fk_project_id', $project_id);
-		// join background resource
-		$this->db->join('lineres as bgres', 'bgres.fk_line_id = line.line_id', 'left');
-		$this->db->select('bg.resource_id as background_resource_id, bg.name as background_name, bg.file_name as background_file_name, bg.fk_resourcetype_id as background_resourcetype');
-		$this->db->join('resource as bg', 'bg.resource_id = bgres.fk_resource_id AND bg.fk_resourcetype_id = 2', 'left');
-		// join bgm resource
-		$this->db->join('lineres as bgmres', 'bgmres.fk_line_id = line.line_id', 'left');
-		$this->db->select('bgm.resource_id as bgm_resource_id, bgm.name as bgm_name, bgm.file_name as bgm_file_name, bgm.fk_resourcetype_id as bgm_resourcetype_id');
-		$this->db->join('resource as bgm', 'bgm.resource_id = bgmres.fk_resource_id AND bgm.fk_resourcetype_id = 3', 'left');
-		// join sfx resource
-		$this->db->join('lineres as sfxres', 'sfxres.fk_line_id = line.line_id', 'left');
-		$this->db->select('sfx.resource_id as sfx_resource_id, sfx.name as sfx_name, sfx.file_name as sfx_file_name, sfx.fk_resourcetype_id as sfx_resourcetype_id');
-		$this->db->join('resource as sfx', 'sfx.resource_id = sfxres.fk_resource_id AND sfx.fk_resourcetype_id = 4', 'left');
-		// join voice resource
-		$this->db->join('lineres as voiceres', 'voiceres.fk_line_id = line.line_id', 'left');
-		$this->db->select('voice.resource_id as voice_resource_id, voice.name as voice_name, voice.file_name as voice_file_name, voice.fk_resourcetype_id as voice_resourcetype_id');
-		$this->db->join('resource as voice', 'voice.resource_id = voiceres.fk_resource_id AND voice.fk_resourcetype_id = 5', 'left');
-		// join sprite
-		$this->db->select('sprite.sprite_id, sprite.fk_resource_id, sprite.position_x, sprite.position_y, sprite.position_z');
-		$this->db->join('sprite', 'sprite.fk_line_id = line.line_id', 'left');
-		// join sprite resource
-		$this->db->select('spriteres.resource_id as sprite_resource_id, spriteres.name as sprite_name, spriteres.file_name as sprite_file_name, spriteres.character_name as sprite_character_name, spriteres.figure_name as sprite_figure_name, spriteres.expression_name as sprite_expression_name');
-		$this->db->join('resource as spriteres', 'spriteres.resource_id = sprite.fk_resource_id AND spriteres.fk_resourcetype_id = 1', 'left');
-		$this->db->order_by('sequence', 'ASC');
-		$this->db->limit($limit, $offset);
-		$query = $this->db->get();
-		$result = $query->result_array();
-		return $result;
-	}
-*/
 	function getLine($project_id, $limit, $offset) {
 		$this->db->select('line.line_id, line.sequence, line.label, line.speaker, line.content, line.jumpto_line_id, line.fk_linetype_id');
 		$this->db->from('line');
@@ -915,6 +880,12 @@ Class Common extends CI_Model {
 			$this->db->trans_commit();
 			return TRUE;
 		}
+	}
+	function updateLineLabel($line_id, $label) {
+		$this->db->set('label', $label);
+		$this->db->where('line_id', $line_id);
+		$exec = $this->db->update('line');
+		return $exec;
 	}
 }
 ?>

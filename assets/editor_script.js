@@ -939,31 +939,22 @@ function saveLine(callback) {
 	})
 }
 
-// $('.line-list').on('change', 'input[name=background]', function() {
-// 	var input_id = $(select_form).find('input[name=background_resource_id]').val();
-// 	var input_value = $(this).val();
-// 	var verify = 0;
-// 	$.each(background_list, function(index, value) {
-// 		if(input_id == value.resource_id && input_value == value.name) {
-// 			verify++;
-// 		}
-// 	});
-// 	// for (var i = 0; i< background_list.length; i++) {
-// 	// 	if(input_id == background_list[i].resource_id &&input_value == background_list[i].name) {
-// 	// 		verify++;
-// 	// 	}
-// 	// };
-// 	if(verify == 1) {
-// 		line_obj[index_to_write].background_resource_id = input_id;
-// 		line_obj[index_to_write].background_name = input_value;
-// 		$(this).css("color", "");
-// 	}
-// 	else {
-// 		line_obj[index_to_write].background_resource_id = "";
-// 		$(this).css("color", "rgba(255, 90, 90, 1)");
-// 		callErrorNotification("background resource doesn't exist!");
-// 	}
-// })
+function saveLabel(line_id, label) {
+	console.log("AAA");
+	var req = $.ajax({
+		url: config.base + 'index.php/editor/saveLabel',
+		type: 'POST',
+		data: {
+			line_id: line_id,
+			label: label
+		},
+		dataType: "html"
+	});
+	req.done(function() {
+		callLabelAutocompleteData();
+	});
+}
+
 $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 	var select_form = $(this.form);
 	var input_name = $(this).attr('name');
@@ -1134,6 +1125,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 		case "label":
 			var input_value = $(this).val();
 			line_obj[index_to_write].label = input_value;
+			saveLabel(form_id, input_value);
 			break;
 
 		case "choice_content":
