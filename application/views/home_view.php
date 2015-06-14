@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" data-intro="This is your home page.<br>'Your Recent Project' section will show latest 3 projects you're working on.<br>'Latest Release' section will show you latest published visual novel you can play." data-step="1">
 	<div class="page-header" >
 		<h2>Home</h2>
 	</div>
@@ -31,7 +31,8 @@
 								echo 'class="btn btn-warning btn-xs"'; 
 							} 
 							else if($value['fk_projectstatus_id'] == 2) {
-								echo 'class="btn btn-danger btn-xs" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; } ?>
+								echo 'class="btn btn-danger btn-xs" onclick="return confirm(\'Entering editor of a published project will unpublish it. Keep going?\')"'; 
+							} ?>
 							">VN Editor</a>
 							
 						</div>
@@ -39,6 +40,9 @@
 				</div>
 				<?php endforeach ?>
 			</div>
+			<?php if(sizeof($project) == 0) { ?>
+				<center><h3 class="">New here? <button class="btn btn-default tour-button">Take a tour</button></h3></center>
+			<?php } ?>
 		</div>
 		<div class="col-md-6">
 		<h4>Latest Release</h4>
@@ -72,3 +76,15 @@
 						
 </div>
 
+<script type="text/javascript">
+$('.tour-button').click(function() {
+	var req = $.ajax({
+		url: config.base + 'index.php/project/requestDummy',
+		type: 'POST',
+		dataType: 'html'
+	});
+	introJs().setOption('doneLabel', 'Next page').start().oncomplete(function() {
+		window.location.href = 'project?multipage=true';
+	});
+});
+</script>

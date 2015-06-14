@@ -1,9 +1,9 @@
-<div class="container-fluid">
+<div class="container-fluid" >
 <div id="notification"></div>
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1 resource-area">
 			<div class="page-header">
-				<h2>Resource of <?php echo $project['title']; ?><a href="<?php echo base_url() . 'index.php/project/editor/' . $project['id']; ?>" class="btn btn-warning pull-right">to Editor</a></h2>
+				<h2>Resource of <?php echo $project['title']; ?><a href="<?php echo base_url() . 'index.php/project/editor/' . $project['id']; ?>" class="btn btn-warning pull-right" data-step="15" data-intro="Now let's go to visual novel editor page">to Editor</a></h2>
 			</div>
 			<?php if(isset($error)) echo($error); ?>
 			<div id="progress">
@@ -14,7 +14,7 @@
 					<div class="col-md-5">
 						<h4>Select resource type & upload.</h4>
 					</div>
-					<div class="col-md-7">
+					<div class="col-md-7" data-step="6" data-intro="You can use browse button to select files to upload or just drop your files anywhere. This entire page works as dropping area for files you can upload.">
 						<p>You can drop multiple files anywhere or use browse button below.</p>
 						<input type="file" id="fileupload" name="userfile" multiple />
 						<input type="hidden" id="resourcetype" name="resourcetype" value="1" />
@@ -22,7 +22,7 @@
 					</div>
 				</diiv>
 			<?php echo form_close(); ?>
-			<div>
+			<div  data-step="13" data-intro="Make sure you are on the right section of resource type before uploading your files.">
 				<ul class="nav nav-tabs resource-navbar">
 					<li role="presentation" class="active"><a href="#" id="spritebutton">Sprites</a></li>
 					<li role="presentation"><a href="#" id="backgroundbutton">Background</a></li>
@@ -32,7 +32,7 @@
 					<li role="presentation"><a href="#" id="videobutton">Video</a></li>
 				</ul>
 			</div>
-				<div class="resource-preinput">
+				<div class="resource-preinput" data-step="14" data-intro="For sprites, it is recommended to fill the character and pose name before dropping your files. This will help you fill the details later.">
 				</div>
 			<span class="request-loading request-loading-resourcelist" style="">
 				<img src="<?php echo base_url(); ?>assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
@@ -213,3 +213,20 @@
 </div>
 </td></tr>
  -->
+
+<script type="text/javascript">
+	var dummy_id;
+	var req = $.ajax({
+		url: config.base + 'index.php/project/idDummy',
+		type: 'POST',
+		dataType: "html"
+	});
+	req.done(function(msg) {
+		dummy_id = msg;
+	});
+	if(RegExp('multipage', 'gi').test(window.location.search)) {
+		introJs().setOption('doneLabel', 'Next page').goToStep(5).start().oncomplete(function() {
+			window.location.href = '../project/editor/'+dummy_id+'?multipage=true';
+		});
+	}
+</script>

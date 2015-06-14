@@ -15,6 +15,7 @@
 		</script>
 
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/intro.js/introjs.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/editor_style.css"/>
 		<!-- test -->
@@ -35,6 +36,8 @@
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-ui/ui/draggable.js"></script>
 		<!-- preview capability -->
 		<script type="text/javascript" src="<?= base_url() ?>assets/fabric/dist/fabric.js"></script>
+		<!-- introjs -->
+		<script type="text/javascript" src="<?= base_url() ?>assets/intro.js/intro.js"></script>
 		<!-- custom -->
 		<script type="text/javascript" src="<?= base_url() ?>assets/editor_script.js" async></script>
 	</head>

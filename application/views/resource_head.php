@@ -13,6 +13,7 @@
 		</script>
 
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/intro.js/introjs.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/resource_style.css"/>
 
@@ -21,6 +22,7 @@
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
 		<!--script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/jquery.iframe-transport.js"></script-->
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery-file-upload/js/jquery.fileupload.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/intro.js/intro.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/resource_script.js" async></script>
 	</head>
 	<body>

@@ -3,7 +3,7 @@
 		<?php if(isset($error)) echo($error); ?>
 	</div>
 
-	<div class="row draggable line-command-row">
+	<div class="row draggable line-command-row" data-step="17" data-intro="This is your draggable line control to add new lines.<br>" data-position="top">
 		<div class="col-md-12 line-command-col">
 			<div class="line-command-area">
 				<span class="pull-left">Add line</span><br />
@@ -13,7 +13,7 @@
 						<button type="button" id="addvideolinebutton" data-loading-text="video" class="btn btn-default">video</button>
 						<button type="button" id="addendlinebutton" data-loading-text="end" class="btn btn-default">end</button>
 					</div>
-					<button type="button" id="savebutton" data-loading-text="Saving..." class="btn btn-success pull-right">Save</button>
+					<button type="button" id="savebutton" data-loading-text="Saving..." class="btn btn-success pull-right" data-step="18" data-intro="Always remember to save your work before closing this page." data-position="left">Save</button>
 					<div class="row">
 						<div class="col-md-8">
 							<div class="btn-group btn-group-sm" role="group">
@@ -31,8 +31,8 @@
 						</div>
 						<div class="col-md-4">
 							<br />
-							<button type="button" class="btn btn-default btn-sm list-refresh-button" data-toggle="tooltip" title="refresh autocomplete list"><span class="glyphicon glyphicon-refresh"></span></button>
-							<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
+							<button type="button" class="btn btn-default btn-sm list-refresh-button" data-toggle="tooltip" title="refresh autocomplete list" data-step="19" data-intro="This button is for refreshing auto-complete list. Particularly useful when you add a new resource and want to assign it here, but don't want to refresh this page. Just hit this button after successfully uploading your resource files and see it's here suggested in the list." data-position="left"><span class="glyphicon glyphicon-refresh"></span></button>
+							<button type="button" class="btn btn-warning btn-sm pull-right play-button" data-step="20" data-intro="Lastly, you can test how your visual novel looks when played with this button, which will direct you to visual novel page." data-position="left">Play</button>
 						</div>
 					</div>
 			</div>
@@ -69,7 +69,7 @@
 					</div>
 				</div>
 			</div> -->
-			<div class="row draggable pagination-row">
+			<div class="row draggable pagination-row" data-step="6" data-intro="This is your draggable page control to navigate between groups of lines.">
 				<div class="col-md-12 pagination-col">
 					<div class="pagination-area">
 							<div class="btn-group">
@@ -103,7 +103,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" data-step="21" data-intro="This is where all the lines displayed. There's nothing here at the moment, so why don't you try adding some resource first and fiddling with features here. Have fun!">
 				<div class="col-md-12 line-area line-col">
 						<span class="request-loading">
 							<img src="<?php echo base_url(); ?>assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."  />
@@ -585,7 +585,7 @@
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row" data-step="16" data-intro="Sprites for text line will be displayed here when you point your mouse cursor to the line.">
 				<div class="col-md-11 col-md-offset-1 sprite-area"  style="position: fixed; width: 30%; margin-top: 220px; margin-left:6%;">
 					<table class="table">
 					<thead>
@@ -718,3 +718,22 @@
 		</div>
 	</div>
 </div> -->
+
+
+
+<script type="text/javascript">
+	var dummy_id;
+	var req = $.ajax({
+		url: config.base + 'index.php/project/idDummy',
+		type: 'POST',
+		dataType: "html"
+	});
+	req.done(function(msg) {
+		dummy_id = msg;
+	});
+	if(RegExp('multipage', 'gi').test(window.location.search)) {
+		introJs().setOption('doneLabel', 'Next page').goToStep(5).start().oncomplete(function() {
+			window.location.href = '../project/resource/'+dummy_id;
+		});
+	}
+</script>

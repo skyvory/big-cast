@@ -427,8 +427,12 @@ class Project extends CI_Controller {
 					'status' => $project['fk_projectstatus_id']
 				);
 				$this->session->set_userdata('active_project', $sess_array);
-
-				redirect('resource/manage', 'location');
+				if($this->input->get('multipage') == "true") {
+					redirect('resource/manage?multipage=true', 'location');
+				}
+				else {
+					redirect('resource/manage', 'location');
+				}
 			}
 		}
 	}
@@ -450,7 +454,12 @@ class Project extends CI_Controller {
 				);
 				$this->session->set_userdata('active_project', $sess_array);
 
-				redirect('editor/manage', 'location');
+				if($this->input->get('multipage') == "true") {
+					redirect('editor/manage?multipage=true', 'location');
+				}
+				else {
+					redirect('editor/manage', 'location');
+				}
 			}
 		}
 	}
@@ -504,6 +513,15 @@ class Project extends CI_Controller {
 			}
 		}
 		rmdir($dirPath);
+	}
+	public function requestDummy() {
+		$user = $this->session->userdata('user_auth');
+		$pass = $this->common->createProject('Dummy', 'Dummy project created for tour.', $user['id']);
+		$this->session->set_userdata('dummy_project_id', $pass);
+		echo $pass;
+	}
+	public function idDummy() {
+		echo $this->session->userdata('dummy_project_id');
 	}
 }
 

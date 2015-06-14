@@ -13,12 +13,15 @@
 		</script>
 
 		<link rel="stylesheet" href="<?= base_url() ?>assets/bootstrap/dist/css/bootstrap.css"/>
+		<link rel="stylesheet" href="<?= base_url() ?>assets/intro.js/introjs.css"/>
 		<link rel="stylesheet" href="<?= base_url() ?>assets/common_style.css"/>
 
 		<!--script type="text/javascript" src="<?= base_url() ?>assets/rescript.js"></script-->
 
 		<script type="text/javascript" src="<?= base_url() ?>assets/jquery/jquery.js"></script>
 		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/bootstrap/dist/js/bootstrap.js"></script>
+		<script type="text/javascript" src="<?= base_url() ?>assets/intro.js/intro.js"></script>
 
 		<style type="text/css">
 			.project-cover {
