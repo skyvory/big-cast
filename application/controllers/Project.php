@@ -518,6 +518,20 @@ class Project extends CI_Controller {
 		$user = $this->session->userdata('user_auth');
 		$pass = $this->common->createProject('Dummy', 'Dummy project created for tour.', $user['id']);
 		$this->session->set_userdata('dummy_project_id', $pass);
+		$path_to_resource = './resources/';
+		$new_directory = $path_to_resource . '/' . $user['id'] . '/' . $pass . '/';
+		if(!is_dir($new_directory)) {
+			mkdir($new_directory, 777);
+			//make each type of resource and their thumbs directory
+			mkdir($new_directory . 'background/', 777);
+			mkdir($new_directory . 'background/thumbs/', 777);
+			mkdir($new_directory . 'sprite/', 777);
+			mkdir($new_directory . 'sprite/thumbs/', 777);
+			mkdir($new_directory . 'bgm/', 777);
+			mkdir($new_directory . 'voice/', 777);
+			mkdir($new_directory . 'sfx/', 777);
+			mkdir($new_directory . 'video/', 777);
+		}
 		echo $pass;
 	}
 	public function idDummy() {
