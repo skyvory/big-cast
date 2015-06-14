@@ -30,3 +30,8 @@
 		</div>
 	</div>
 </nav>
+<style type="text/css">
+	.dropdown:hover .dropdown-menu {
+	    display: block;
+	 }
+</style>
