@@ -370,6 +370,9 @@ class Game extends CI_Controller {
 				echo $sequence;
 			}
 		}
+		else {
+			echo "0";
+		}
 		
 	}
 

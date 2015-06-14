@@ -1174,24 +1174,26 @@ function quickLoad() {
 		dataType: 'html'
 	});
 	req.done(function(msg) {
-		game.screen = "stall";
-		whiteIn(1000);
-		stopBgm();
-		line = [];
-		canvas.clear();
-		context.clearRect (0 ,0 ,text_display.width,text_display.height );
-		$('.text-area').show();
-		current.sequence = -1;
-		current.head = -1;
-		cache.head = -1;
-		callSequentialLineData(msg-1, function() {
-			processSequentialResource();
-			setTimeout(function() {
-				game.screen = "play";
-				renderNextLine();
-			}, 4000);
-		});
-	})
+		if(msg) {
+			game.screen = "stall";
+			whiteIn(1000);
+			stopBgm();
+			line = [];
+			canvas.clear();
+			context.clearRect (0 ,0 ,text_display.width,text_display.height );
+			$('.text-area').show();
+			current.sequence = -1;
+			current.head = -1;
+			cache.head = -1;
+			callSequentialLineData(msg-1, function() {
+				processSequentialResource();
+				setTimeout(function() {
+					game.screen = "play";
+					renderNextLine();
+				}, 4000);
+			});
+		}
+	});
 }
 function renderSaveScreen() {
 	var req = $.ajax({
