@@ -7,7 +7,7 @@
 			<h2>Visual Novel Authoring Tool<span style="font-size: 0.6em;"> on web</span></h2>
 			<p>Be a creator, Create your own visual novel.</p>
 			<p>Publishing visual novel made easy.</p>
-			<p><a href="#" class="btn btn-info btn-sm">Learn more</a></p>
+			<p><a href="http://en.wikipedia.org/wiki/Visual_novel" class="btn btn-info btn-sm">Learn more</a></p>
 		</div>
 
 	</div>
