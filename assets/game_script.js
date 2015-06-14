@@ -582,10 +582,10 @@ function toggleFullscreen(e) {
 		else if (full_element.msRequestFullscreen) {
 				full_element.msRequestFullscreen();
 		}
-		new_height = screen.height;
-		new_width = new_height / 6 * 8;
-		gutter = (screen.width - new_width) / 2;
-		log_height = 2 / 3 * new_height;
+		var new_height = screen.height;
+		var	new_width = new_height / 6 * 8;
+		var gutter = (screen.width - new_width) / 2;
+		var log_height = 2 / 3 * new_height;
 		// separate line so new width calculation doesn't return "NaNpx" (string to math prob)
 		new_height = new_height + "px";
 		new_width = new_width + "px";
