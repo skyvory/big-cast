@@ -940,7 +940,6 @@ function saveLine(callback) {
 }
 
 function saveLabel(line_id, label) {
-	console.log("AAA");
 	var req = $.ajax({
 		url: config.base + 'index.php/editor/saveLabel',
 		type: 'POST',
