@@ -2504,9 +2504,6 @@ function renderNextLine(callback) {
 				if(line[prev_index_to_read].background_resource_id === line[current.sequence].background_resource_id) {
 				}
 				else {
-
-					
-
 					if(line[current.sequence].background_resource_id > 0) {
 						line[current.sequence].background_resource_id;
 						var bg_id = line[current.sequence].background_resource_id;
@@ -2661,7 +2658,7 @@ function renderNextLine(callback) {
 											spr.animate({
 												scaleX: 1,
 												scaleY: 1,
-												left: '+=50'}, {
+												left: '+=51'}, {
 												onChange: canvas.renderAll.bind(canvas),
 												duration: 100
 											});
@@ -2670,7 +2667,7 @@ function renderNextLine(callback) {
 											spr.animate({
 												scaleX: 1.2, 
 												scaleY: 1.2, 
-												left: '-=50'}, {
+												left: '-=51'}, {
 												onChange: canvas.renderAll.bind(canvas),
 												duration: 100
 											});
@@ -2765,7 +2762,7 @@ function renderNextLine(callback) {
 										spr.animate({
 											scaleX: 1,
 											scaleY: 1,
-											left: '+=50'}, {
+											left: '+=51'}, {
 											onChange: canvas.renderAll.bind(canvas),
 											duration: 100
 										});
@@ -2774,7 +2771,7 @@ function renderNextLine(callback) {
 										spr.animate({
 											scaleX: 1.2, 
 											scaleY: 1.2, 
-											left: '-=50'}, {
+											left: '-=51'}, {
 											onChange: canvas.renderAll.bind(canvas),
 											duration: 100
 										});
@@ -2869,7 +2866,7 @@ function renderNextLine(callback) {
 									spr.animate({
 										scaleX: 1,
 										scaleY: 1,
-										left: '+=50'}, {
+										left: '+=51'}, {
 										onChange: canvas.renderAll.bind(canvas),
 										duration: 100
 									});
@@ -2878,7 +2875,7 @@ function renderNextLine(callback) {
 									spr.animate({
 										scaleX: 1.2, 
 										scaleY: 1.2, 
-										left: '-=50'}, {
+										left: '-=51'}, {
 										onChange: canvas.renderAll.bind(canvas),
 										duration: 100
 									});
@@ -2896,7 +2893,7 @@ function renderNextLine(callback) {
 							else if(value.fk_effect_id == 5) {
 								spr.animate('left', '-1000', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 1000,
+									duration: 658,
 									onComplete: function() {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 											canvas.remove(canvas.item(canvas_index));
@@ -2906,7 +2903,7 @@ function renderNextLine(callback) {
 							else if(value.fk_effect_id == 7) {
 								spr.animate('left', '1000', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 1000,
+									duration: 658,
 									onComplete: function() {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 											canvas.remove(canvas.item(canvas_index));
@@ -2916,7 +2913,7 @@ function renderNextLine(callback) {
 							else if(value.fk_effect_id == 9) {
 								spr.animate('top', '-800', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 1000,
+									duration: 658,
 									onComplete: function() {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 											canvas.remove(canvas.item(canvas_index));
@@ -2926,7 +2923,7 @@ function renderNextLine(callback) {
 							else if(value.fk_effect_id == 11) {
 								spr.animate('top', '800', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 1000,
+									duration: 658,
 									onComplete: function() {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 											canvas.remove(canvas.item(canvas_index));
@@ -2936,7 +2933,7 @@ function renderNextLine(callback) {
 							else {
 								spr.animate('opacity', '0', {
 									onChange: canvas.renderAll.bind(canvas),
-									duration: 965,
+									duration: 665,
 									onComplete: function() {
 										// $.each(sprite_to_remove, function(j_index, j_value) {
 											var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
@@ -2961,7 +2958,7 @@ function renderNextLine(callback) {
 						else if(value.fk_effect_id == 5) {
 							spr.animate('left', '-1000', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 1000,
+								duration: 658,
 								onComplete: function() {
 										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 										canvas.remove(canvas.item(canvas_index));
@@ -2971,7 +2968,7 @@ function renderNextLine(callback) {
 						else if(value.fk_effect_id == 7) {
 							spr.animate('left', '1000', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 1000,
+								duration: 658,
 								onComplete: function() {
 										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 										canvas.remove(canvas.item(canvas_index));
@@ -2981,7 +2978,7 @@ function renderNextLine(callback) {
 						else if(value.fk_effect_id == 8) {
 							spr.animate('top', '-800', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 1000,
+								duration: 658,
 								onComplete: function() {
 										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 										canvas.remove(canvas.item(canvas_index));
@@ -2991,7 +2988,7 @@ function renderNextLine(callback) {
 						else if(value.fk_effect_id == 11) {
 							spr.animate('top', '800', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 1000,
+								duration: 658,
 								onComplete: function() {
 										var canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
 										canvas.remove(canvas.item(canvas_index));
@@ -3001,7 +2998,7 @@ function renderNextLine(callback) {
 						else {
 							spr.animate('opacity', '0', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 965,
+								duration: 665,
 								onComplete: function() {
 									// repeat get index because canvas index value would change after each and result in wrong index, since function is executed after completion of transition
 									canvas_index = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
@@ -3137,7 +3134,7 @@ function renderNextLine(callback) {
 							spr.animate({
 								scaleX: 1,
 								scaleY: 1,
-								left: '+=50'}, {
+								left: '+=51'}, {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 100
 							});
@@ -3146,7 +3143,7 @@ function renderNextLine(callback) {
 							spr.animate({
 								scaleX: 1.2, 
 								scaleY: 1.2, 
-								left: '-=50'}, {
+								left: '-=51'}, {
 								onChange: canvas.renderAll.bind(canvas),
 								duration: 100
 							});
@@ -3205,7 +3202,7 @@ function renderNextLine(callback) {
 						spr.animate({
 							scaleX: 1,
 							scaleY: 1,
-							left: '+=50'}, {
+							left: '+=51'}, {
 							onChange: canvas.renderAll.bind(canvas),
 							duration: 100
 						});
@@ -3214,7 +3211,7 @@ function renderNextLine(callback) {
 						spr.animate({
 							scaleX: 1.2, 
 							scaleY: 1.2, 
-							left: '-=50'}, {
+							left: '-=51'}, {
 							onChange: canvas.renderAll.bind(canvas),
 							duration: 100
 						});
