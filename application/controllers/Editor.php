@@ -202,6 +202,7 @@ class Editor extends CI_Controller {
 							'position_x' => utf8_encode($value['position_x']),
 							'position_y' => utf8_encode($value['position_y']),
 							'position_z' => utf8_encode($value['position_z']),
+							'emphasize' => utf8_encode($value['emphasize']),
 							'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 							'sprite_resource_id' => utf8_encode($value['fk_resource_id']),
 							'sprite_name' => utf8_encode($value['name']),
@@ -646,6 +647,7 @@ class Editor extends CI_Controller {
 						'position_x' => $value['position_x'],
 						'position_y' => $value['position_y'],
 						'position_z' => $value['position_z'],
+						'emphasize' => $value['emphasize'],
 						'fk_effect_id' => $value['fk_effect_id'],
 						'fk_line_id' => $value['fk_line_id'],
 						// used to return assigned id back on view
@@ -660,6 +662,7 @@ class Editor extends CI_Controller {
 						'position_x' => $value['position_x'],
 						'position_y' => $value['position_y'],
 						'position_z' => $value['position_z'],
+						'emphasize' => $value['emphasize'],
 						'fk_effect_id' => $value['fk_effect_id'],
 						'fk_line_id' => $value['fk_line_id']
 					);
