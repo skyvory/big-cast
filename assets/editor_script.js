@@ -2995,7 +2995,7 @@ $('.line-list').on('mouseover', 'input[name=choice_jumpto]', function() {
 
 $('.sprite-list').on('mouseover', 'input[name=emphasize]', function() {
 	$(this).tooltip({
-		title: "Emphasize this sprite.<br> Particularly and rarely used to emphasize the speaker.<br>Helpful for some old folks so they won't complain about your VN being ambiguous and confusing.",
+		title: "Emphasize this sprite.<br>Particularly and rarely used to emphasize the speaker.<br>Recommended only when people complain about your VN being ambiguous and confusing.",
 		html: true
 	});
 	$(this).tooltip('show');
