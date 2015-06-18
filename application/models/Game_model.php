@@ -72,7 +72,7 @@ Class Game_model extends CI_Model {
 		return $result;
 	}
 	function getSprite($line_id) {
-		$this->db->select('sprite_id, character_name, position_x, position_y, position_z, fk_effect_id');
+		$this->db->select('sprite_id, character_name, position_x, position_y, position_z, fk_effect_id, emphasize');
 		$this->db->select('resource_id, file_name, character_name, figure_name, expression_name');
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');

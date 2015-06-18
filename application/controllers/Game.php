@@ -206,6 +206,7 @@ class Game extends CI_Controller {
 							'position_x' => utf8_encode($value['position_x']),
 							'position_y' => utf8_encode($value['position_y']),
 							'position_z' => utf8_encode($value['position_z']),
+							'emphasize' => utf8_encode($value['emphasize']),
 							'fk_effect_id' => utf8_encode($value['fk_effect_id']),
 							'sprite_resource_id' => utf8_encode($value['resource_id']),
 							'sprite_file_name' => utf8_encode($value['file_name'])

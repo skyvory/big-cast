@@ -2588,6 +2588,7 @@ function renderNextLine(callback) {
 									left: (value.position_x * 100),
 									opacity: 1
 								});
+								// >>>
 								spr.set('selectable', false);
 								canvas.add(spr);
 							});
@@ -2622,6 +2623,7 @@ function renderNextLine(callback) {
 									// chack for same sprite and same position
 									if(value.sprite_resource_id == line[prev_index_to_read].sprite[sprite_passed_index].sprite_resource_id && value.position_x == line[prev_index_to_read].sprite[sprite_passed_index].position_x && value.position_y == line[prev_index_to_read].sprite[sprite_passed_index].position_y && value.position_z == line[prev_index_to_read].sprite[sprite_passed_index].position_z) {
 										sprite_still = true;
+										
 									}
 									if(sprite_still == false) {
 										// check for same sprite (different position)
@@ -2650,6 +2652,29 @@ function renderNextLine(callback) {
 										}
 									}
 									else {
+									}
+									// check if speaker change, oh for old man's sake, ugh
+									if(value.emphasize != line[prev_index_to_read].sprite[sprite_passed_index].emphasize) {
+										var j_index_to_read = getObjectIndex(canvas.getObjects(), 'line_sprite_resource_id', value.sprite_resource_id);
+										var spr = canvas.item(j_index_to_read);
+										if(value.emphasize == "0") {
+											spr.animate({
+												scaleX: 1,
+												scaleY: 1,
+												left: '+=50'}, {
+												onChange: canvas.renderAll.bind(canvas),
+												duration: 100
+											});
+										}
+										else if(value.emphasize == "1") {
+											spr.animate({
+												scaleX: 1.2, 
+												scaleY: 1.2, 
+												left: '-=50'}, {
+												onChange: canvas.renderAll.bind(canvas),
+												duration: 100
+											});
+										}
 									}
 								}
 								else {
@@ -2735,6 +2760,25 @@ function renderNextLine(callback) {
 											duration: 300
 										});
 									}
+									// emphasize
+									if(value.emphasize == "0") {
+										spr.animate({
+											scaleX: 1,
+											scaleY: 1,
+											left: '+=50'}, {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 100
+										});
+									}
+									else if(value.emphasize == "1") {
+										spr.animate({
+											scaleX: 1.2, 
+											scaleY: 1.2, 
+											left: '-=50'}, {
+											onChange: canvas.renderAll.bind(canvas),
+											duration: 100
+										});
+									}
 								}
 							}
 							// if prev text line has NO sprite
@@ -2818,6 +2862,25 @@ function renderNextLine(callback) {
 									spr.animate('opacity', '1', {
 										onChange: canvas.renderAll.bind(canvas),
 										duration: 300
+									});
+								}
+								// emphasize
+								if(value.emphasize == "0") {
+									spr.animate({
+										scaleX: 1,
+										scaleY: 1,
+										left: '+=50'}, {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 100
+									});
+								}
+								else if(value.emphasize == "1") {
+									spr.animate({
+										scaleX: 1.2, 
+										scaleY: 1.2, 
+										left: '-=50'}, {
+										onChange: canvas.renderAll.bind(canvas),
+										duration: 100
 									});
 								}
 							}
@@ -3069,6 +3132,25 @@ function renderNextLine(callback) {
 								duration: 500
 							});
 						}
+						// emphasize
+						if(value.emphasize == "0") {
+							spr.animate({
+								scaleX: 1,
+								scaleY: 1,
+								left: '+=50'}, {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 100
+							});
+						}
+						else if(value.emphasize == "1") {
+							spr.animate({
+								scaleX: 1.2, 
+								scaleY: 1.2, 
+								left: '-=50'}, {
+								onChange: canvas.renderAll.bind(canvas),
+								duration: 100
+							});
+						}
 					});
 				}
 				// mark prone
@@ -3118,6 +3200,25 @@ function renderNextLine(callback) {
 						onChange: canvas.renderAll.bind(canvas),
 						duration: 500
 					});
+					// emphasize
+					if(value.emphasize == "0") {
+						spr.animate({
+							scaleX: 1,
+							scaleY: 1,
+							left: '+=50'}, {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 100
+						});
+					}
+					else if(value.emphasize == "1") {
+						spr.animate({
+							scaleX: 1.2, 
+							scaleY: 1.2, 
+							left: '-=50'}, {
+							onChange: canvas.renderAll.bind(canvas),
+							duration: 100
+						});
+					}
 				});
 			}
 		}
