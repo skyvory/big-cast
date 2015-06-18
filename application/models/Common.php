@@ -530,7 +530,7 @@ Class Common extends CI_Model {
 		return $result;
 	}
 	function getSprite($line_id) {
-		$this->db->select('sprite_id, fk_resource_id, position_x, position_y, position_z, fk_effect_id');
+		$this->db->select('sprite_id, fk_resource_id, position_x, position_y, position_z, fk_effect_id, emphasize');
 		$this->db->select('name, file_name, character_name, figure_name, expression_name');
 		$this->db->from('sprite');
 		$this->db->join('resource', 'resource_id = fk_resource_id');
@@ -748,6 +748,7 @@ Class Common extends CI_Model {
 				'position_x' => $value['position_x'],
 				'position_y' => $value['position_y'],
 				'position_z' => $value['position_z'],
+				'emphasize' => $value['emphasize'],
 				'fk_effect_id' => $value['fk_effect_id'],
 				'fk_line_id' => $value['fk_line_id'],
 			);
@@ -779,6 +780,7 @@ Class Common extends CI_Model {
 				'position_x' => $value['position_x'],
 				'position_y' => $value['position_y'],
 				'position_z' => $value['position_z'],
+				'emphasize' => $value['emphasize'],
 				'fk_effect_id' => $value['fk_effect_id'],
 				'fk_line_id' => $value['fk_line_id'],
 			);

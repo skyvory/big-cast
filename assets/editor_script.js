@@ -24,6 +24,7 @@ function getLastLineObjectBySequence(seq) {
 				position_x: value.position_x,
 				position_y: value.position_y,
 				position_z: value.position_z,
+				emphasize: "0",
 				fk_effect_id: value.fk_effect_id,
 				sprite_resource_id: value.sprite_resource_id,
 				sprite_name: value.sprite_name,
@@ -1357,11 +1358,13 @@ $('.line-list').on('click', '.line-collapse-button', function(e) {
 	var element = $(this.form).find('.collapse');
 	element.collapse('toggle');
 });
+
 $('.pagination-area').on('click', '.collapse-all-button', function(e) {
 	e.preventDefault();
 	var element = $('.line-list .collapse');
 	element.collapse('toggle');
 });
+
 //show sprite management area on text line hover
 $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function() {
 	// add select class on pointed line
@@ -1395,6 +1398,10 @@ $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function()
 			else {
 				var spr_label = "";
 			}
+			var is_emphasized = "";
+			if(value.emphasize == "1") {
+				is_emphasized = "checked";
+			}
 			var block = ' \
 			<tr> \
 				<td> \
@@ -1405,8 +1412,13 @@ $('.line-list').on('mouseenter', '.text-line-form, .form-horizontal', function()
 							</div> \
 							<div class="col-md-9"> \
 								<div class="form-group"> \
+									<div class="checkbox sprite-emphasize-checkbox"> \
+										<label> \
+											<input type="checkbox" name="emphasize" '+is_emphasized+'/> \
+										</label> \
+									</div> \
 									<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="'+spr_label+'" /> \
-									<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> \
+										<input type="hidden" name="sprite_resource_id" value="'+value.sprite_resource_id+'" /> \
 									<br /> \
 									x <input type="text" name="position_x" class="form-control input-xs sprite-number-input" placeholder="x" value="'+value.position_x+'" /> \
 									y <input type="text" name="position_y" class="form-control input-xs sprite-number-input" placeholder="y" value="'+value.position_y+'" /> \
@@ -1511,6 +1523,7 @@ function saveLine(callback) {
 						position_x: value.position_x,
 						position_y: value.position_y,
 						position_z: value.position_z,
+						emphasize: value.emphasize,
 						fk_effect_id: value.fk_effect_id,
 						fk_line_id: i_line_id,
 						sprite_temp_index: value.sprite_temp_index
@@ -1523,6 +1536,7 @@ function saveLine(callback) {
 						position_x: value.position_x,
 						position_y: value.position_y,
 						position_z: value.position_z,
+						emphasize: value.emphasize,
 						fk_effect_id: value.fk_effect_id,
 						fk_line_id: i_line_id
 					});
@@ -1845,7 +1859,7 @@ $('.line-list').on('focusout', 'input[type=text], textarea', function() {
 	}
 });
 
-$('.sprite-list').on('change', 'input[type=text]', function() {
+$('.sprite-list').on('change', 'input[type=text], input[type=checkbox]', function() {
 	var select_form = $(this.form);
 	var input_name = $(this).attr('name');
 	var line_form_id = $('.select-line').find('input[name=line_id]').val();
@@ -1899,6 +1913,15 @@ $('.sprite-list').on('change', 'input[type=text]', function() {
 		case "position_z":
 			var input_value = $(this).val();
 			line_obj[line_index_to_write].sprite[index_to_write].position_z = input_value;
+			break;
+
+		case "emphasize":
+			if(this.checked) {
+				line_obj[line_index_to_write].sprite[index_to_write].emphasize = "1";
+			}
+			else {
+				line_obj[line_index_to_write].sprite[index_to_write].emphasize = "0";
+			}
 			break;
 
 		case "effect":
@@ -2065,6 +2088,7 @@ $('.sprite-command-area').on('click', '#addspritebutton', function() {
 				position_x: "0",
 				position_y: "0",
 				position_z: "0",
+				emphasize: "0",
 				fk_effect_id: "",
 				sprite_resource_id: "",
 				sprite_name: "",
@@ -2083,6 +2107,11 @@ $('.sprite-command-area').on('click', '#addspritebutton', function() {
 							</div> \
 							<div class="col-md-9"> \
 								<div class="form-group"> \
+									<div class="checkbox sprite-emphasize-checkbox"> \
+										<label> \
+											<input type="checkbox" name="emphasize" /> \
+										</label> \
+									</div> \
 									<input type="text" name="sprite" class="form-control input-xs sprite-input sprite-menu" placeholder="sprite" value="" /> \
 									<input type="hidden" name="sprite_resource_id" value="" /> \
 									<br /> \
@@ -2959,6 +2988,14 @@ $('.line-list').on('mouseover', 'input[name=jumpto]', function() {
 $('.line-list').on('mouseover', 'input[name=choice_jumpto]', function() {
 	$(this).tooltip({
 		title: "label where this line proceed to without following sequence order<br />left empty if no jump required",
+		html: true
+	});
+	$(this).tooltip('show');
+});
+
+$('.sprite-list').on('mouseover', 'input[name=emphasize]', function() {
+	$(this).tooltip({
+		title: "Emphasize this sprite.<br> Particularly and rarely used to emphasize the speaker.<br>Helpful for some old folks so they won't complain about your VN being ambiguous and confusing.",
 		html: true
 	});
 	$(this).tooltip('show');
