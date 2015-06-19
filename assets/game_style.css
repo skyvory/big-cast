@@ -1,0 +1,44 @@
+.game-area {
+	border:1px solid #6AE5FF;
+}
+.log-outer {
+	overflow: hidden;
+}
+.log-area {
+	width: 800px;
+	height: 430px;
+	margin: 0 auto;
+	position: fixed;
+	padding: 80px 50px 50px 130px;
+	background-color: rgba(87, 189, 169, 0.8);
+	z-index: 9; 
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	cursor: default;
+	font-size: 22px;
+	overflow: auto;
+	font-weight: bold;
+	color: #000;
+}
+/*.log-close {
+	position: fixed;
+	top:3%;
+	left: 3%;
+}*/
+
+::-webkit-scrollbar
+{
+	width: 12px;
+	height: 12px;
+}
+
+::-webkit-scrollbar-track
+{
+	background: rgba(141, 222, 213, 0.09803921568627451);
+}
+
+::-webkit-scrollbar-thumb
+{
+	background: rgba(141, 222, 213, 0.09803921568627451);
+}

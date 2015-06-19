@@ -1,0 +1,24 @@
+{
+  "name": "cast",
+  "version": "0.0.0",
+  "authors": [
+    "Skyvory <re@outlook.sg>"
+  ],
+  "description": "Web-based Visual Novel Authoring Tool",
+  "keywords": [
+    "sv"
+  ],
+  "license": "MIT",
+  "homepage": "skyvory.wordpress.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  	"jquery": "~1.10.2"
+  },
+  "private": true
+}

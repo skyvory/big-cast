@@ -1,0 +1,27 @@
+.cover-container {
+	/*width: 100%;*/
+	/*height: auto;*/
+	text-align: center;
+	vertical-align: middle;
+	overflow: hidden;
+	background-color: rgba(197,197,197, 0.1);
+	height: 220px;
+}
+.release-cover {
+	max-width: 100%;
+	max-height: 230px;
+	/*min-width: 100%;
+	min-height: 100%;*/
+	margin: auto;
+	padding: auto;
+}
+.thumbnail {
+	/*max-height: 450px;*/
+	/*height: auto;*/
+}
+dt {
+	font-size: 1em;
+}
+dd {
+	font-size: 0.9em;
+}

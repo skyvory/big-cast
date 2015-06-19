@@ -1,0 +1,151 @@
+.request-loading {
+	display:none;
+	position: absolute;
+	opacity: 0.8;
+	color: #333;
+	left: 50%;
+}
+.resource-area {
+	background-color: rgba(0, 0, 0, 0.1); 
+	padding: 20px;
+}
+.background-thumbnail-area {
+	width: 80px;
+	height: auto;
+	max-width: 80px;
+	max-height: 80px;
+	margin: 1px auto;
+	padding: 1px;
+	float: left;
+	vertical-align: middle;
+	text-align: center;
+}
+.sprite-thumbnail-area {
+	width: 300px;
+	height: auto;
+	max-width: 300px;
+	max-height: 300px;
+	margin: 1px auto;
+	padding: 1px;
+	float: left;
+	vertical-align: middle;
+	text-align: center;
+}
+.audio-thumbnail-area {
+	width: 30px;
+	height: auto;
+	max-width: 30px;
+	max-height: 30px;
+	margin: 1px auto;
+	padding: 1px;
+	float: left;
+	vertical-align: middle;
+	text-align: center;
+}
+.resource-thumbnail {
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	max-height: 100%;
+}
+.resource-property {
+	margin: 5px 10px;
+}
+.background-media {
+	background-color: #ddffff; 
+	margin: 5px; 
+	padding: 10px;
+	font-size: 0.7em;
+}
+.sprite-media {
+	background-color: #B9E5FF; 
+	margin: 5px; 
+	padding: 10px;
+	font-size: 0.7em;
+}
+.resourcechange-notification {
+	position: fixed;
+	z-index: 3;
+	top: 15%;
+	right: 5%;
+}
+.resourceremove-notification {
+	position: fixed;
+	z-index: 3;
+	top: 15%;
+	right: 5%;
+}
+.audio-inline-form {
+	display: inline-block;
+}
+.audio-player-area {
+	display:inline-block; 
+	vertical-align: middle;
+}
+/*smaller input size*/
+.input-xs {
+	height: 22px;
+	padding: 2px 5px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+/*customize table border style*/
+table td {
+	border-top-width: 1px !important;
+	border-top-color: #FF8989 !important;
+}
+/*remove first border line on table*/
+.table > tbody > tr:first-child > td {
+	border: none;
+}
+.audio-player {
+	width: 200px;
+}
+
+.bar {
+	height: 18px;
+	/*background: #00FF00;*/
+}
+
+#dropshade {
+	background: rgba(255, 255, 255, 0);
+	width: 600px;
+	height: 400px;
+	position: absolute;
+	line-height: 50px;
+	text-align: center;
+	z-index: 0;
+}
+#dropshade.in {
+	width: 800px;
+	height: 500px;
+	line-height: 200px;
+}
+#dropshade.hover {
+	background: lawngreen;
+	opacity: 0.4;
+}
+#dropshade.fade {
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+	opacity: 1;
+}
+.sprite-input-append {
+	margin: 10px;
+}
+.resource-navbar {
+	margin-bottom: 5px!important;
+}
+.error-notification {
+	position: fixed;
+	z-index: 3;
+	top: 15%;
+	right: 5%;
+}
+.page-header {
+	margin: 5px 0;
+}
