@@ -10,18 +10,19 @@
 					<img src="../../../assets/images/spinner-rosetta-gray-32x32.gif" alt="Loading..."/>
 				</span>
 			</div>
-			<div style="width: 800px; margin: 0 auto;">
+			<div class="game-area" style="width: 800px; margin: 0 auto;">
 				<div class="log-outer">
 					<div class="log-area" style="display: none;">
 					</div>
 				</div>
-				<div class="game-area" style="display: none; position: fixed;">
+				<div class="visual-area" style="display: none; position: fixed;">
 					<!-- <center> --><canvas id="visual"></canvas><!-- </center> -->
 				</div>
 				<div class="text-area" style="display: block; position: fixed; pointer-events: none;">
 					<!-- <center> --><canvas id="text" style="border: none;"></canvas><!-- </center> -->
 				</div>
-				<div class="video-area" style="display: none; position: fixed; background-color: black; pointer-events: none;"></div>
+				<div class="video-area" style="display: none; position: fixed; background-color: black; pointer-events: none;">
+				</div>
 			</div>
 			<audio id="bgm_play"></audio>
 			<audio id="voice_play"></audio>

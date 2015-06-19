@@ -1,5 +1,5 @@
-.game-area {
-	border:1px solid #6AE5FF;
+.visual-area {
+	/*border: 1px solid #6AE5FF;*/
 }
 .log-outer {
 	overflow: hidden;
@@ -20,6 +20,8 @@
 	overflow: auto;
 	font-weight: bold;
 	color: #000;
+	overflow: -moz-scrollbars-vertical; 
+	overflow-y: scroll;
 }
 /*.log-close {
 	position: fixed;

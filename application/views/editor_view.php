@@ -8,31 +8,32 @@
 			<div class="line-command-area">
 				<span class="pull-left">Add line</span><br />
 					<div class="btn-group btn-group-sm" role="group">
-						<button type="button" id="addtextlinebutton" data-loading-text="text" class="btn btn-default">text</button>
+						<button type="button" id="addtextlinebutton" data-loading-text="text" class="btn btn-default" data-toggle="tooltip" title="you can use ctrl+enter key as alternative">text</button>
 						<button type="button" id="addchoicelinebutton" data-loading-text="choice" class="btn btn-default">choice</button>
 						<button type="button" id="addvideolinebutton" data-loading-text="video" class="btn btn-default">video</button>
 						<button type="button" id="addendlinebutton" data-loading-text="end" class="btn btn-default">end</button>
 					</div>
 					<button type="button" id="savebutton" data-loading-text="Saving..." class="btn btn-success pull-right">Save</button>
 					<div class="row">
-					<div class="col-md-8">
-					<div class="btn-group btn-group-sm" role="group">
-						<div class="radio">
-							<label>
-								<input type="radio" name="line_insert_position" value="after" />
-									<span data-toggle="tooltip" data-placement="left" title="you can select a line by pointing your mouse on that line" />after selected line</span>
-							</label>
-							<label>
-								<input type="radio" name="line_insert_position" value="end" checked  />
-									<span>at end of this section</span>
-							</label>
+						<div class="col-md-8">
+							<div class="btn-group btn-group-sm" role="group">
+								<div class="radio">
+									<label>
+										<input type="radio" name="line_insert_position" value="after" />
+											<span data-toggle="tooltip" data-placement="left" title="you can select a line by pointing your mouse on that line" />after selected line</span>
+									</label>
+									<label>
+										<input type="radio" name="line_insert_position" value="end" checked  />
+											<span>at end of this section</span>
+									</label>
+								</div>
+							</div>
 						</div>
-					</div>
-					</div>
-					<div class="col-md-4">
-					<br />
-						<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
-					</div>
+						<div class="col-md-4">
+							<br />
+							<button type="button" class="btn btn-default btn-sm list-refresh-button" data-toggle="tooltip" title="refresh autocomplete list"><span class="glyphicon glyphicon-refresh"></span></button>
+							<button type="button" class="btn btn-warning btn-sm pull-right play-button">Play</button>
+						</div>
 					</div>
 			</div>
 		</div>

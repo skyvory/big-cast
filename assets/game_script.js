@@ -16,8 +16,8 @@ var cache = {
 	count: 0
 };
 var game = {
-	screen: "title", // title/play/configuration/save/load/backlog/choice
-	mode: "normal", // normal, skip, auto
+	screen: "title", // title/play/configuration/save/load/backlog/choice/skip/auto/stall
+	mode: "normal", // normal, fullscreen
 	bgm: "",
 	voice: "",
 	sfx: "",
@@ -28,46 +28,6 @@ var game = {
 	}
 }
 var font_list = [];
-
-// var bgm_glob;
-// var sfx_glob;
-// var voice_glob;
-
-// var electro; // Create the Sound 
-// (function(){
-	
-// 	var context = new AudioContext(); // Create and Initialize the Audio Context
-// 	var getSound = new XMLHttpRequest(); // Load the Sound with XMLHttpRequest
-// 	getSound.open("GET", "../../../resources/~gentle.mp3", true); // Path to Audio File
-// 	getSound.responseType = "arraybuffer"; // Read as Binary Data
-// 	getSound.onload = function() {
-// 		context.decodeAudioData(getSound.response, function(buffer){
-// 			electro = buffer; // Decode the Audio Data and Store it in a Variable
-// 		});
-// 	}
-// 	getSound.send(); // Send the Request and Load the File
-	
-// 	window.addEventListener("keydown",onKeyDown); // Create Event Listener for KeyDown
-	
-// 	function onKeyDown(e){
-// 		switch (e.keyCode) {
-// 			// X
-// 			case 88:
-// 				var playSound = context.createBufferSource(); // Declare a New Sound
-// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-// 				playSound.connect(context.destination);  // Link the Sound to the Output
-// 				playSound.start(0); // Play the Sound Immediately
-// 			break;
-// 			case 13:
-// 			var playSound = context.createBufferSource(); // Declare a New Sound
-// 				playSound.buffer = electro; // Attatch our Audio Data as it's Buffer
-// 				playSound.connect(context.destination);  
-// 				playSound.noteOff(0);
-// 				break;
-// 		}
-//  	}
-// }());
-
 
 // canvas renderer
 // var visual_display = document.getElementsByTagName('canvas')[0];
@@ -89,8 +49,6 @@ var context = text_display.getContext('2d');
 var canvas = new fabric.Canvas('visual');
 canvas.selection = false;
 canvas.backgroundColor = 'rgba(255, 255, 255,1)';
-
-
 
 // load configuration
 $(document).ready(function() {
@@ -124,14 +82,7 @@ function callConfigurationData(callback) {
 }
 
 function callSequentialLineData(offset, callback) {
-	// current.head + current.limit would result line with total number of limit cached ahead
-	//var process_limit = current.head + current.limit;
-	var process_limit = current.limit; // DEFAULT 60
-	// var offset = 0;
-	// if(current.head > 0) {
-	// 	offset = parseInt(line[current.head].sequence) + 1;
-	// 	console.log(offset);
-	// }
+	var process_limit = 60;
 	var req = $.ajax({
 		url: config.base +'index.php/game/loadLine',
 		type: "POST",
@@ -144,16 +95,8 @@ function callSequentialLineData(offset, callback) {
 	req.done(function(msg) {
 		if(msg.length) {
 			// append all line data to line object
-			// if(current.tail == 0) {
-				// current.tail = parseInt(msg[0].sequence);
-				// same with current tail for resource maintain, keep cache at 0 would lead to error because no 0 sequenced line
-				// cache.tail = current.tail;
-			// }
 			$.each(msg, function(index, value) {
 				line.push(msg[index]);
-				// if(parseInt(value.sequence) < current.tail) {
-				// 	current.tail = parseInt(value.sequence);
-				// }
 			})
 			// increase head the same number as retrieved lines
 			current.head+=msg.length;
@@ -173,34 +116,18 @@ function maintainCurrent(callback) {
 	// delete n number of old line cache if reach limit
 	if(current.head > current.limit) {
 		console.log("current removed");
-		// remove all lines behind after 3 latest current sequence // ((current.sequence - 3) - current.tail) -> number of deleted lines
+		// remove all lines behind after 10 latest current sequence
 		for(var i = 0; i < current.sequence - 10; i++) {
-			// var index_to_read = getObjectIndex(line, 'sequence', current.tail);
 			line.splice(0, 1);
 			current.head--;
 			current.sequence--;
 			cache.head--;
 		}
 	}
-	// if(current.sequence % 20 == 0) {
-	// request new lines after reach head - 20, using mod so if no more line, line won't bwe called continuously
-	console.log("current", current.sequence);
-	console.log("head", current.head);
-	console.log("call line timing", current.sequence % (current.head - 20));
+	// request new lines after reach head - 20, using mod so if no more line, rquest won't be called continuously
+	// append more line when current line reach (head minus 20), no request made if game is less than 20 lines
 	if(current.sequence % (current.head - 20) == 0) {
-		// var is_dead_end = true;
-		// for(var i = current.sequence; i < current.head; i++) {
-		// 	if(parseInt(line[i].fk_linetype_id) != 2 && line[i].jumpto_line_id.length > 0) {
-		// 		is_dead_end = false;
-		// 	}
-		// 	else if(parseInt(line[i].fk_linetype_id) == 2) {
-		// 		is_dead_end = false;
-		// 	}
-		// }
-		console.log("more line call");
-		// if(is_dead_end == false) {
-			callSequentialLineData(parseInt(line[current.head].sequence));
-		// }
+		callSequentialLineData(parseInt(line[current.head].sequence));
 	}
 	if(callback) {
 		callback();
@@ -215,9 +142,8 @@ function maintainCache(callback) {
 			var spr_del = true;
 			for(var i = current.sequence; i < current.sequence + 10; i++) {
 				var j = 0;
-				// var index_to_read = getObjectIndex(line, 'sequence', cache.tail);
 				if(line[i].fk_linetype_id == 1) {
-					// checking ahead to resolve resource missing
+					// checking ahead to resolve missing resource problem
 					if(line[i].background_resource_id) {
 						if(id == line[i].background_resource_id) {
 							bg_del = false;
@@ -233,7 +159,6 @@ function maintainCache(callback) {
 				}
 			}
 			if(bg_del == true) {
-				console.log(this);
 				$(this).remove();
 				cache.count--;
 			}
@@ -270,7 +195,6 @@ function maintainCache(callback) {
 				}
 			}
 			if(bgm_del == true) {
-				console.log(this);
 				$(this).remove();
 				cache.count--;
 			}
@@ -285,60 +209,19 @@ function maintainCache(callback) {
 		});
 	}
 	// request new cache
-	if(cache.head - current.sequence < 10) {
+	// if(current.sequence % (cache.head - 10) == 0) {
+	// 	processSequentialResource();
+	// }
+	// if(cache.head - current.sequence < 10) {
 		processSequentialResource();
-	}
+	// }
 	if(callback) {
 		callback();
 	}
 }
 
-// function removeOldCache(callback) {
-// 	// delete old cache
-// 	for(; cache.head > current.sequence; cache.head--) {
-// 		if(line[0].fk_linetype_id == 1) {
-// 			if(line[0].bgm_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].bgm_resource_id+']').remove();
-// 			}
-// 			if(line[0].sfx_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].sfx_resource_id+']').remove();
-// 			}
-// 			if(line[0].voice_resource_id) {
-// 				$('.audio-cache').find('audio[id='+line[0].voice_resource_id+']').remove();
-// 			}
-// 			if(line[0].background_resource_id) {
-// 				$('.image-cache').find('img[id='+line[0].background_resource_id+']').remove();
-// 			}
-// 			if(line[0].sprite) {
-// 				if(line[0].sprite.length) {
-// 					$.each(line[0].sprite, function(index, value) {
-// 						$('.image-cache').find('img[id='+value.sprite_resource_id+']').remove();
-// 					});
-// 				}
-// 			}
-// 		}
-// 	}
-// 	if(callback) {
-// 		callback();
-// 	}
-// }
-
-// function processSequentialResource() {
-// 	var process_limit = cache.head + 5;
-// 	for(var i = cache.head; i < process_limit; i++) {
-// 		cache.head += 1;
-// 		var index_to_read = getObjectIndex(line, 'sequence', cache.head);
-// 		if(line[index_to_read].fk_linetype_id == 1) {
-// 			if(line[index_to_read].background_resource_id) {
-// 				var path_to_background_image = "resources/" + configuration.creator_id + "/" + configuration.game_id + "/background/" + line[index_to_read].background_file_name;
-// 				preloadImage(path_to_background_image, function() {
-// 				})
-// 			}
-// 		}
-// 	}
-// }
-
 function processSequentialResource() {
+	console.log("cache head", cache.head);
 	if(cache.head - current.sequence < 10) {
 		cache.head++;
 		// var index_to_read = getObjectIndex(line, 'sequence', cache.head);
@@ -410,8 +293,7 @@ function processSequentialResource() {
 				// }, 1000);
 			}
 			else if(line[cache.head].fk_linetype_id == 2) {
-				// cache.head++;
-				processSequentialResource();
+					processSequentialResource();
 			}
 			else {
 				// cache.head++;
@@ -438,7 +320,7 @@ function preloadImage(source, resource_id, callback) {
 
 function preloadSprite(sourcearray, callback) {
 	$.each(sourcearray, function(index, value) {
-		setTimeout(function() {
+		// setTimeout(function() {
 			var is_exist = $('.image-cache').has('img[id='+value.resource_id+']').length;
 			if(is_exist) {
 				callback(true);
@@ -452,7 +334,7 @@ function preloadSprite(sourcearray, callback) {
 					}
 				});
 			}
-		}, index * 1000);
+		// }, index * 1000);
 		
 	});
 }
@@ -496,7 +378,6 @@ function preloadInterface(callback) {
 		exit_button: "arc_001273.png",
 		white: "white.jpg",
 		black: "black.jpg"
-
 	};
 	$.each(ui, function(index, value) {
 		var path_to_ui = '../../../assets/sys/' + value;
@@ -532,48 +413,13 @@ function getObjectIndex(array, attr, value) {
 	return false;
 }
 
-
-
-
 function initializeGame() {
 	$('.request-loading').fadeOut(500, function() {
-		$('.game-area').fadeIn(1500, function() { // DEFAULT 1500
+		$('.visual-area').fadeIn(1500, function() { // DEFAULT 1500
 			renderTitleScreen();
 		});
 	});
 }
-
-
-//canvas.hoverCursor = 'default';
-//cnv.setBackgroundImage('http://localhost/cast/resources/a.jpg', function() { cnv.renderAll(); });
-//canvas.onFpsUpdate = function(){ /* ... */ };
-/*
-//basic reference
-var rect = new fabric.Rect({
-	left: 100,
-	top: 100,
-	fill: 'red',
-	width: 20,
-	height: 20,
-	angle: -60
-});
-canvas.add(rect);
-rect.set('selectable', false);
-
-rect.set({ fill: 'blue' });
-canvas.backgroundColor = 'rgb(200,100,200)';
-
-
-
-canvas.renderAll();
-
-fabric.Image.fromURL('../resources/ap.jpg', function(oimg) {
-	oimg.scale(0.5).setFlipX(true);
-	//cnv.add(oimg);
-});
-*/
-
-//rect.animate('angle', '+=500', { onChange: canvas.renderAll.bind(canvas) });
 
 function renderTitleScreen() {
 	// [0] for dom object instead of jquery object
@@ -601,7 +447,6 @@ function renderTitleScreen() {
 		}
 	});
 	// start button
-	
 }
 
 function renderTitleMenu() {
@@ -667,100 +512,95 @@ function renderTitleMenu() {
 	});
 }
 
-// $(document).keypress(function(e){
-// 	if(game.screen == play) {
-// 		switch(e.which){
-// 			case 13:
-// 				renderNextLine();
-// 				maintainCurrent();
-// 				maintainCache();
-// 				break;
-// 			case 
-// 		}
-		
-// 	}
-// });
-// var key_enable = true;
-// $(document).bind('keydown', function(e){
-// 	if(key_enable == true) {
-// 		if(game.screen == "play") {
-// 			switch(e.which) {
-// 				// enter key
-// 				case 13:
-// 						key_enable = false;
-// 						renderNextLine();
-// 						maintainCurrent();
-// 						maintainCache();
-// 					break;
-// 				// ctrl key
-// 				case 17:
-// 					game.screen = "skip";
-// 					playSkip();
-// 					break;
-// 				// a key
-// 				case 65:
-// 					// toggle
-// 					game.screen = "auto";
-// 					playAuto();
-// 					break;
-// 				// f key
-// 				case 70:
-// 					// toggle skip
-// 					game.screen = "skip";
-// 					playSkip();
-// 					break;
-// 				// s key
-// 				case 83:
-// 					// open save
-// 					game.screen = "save";
-// 					$('.text-area').fadeOut(1000);
-// 					renderSaveScreen();
-// 					break;
-// 				// l key
-// 				case 76:
-// 					// open load
-// 					game.screen = "load";
-// 					renderLoadScreen();
-// 					break;
-// 				// r key
-// 				case 82:
-// 					playVoice();
-// 					// repeat voice
-					
-// 				default:
-// 					break;
-// 			}
-// 		}
-// 		else if(game.screen == "auto") {
-// 			switch(e.which) {
-// 				// return to normal play
-// 				case 13:
-// 					game.screen = "play";
-// 					break;
-// 				// toggle auto
-// 				case 65:
-// 					game.screen = "play";
-// 					break
-// 				default:
-// 					break;
-// 			}
-// 		}
-// 	}
-// });
-// $(document).bind('keyup', function(e){
-// 	if(game.screen == "play") {
-// 		switch(e.keyCode) {
-// 			// toggle skip
-// 			case 17:
-// 				game.screen = "play";
-// 				break;
-// 			default:
-// 				break;
-// 		}
-// 		key_enable = true;
-// 	}
-// });
+// fullscreen toggle
+function toggleFullscreen(e) {
+	if(game.mode == "normal") {
+		var full_element = $('.game-area')[0];
+		if (full_element.requestFullscreen) {
+				full_element.requestFullscreen();
+		}
+		else if (full_element.webkitRequestFullscreen) {
+				full_element.webkitRequestFullscreen();
+		}
+		else if (full_element.mozRequestFullScreen) {
+				full_element.mozRequestFullScreen();
+		}
+		else if (full_element.msRequestFullscreen) {
+				full_element.msRequestFullscreen();
+		}
+		new_height = screen.height;
+		new_width = new_height / 6 * 8;
+		gutter = (screen.width - new_width) / 2;
+		log_height = 2 / 3 * new_height;
+		// separate line so new width calculation doesn't return "NaNpx" (string to math prob)
+		new_height = new_height + "px";
+		new_width = new_width + "px";
+		gutter = gutter + "px";
+		log_height = log_height + "px";
+		var upper_canvas = $('.upper-canvas')[0];
+		upper_canvas.style.height = new_height;
+		upper_canvas.style.width  = new_width;
+		var lower_canvas = $('.lower-canvas')[0];
+		lower_canvas.style.height = new_height;
+		lower_canvas.style.width  = new_width;
+		// text layer resize
+		text_display.style.height = new_height;
+		text_display.style.width = new_width;
+		$('.visual-area').css("left", gutter);
+		$('.text-area').css("left", gutter);
+		$('.video-area').css("left", gutter);
+		$('.log-area').css("width", new_width).css("height", log_height).css("left", gutter);
+		game.mode = "fullscreen";
+	}
+	else if(game.mode = "fullscreen") {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		}
+		var upper_canvas = $('.upper-canvas')[0];
+		upper_canvas.style.height = "600px";
+		upper_canvas.style.width  = "800px";
+		var lower_canvas = $('.lower-canvas')[0];
+		lower_canvas.style.height = "600px";
+		lower_canvas.style.width  = "800px";
+		text_display.style.height = "600px";
+		text_display.style.width = "800px";
+		$('.visual-area').css("left", "");
+		$('.text-area').css("left", "");
+		$('.video-area').css("left", "");
+		$('.log-area').css("width", "800px").css("height", "430px").css("left", "");
+		game.mode = "normal";
+	}
+}
 
+// add event listener to detect exit from fullscreen using escape key
+document.addEventListener("fullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("webkitfullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("mozfullscreenchange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+document.addEventListener("MSFullscreenChange", function() {
+	if((!document.fullscreenElement && !document.webkitFullscreenElement && !document.mozFullScreenElement && !document.msFullscreenElement) && game.mode == "fullscreen") {
+		toggleFullscreen();
+	}
+});
+
+// shortcut key
 var key_enable = true;
 $(document).bind('keydown', function(e){
 	if(key_enable == true) {
@@ -769,7 +609,7 @@ $(document).bind('keydown', function(e){
 				// enter key
 				case 13:
 					key_enable = false;
-					if(game.status.text != "busy") {
+					if(game.status.text != "busy" && !e.altKey) {
 						renderNextLine();
 						maintainCurrent();
 						maintainCache();
@@ -779,6 +619,9 @@ $(document).bind('keydown', function(e){
 					break;
 			}
 		}
+	}
+	if(e.which == 13 && e.altKey){
+		toggleFullscreen();
 	}
 });
 $(document).bind('keyup', function(e){
@@ -812,12 +655,6 @@ canvas.on('mouse:down', function(options) {
 				game.screen = "configuration";
 				break;
 			default:
-				// var index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'title_background');
-				// var bg = canvas.item(index_to_read);
-				// bg.animate('left', '+=20', {
-				// 	onChange: canvas.renderAll.bind(canvas),
-				// 	duration: 1000
-				// });
 				break;
 		}
 	}
@@ -1067,30 +904,25 @@ canvas.on('mouse:down', function(options) {
 	else if(game.screen == "choice") {
 		if(options.target.line_choice_id) {
 			var choice_id_select = options.target.line_choice_id;
-			// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
 			var choice_index_to_read = getObjectIndex(line[current.sequence].choice, 'choice_id', choice_id_select);
-			// console.log(line);
-			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
-					// jump_to = parseInt(line[index_to_read].choice[choice_index_to_read].jumpto_line_id);
-					// shiftCurrent(jump_to);
-					// shiftCurrent(choice_index_to_read);
+			console.log("choice index", choice_index_to_read);
+			if(line[current.sequence].choice[choice_index_to_read].jumpto_line_id.length > 0 && line[current.sequence].choice[choice_index_to_read].jumpto_line_id != line[current.sequence+1].line_id) {
 					//change to unresponsive game screen for loading line resource
+					game.screen = "stall";
 					var index_to_remove = current.sequence + 1;
-					// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index_to_read].look_ahead[0]);
 					line.splice(index_to_remove, current.head - current.sequence);
-					// removeOldCache(function() {
-						current.head = current.sequence;
-						var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
-						callSequentialLineData(parseInt(offset_jump)-1, function() {
-							processSequentialResource();
-							exitChoice();
-							setTimeout(function() {
-								game.screen = "play";
-								renderNextLine();
-							}, 500);
-						});
-					// });
-					
+					current.head = current.sequence;
+					// reset cache head so next line resource will be fetched
+					cache.head = current.sequence;
+					var offset_jump = line[current.sequence].choice[choice_index_to_read].look_ahead[0].sequence;
+					callSequentialLineData(parseInt(offset_jump)-1, function() {
+						processSequentialResource();
+						exitChoice();
+						setTimeout(function() {
+							game.screen = "play";
+							renderNextLine();
+						}, 500);
+					});
 			}
 			else {
 				exitChoice();
@@ -1172,34 +1004,7 @@ canvas.on('mouse:down', function(options) {
 		$('.log-area').slideUp(1000);
 		game.screen = "play";
 	}
-	// console.log(options.e.layerX, options.e.layerY);
 });
-
-// canvas.on('mouse:move', function(options) {
-// 	console.log(options.e.layerX, options.e.layerY);
-// });
-
-
-// function shiftCurrent(choice_index, callback) {
-
-	// get index of next line
-	// var index_to_remove = current.sequence + 1;
-	// get index of current line
-	// var index_to_read = getObjectIndex(line, 'sequence', current.sequence);
-	// remove all line cache ahead and fill with look_ahead in choice 
-	// line.splice(index_to_remove, current.head - current.sequence, line[current.sequence].choice[choice_index].look_ahead);
-	// current.head+= line[current.sequence].choice[choice_index].look_ahead.length;
-	// loadLine
-	// change current line to jump seq - 1?
-	// index_to_read + 1 is jumped line
-	// var jump_index = index_to_read + 1;
-	// delete all previous cache
-	// removeOldCache();
-	// removeOldLine();
-
-	// change current sequence
-	// current.sequence = line[jump_index].sequence;
-// } 
 
 function renderNotification(message) {
 	var notify = new fabric.Text(message, {
@@ -1320,6 +1125,7 @@ function quickLoad() {
 		$('.text-area').show();
 		current.sequence = -1;
 		current.head = -1;
+		cache.head = -1;
 		callSequentialLineData(msg-1, function() {
 			processSequentialResource();
 			setTimeout(function() {
@@ -1726,16 +1532,6 @@ function exitLoadScreen(callback) {
 			callback();
 		}
 	}, 1000);
-	// index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
-	// canvas.item(index_to_read).animate('top', '-600', {
-	// 	onChange: canvas.renderAll.bind(canvas),
-	// 	duration: 1000,
-	// 	easing: fabric.util.ease.easeInOutBack,
-	// 	onComplete: function() {
-	// 		index_to_read = getObjectIndex(canvas.getObjects(), 'id', 'quickload_slot');
-	// 		canvas.remove(canvas.item(index_to_read));
-	// 	}
-	// });
 }
 
 function exitSaveScreen(callback) {
@@ -2605,6 +2401,7 @@ function renderNextLine(callback) {
 					var index_to_remove = current.sequence + 1;
 					line.splice(index_to_remove, current.head - current.sequence);
 					current.head = current.sequence;
+					cache.head = current.sequence;
 					var offset_jump = line[current.sequence].look_ahead[0].sequence;
 					callSequentialLineData(parseInt(offset_jump)-1, function() {
 						processSequentialResource();
@@ -2655,7 +2452,10 @@ function renderNextLine(callback) {
 							});
 							bg.set('selectable', false);
 							canvas.add(bg);
-							canvas.sendToBack(bg);
+							// keep background depth for empty content
+							if(line[current.sequence].content.length > 0) {
+								canvas.sendToBack(bg);
+							}
 						}
 						else {
 							var bg = new fabric.Image(img, {
@@ -2666,10 +2466,12 @@ function renderNextLine(callback) {
 							});
 							bg.set('selectable', false);
 							canvas.add(bg);
-							canvas.sendToBack(bg);
+							if(line[current.sequence].content.length > 0) {
+								// canvas.sendToBack(bg);
+							}
 							bg.animate('opacity', '1', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
+								duration: 800,
 								onComplete: function() {
 									//
 								}
@@ -2688,8 +2490,9 @@ function renderNextLine(callback) {
 						else {
 							bg_bottom.animate('opacity', '0', {
 								onChange: canvas.renderAll.bind(canvas),
-								duration: 500,
+								duration: 1000,
 								onComplete: function() {
+									canvas_index = getObjectIndex(canvas.getObjects(), 'line_background_resource_id', line[prev_index_to_read].background_resource_id);
 									canvas.remove(canvas.item(canvas_index));
 									// console.log("bg removed at index", canvas_index);
 								}
@@ -2779,11 +2582,12 @@ function renderNextLine(callback) {
 												});
 											}
 										}
-										else
-											console.log("ugh");
+										else{
+											// console.log("ugh");
+										}
 									}
 									else {
-										console.log("aww");
+										// console.log("aww");
 									}
 								}
 								else {
@@ -2866,7 +2670,7 @@ function renderNextLine(callback) {
 										canvas.add(spr);
 										spr.animate('opacity', '1', {
 											onChange: canvas.renderAll.bind(canvas),
-											duration: 500
+											duration: 300
 										});
 									}
 								}
@@ -2951,7 +2755,7 @@ function renderNextLine(callback) {
 									canvas.add(spr);
 									spr.animate('opacity', '1', {
 										onChange: canvas.renderAll.bind(canvas),
-										duration: 500
+										duration: 300
 									});
 								}
 							}
@@ -3210,9 +3014,12 @@ function renderNextLine(callback) {
 			}
 			// }
 			// readjust game interface to original position after render
-			for(var i = 1; i <= 10; i++) {
-				var interface_index = getObjectIndex(canvas.getObjects(), 'line_interface_id', i);
-				canvas.bringToFront(canvas.item(interface_index));
+			// keep interface behind for empty content
+			if(line[current.sequence].content.length > 0) {
+				for(var i = 1; i <= 10; i++) {
+					var interface_index = getObjectIndex(canvas.getObjects(), 'line_interface_id', i);
+					canvas.bringToFront(canvas.item(interface_index));
+				}
 			}
 		}
 		else {
@@ -3304,11 +3111,14 @@ function renderNextLine(callback) {
 			renderLineText(line[current.sequence].content);
 		}
 		// render interface
-		if(current.sequence == 0 || line[current.sequence].fk_linetype_id == 1 || line[current.sequence].fk_linetype_id == 2) {
+		if(current.sequence == 0 && line[current.sequence].fk_linetype_id == 1) {
 			renderInGameInterface();
 		}
 		if(line[current.sequence].speaker.length > 0) {
 			renderSpeaker();
+		}
+		else {
+			removeSpeaker();
 		}
 		// renderLineText("line sortability add line add capability add line delete capability custom autocomplete interface update interface with fixed control area editor script use strict mode add autocomplete capability on sprite area nterface with fixed control area editor script use strict mode add autocomplete capability on sprite area update interface with fixed and the school burned to pieces just like how time-wasting all the paperwork and presentation craps");
 
@@ -3375,7 +3185,12 @@ function renderNextLine(callback) {
 			game.screen = "stall";
 			var path_to_video = '../../../resources/' + configuration.creator_id + '/' + configuration.game_id + '/video/' + line[current.sequence].video_file_name;
 			$('.video-area').html("");
-			$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+			if(game.mode == "fullscreen") {
+				$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", screen.height / 6 * 8).attr("height", screen.height).appendTo('.video-area');
+			}
+			else {
+				$("<video/>").attr("src", path_to_video).attr("id", "video_play").attr("width", 800).attr("height", 600).appendTo('.video-area');
+			}
 			stopBgm();
 			blackIn(2000, function() {
 				setTimeout(function() {
@@ -3486,6 +3301,11 @@ function renderSpeaker() {
 	speaker.set('selectable', false);
 	canvas.add(speaker);
 }
+function removeSpeaker() {
+	// remove speaker text
+	var canvas_index = getObjectIndex(canvas.getObjects(), 'id', 'speaker');
+	canvas.remove(canvas.item(canvas_index));
+}
 
 function playAuto() {
 	var wait = 1000;
@@ -3580,7 +3400,7 @@ function renderInGameInterface(callback) {
 			line_interface_id: 1,
 			top: 420,
 			left: 0,
-			opacity: 1
+			opacity: 0.8
 		});
 		txt_box.set('selectable', false);
 		canvas.add(txt_box);
@@ -3813,6 +3633,7 @@ function stopSfx() {
 	}
 }
 function playVoice(res) {
+	console.log("voice", res);
 	if(game.status.voice == "idle") {
 		if(res) {
 			var voice = $('#'+res)[0];
@@ -3851,7 +3672,7 @@ function stopVoice() {
 // context.font = '21px sans-serif';
 function renderLineText(line_content) {
 	var font_index = getObjectIndex(font_list, 'fonttype_id', configuration.fk_fonttype_id);
-	context.font = '21px '+font_list[font_index].name;
+	context.font = '20px '+font_list[font_index].name;
 	var interval_speed = (parseInt(configuration.text_speed) * 5);
 	var cursor_x = 100;
 	var cursor_y = 490;
