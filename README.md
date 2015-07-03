@@ -1,4 +1,4 @@
 # cast
-WBVNAT
+Web-based Visual Novel Authoring Tool
 
-work on progress...
+not ready yet
