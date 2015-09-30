@@ -1,5 +1,5 @@
 # cast
-Working full-stacked prototype of Web-based Visual Novel Authoring Tool
+Working full-stacked prototype of Web-based GUI-assisted Visual Novel Authoring Tool
 
 Built using:
 - CodeIgniter PHP Framework
