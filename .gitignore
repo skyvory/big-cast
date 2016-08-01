@@ -8,6 +8,6 @@ application/logs/*
 !application/logs/index.html
 !application/logs/.htaccess
 
-resources/*
+!resources/*
 
 *.ffs_db
